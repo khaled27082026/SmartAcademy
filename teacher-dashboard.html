@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المعلم | Smart Academy</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script>
+        window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_teacher', loginUrl: 'admin-login.html' };
+    </script>
+    <script src="js/route-guard.js"></script>
+
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.1.0 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.rtl.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .dash-layout {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .dash-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 28px 20px;
+            background: var(--bg-card);
+            border-inline-end: 1px solid var(--border-glass);
+        }
+
+        .dash-brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 36px;
+            padding-inline: 6px;
+        }
+
+        .dash-brand img {
+            height: 64px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: filter var(--transition-fast), height var(--transition-fast);
+        }
+
+        [data-theme="light"] .dash-brand img {
+            filter: none;
+        }
+
+        .dash-sidebar > .theme-toggle,
+        .dash-sidebar > .dash-logout {
+            align-self: center;
+        }
+
+        .dash-logout {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--logout-red);
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .dash-logout:hover {
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.35);
+        }
+
+        .dash-main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px clamp(20px, 4vw, 48px);
+        }
+
+        .dash-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .dash-topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .dash-topbar p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .dash-card {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .dash-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+.student-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-list-item {
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .student-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 150px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-pill);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(10, 66, 91, 0.4);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .student-link-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(10, 66, 91, 0.6);
+        }
+
+        .student-link-btn.is-waiting {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .student-link-btn.is-waiting:hover {
+            color: var(--text-sec);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .student-empty-note {
+            color: var(--text-sec);
+            font-size: 0.85rem;
+        }
+
+        #teacher-today-session {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .student-today-session {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+        }
+
+        .student-today-session-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .student-today-session-info span {
+            display: block;
+            color: var(--text-sec);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .student-today-session-info strong {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .student-today-session-status {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .student-today-session-bottom {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .rating-widget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rating-widget .rating-label {
+            font-size: 0.64rem;
+            color: var(--text-sec);
+            white-space: nowrap;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .rating-star {
+            font-size: 0.85rem;
+            color: var(--text-sec);
+            opacity: 0.45;
+        }
+
+        .rating-star.is-filled {
+            color: var(--sun-gold);
+            opacity: 1;
+        }
+
+        .rating-star.is-interactive {
+            background: none;
+            border: none;
+            padding: 3px;
+            line-height: 1;
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+
+        .rating-star.is-interactive:hover {
+            transform: scale(1.2);
+            color: var(--sun-gold);
+            opacity: 1;
+        }
+
+        .dash-table-wrap {
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+        }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .dash-table th,
+        .dash-table td {
+            padding: 12px 14px;
+            text-align: start;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .dash-table th {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .dash-table td {
+            color: var(--text-sec);
+        }
+
+        .dash-table-day-cell {
+            color: var(--text-main);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .dash-table tbody + tbody > tr:first-child > td {
+            border-top: 2px solid var(--border-glass);
+        }
+
+        .dash-table tbody:nth-of-type(even) {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .dash-table tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .dash-table tbody.is-today td {
+            background: var(--glass);
+        }
+
+        .dash-table tbody.is-today .dash-table-day-cell {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 640px) {
+            .dash-table th,
+            .dash-table td {
+                padding: 8px 4px;
+                font-size: 0.75rem;
+                word-break: break-word;
+            }
+
+            .dash-table-day-cell {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 374px) {
+            .dash-table th,
+            .dash-table td {
+                padding: 7px 3px;
+                font-size: 0.68rem;
+            }
+
+            .dash-table-day-cell {
+                font-size: 0.72rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dash-layout {
+                flex-direction: column;
+            }
+
+            .dash-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                gap: 14px;
+                border-inline-end: none;
+                border-bottom: 1px solid var(--border-glass);
+                padding: 14px;
+                overflow-x: auto;
+            }
+
+            .dash-sidebar > .dash-brand,
+            .dash-sidebar > .theme-toggle,
+            .dash-sidebar > .dash-logout {
+                align-self: center;
+                flex-shrink: 0;
+            }
+
+            .dash-logout {
+                order: 1;
+                margin-top: 0;
+            }
+
+            .theme-toggle {
+                order: 2;
+            }
+
+            .dash-brand {
+                order: 3;
+                margin-bottom: 0;
+                margin-inline-start: auto;
+            }
+
+            .dash-brand img {
+                height: 40px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.88rem;
+            }
+
+            .dash-logout {
+                gap: 6px;
+                padding: 8px 14px;
+                font-size: 0.76rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dash-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <img src="assets/images/SMART%20ACADEMY.png" alt="سمارت أكاديمي">
+            </div>
+
+            <button class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري" style="margin-inline: 6px;">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </button>
+
+            <a href="admin-login.html" class="dash-logout" id="teacher-logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                تسجيل الخروج
+            </a>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-topbar">
+                <div>
+                    <h1 id="welcome-heading">أهلاً بك</h1>
+                    <p>هذه لوحتك الخاصة لمتابعة جدول حصصك المباشرة في سمارت أكاديمي</p>
+                </div>
+            </div>
+
+            <section id="teacher-home">
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-tower-broadcast" style="color: var(--cyan); margin-inline-end: 8px;"></i>حصة اليوم المباشرة</h2>
+                    <div id="teacher-today-session"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-calendar-week" style="color: var(--cyan); margin-inline-end: 8px;"></i>جدول الحصص الأسبوعي</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="teacher-week-table">
+                            <colgroup>
+                                <col style="width: 25%;">
+                                <col style="width: 40%;">
+                                <col style="width: 35%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>اليوم</th>
+                                    <th>المادة</th>
+                                    <th>الموعد</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <script>
+        const WEEK_DAYS = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+
+        function todayArabicDay() {
+            const jsDay = saDubaiNow().day;
+            const jsToWeekIndex = [1, 2, 3, 4, 5, 6, 0];
+            return WEEK_DAYS[jsToWeekIndex[jsDay]];
+        }
+
+        function getFreshTeacher(phone) {
+            try {
+                const all = JSON.parse(localStorage.getItem('sa_teachers')) || [];
+                return all.find(function (t) { return t.phone === phone; }) || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function sessionsForDay(teacher, day) {
+            const sessions = (teacher && teacher.sessions) || [];
+            return sessions.filter(function (s) { return s.day === day; });
+        }
+
+        function parseSessionTime(str) {
+            const match = (str || '').match(/^(\d{1,2}):(\d{2})\s*(صباحاً|مساءً)?$/);
+            if (!match) return null;
+
+            let hour = parseInt(match[1], 10);
+            const minute = parseInt(match[2], 10);
+            const period = match[3];
+
+            if (period === 'مساءً' && hour !== 12) hour += 12;
+            if (period === 'صباحاً' && hour === 12) hour = 0;
+
+            const dubaiNow = saDubaiNow();
+            return new Date(saDubaiTimestamp(dubaiNow.year, dubaiNow.month, dubaiNow.date, hour, minute));
+        }
+
+        function formatMinutesRemaining(diff) {
+            if (diff === 1) return 'دقيقة واحدة';
+            if (diff === 2) return 'دقيقتين';
+            if (diff >= 3 && diff <= 10) return diff + ' دقائق';
+            return diff + ' دقيقة';
+        }
+
+        function buildSessionActionButton(session, activeLabel) {
+            if (!session.link) return null;
+
+            const sessionDate = parseSessionTime(session.time);
+            const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
+
+            if (diffMinutes !== null && diffMinutes < -60) {
+                const endedBtn = document.createElement('button');
+                endedBtn.type = 'button';
+                endedBtn.className = 'student-link-btn is-waiting';
+                endedBtn.disabled = true;
+                endedBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> انتهت الحصة';
+                return endedBtn;
+            }
+
+            const isActive = diffMinutes === null || diffMinutes <= 5;
+
+            if (isActive) {
+                const a = document.createElement('a');
+                a.className = 'student-link-btn';
+                a.href = session.link;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i> ' + activeLabel;
+                return a;
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'student-link-btn is-waiting';
+            btn.disabled = true;
+
+            if (diffMinutes > 120) {
+                btn.innerHTML = '<i class="fa-solid fa-clock"></i> يبدأ قريبًا';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-clock"></i> باقي ' + formatMinutesRemaining(diffMinutes);
+            }
+
+            return btn;
+        }
+
+        function saveTeacherSessionRating(teacherPhone, day, time, subject, rating) {
+            let teachers = [];
+            try {
+                teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
+            } catch (e) {
+                teachers = [];
+            }
+
+            const teacher = teachers.find(function (t) { return t.phone === teacherPhone; });
+            if (!teacher || !teacher.sessions) return;
+
+            const session = teacher.sessions.find(function (s) {
+                return s.day === day && s.time === time && s.subject === subject;
+            });
+            if (!session) return;
+
+            const ratedAt = new Date().toISOString();
+            session.rating = rating;
+            session.ratingUpdatedAt = ratedAt;
+            localStorage.setItem('sa_teachers', JSON.stringify(teachers));
+
+            let students = [];
+            try {
+                students = JSON.parse(localStorage.getItem('sa_students')) || [];
+            } catch (e) {
+                students = [];
+            }
+
+            let changed = false;
+            let matchedStudent = null;
+            students.forEach(function (student) {
+                (student.sessions || []).forEach(function (s) {
+                    if (s.day === day && s.time === time && s.subject === subject) {
+                        s.rating = rating;
+                        s.ratingUpdatedAt = ratedAt;
+                        changed = true;
+                        matchedStudent = student;
+                    }
+                });
+            });
+
+            if (changed) {
+                localStorage.setItem('sa_students', JSON.stringify(students));
+            }
+
+            syncRatingToSupabase(teacher, matchedStudent, day, time, subject, rating);
+        }
+
+        async function syncRatingToSupabase(teacher, student, day, time, subject, rating) {
+            const sb = window.saSupabase;
+            if (!sb) return;
+
+            try {
+                const { error } = await sb.rpc('sync_class_rating', {
+                    p_teacher_phone: teacher.phone,
+                    p_student_phone: student ? student.phone : null,
+                    p_day: day,
+                    p_time: time,
+                    p_subject: subject,
+                    p_rating: rating
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر مزامنة التقييم مع Supabase (التقييم محفوظ محليًا بنجاح على أي حال):', e);
+            }
+        }
+
+        function buildRatingWidget(session, teacherPhone) {
+            const wrap = document.createElement('div');
+            wrap.className = 'rating-widget';
+
+            const label = document.createElement('span');
+            label.className = 'rating-label';
+            label.textContent = 'تقييم أداء الطالب';
+            wrap.appendChild(label);
+
+            const stars = document.createElement('div');
+            stars.className = 'rating-stars';
+
+            for (let i = 1; i <= 5; i++) {
+                const starBtn = document.createElement('button');
+                starBtn.type = 'button';
+                starBtn.className = 'rating-star is-interactive' + (session.rating >= i ? ' is-filled' : '');
+                starBtn.innerHTML = '<i class="fa-solid fa-star"></i>';
+                starBtn.setAttribute('aria-label', 'تقييم ' + i + ' من 5');
+                starBtn.addEventListener('click', function () {
+                    saveTeacherSessionRating(teacherPhone, session.day, session.time, session.subject, i);
+                    renderTodaySession(getFreshTeacher(teacherPhone));
+                });
+                stars.appendChild(starBtn);
+            }
+
+            wrap.appendChild(stars);
+
+            return wrap;
+        }
+
+        function sortSessionsByProximity(sessions) {
+            return sessions.slice().sort(function (a, b) {
+                const dateA = parseSessionTime(a.time);
+                const dateB = parseSessionTime(b.time);
+                const distA = dateA ? Math.abs(dateA.getTime() - Date.now()) : Infinity;
+                const distB = dateB ? Math.abs(dateB.getTime() - Date.now()) : Infinity;
+                return distA - distB;
+            });
+        }
+
+        function renderTodaySession(teacher) {
+            const wrap = document.getElementById('teacher-today-session');
+            const today = todayArabicDay();
+            const todaySessions = sortSessionsByProximity(sessionsForDay(teacher, today));
+
+            wrap.innerHTML = '';
+
+            if (todaySessions.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'student-empty-note';
+                empty.textContent = 'لا توجد حصة مباشرة مجدولة اليوم (' + today + ').';
+                wrap.appendChild(empty);
+                return;
+            }
+
+            todaySessions.forEach(function (session) {
+                const row = document.createElement('div');
+                row.className = 'student-today-session';
+
+                const top = document.createElement('div');
+                top.className = 'student-today-session-top';
+
+                const info = document.createElement('div');
+                info.className = 'student-today-session-info';
+                info.innerHTML = '<span>' + (session.subject || 'حصة') + '</span><strong>' + (session.time || '—') + '</strong>';
+                top.appendChild(info);
+
+                const status = document.createElement('div');
+                status.className = 'student-today-session-status';
+                const btn = buildSessionActionButton(session, 'ابدأ الحصة');
+                if (btn) status.appendChild(btn);
+                top.appendChild(status);
+
+                row.appendChild(top);
+
+                const sessionDate = parseSessionTime(session.time);
+                const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
+                if (diffMinutes !== null && diffMinutes < -60) {
+                    const bottom = document.createElement('div');
+                    bottom.className = 'student-today-session-bottom';
+                    bottom.appendChild(buildRatingWidget(session, teacher.phone));
+                    row.appendChild(bottom);
+                }
+
+                wrap.appendChild(row);
+            });
+        }
+
+        function renderWeekTable(teacher) {
+            const table = document.getElementById('teacher-week-table');
+            const today = todayArabicDay();
+
+            table.querySelectorAll('tbody').forEach(function (tb) { tb.remove(); });
+
+            WEEK_DAYS.forEach(function (day) {
+                const daySessions = sessionsForDay(teacher, day);
+                const isToday = day === today;
+                const tbody = document.createElement('tbody');
+                if (isToday) tbody.className = 'is-today';
+
+                if (daySessions.length === 0) {
+                    const tr = document.createElement('tr');
+
+                    const dayTd = document.createElement('td');
+                    dayTd.className = 'dash-table-day-cell';
+                    dayTd.textContent = day;
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.dataset.label = 'المادة';
+                    subjectTd.textContent = '—';
+
+                    const timeTd = document.createElement('td');
+                    timeTd.dataset.label = 'الموعد';
+                    timeTd.textContent = '—';
+
+                    tr.append(dayTd, subjectTd, timeTd);
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
+                    return;
+                }
+
+                daySessions.forEach(function (session, index) {
+                    const tr = document.createElement('tr');
+
+                    if (index === 0) {
+                        const dayTd = document.createElement('td');
+                        dayTd.className = 'dash-table-day-cell';
+                        dayTd.rowSpan = daySessions.length;
+                        dayTd.textContent = day;
+                        tr.appendChild(dayTd);
+                    }
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.dataset.label = 'المادة';
+                    subjectTd.textContent = session.subject || '—';
+
+                    const timeTd = document.createElement('td');
+                    timeTd.dataset.label = 'الموعد';
+                    timeTd.textContent = session.time || '—';
+
+                    tr.append(subjectTd, timeTd);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+            });
+        }
+
+        (function () {
+            const current = saGetSession('sa_current_teacher');
+
+            if (!current) {
+                renderTodaySession(null);
+                renderWeekTable(null);
+                return;
+            }
+
+            const fresh = getFreshTeacher(current.phone) || current;
+            const displayName = fresh.fullName || fresh.phone;
+
+            document.getElementById('welcome-heading').textContent = 'أهلاً بك، ' + displayName;
+
+            renderTodaySession(fresh);
+            renderWeekTable(fresh);
+
+            setInterval(function () {
+                renderTodaySession(fresh);
+            }, 30000);
+        })();
+
+        document.getElementById('teacher-logout').addEventListener('click', function () {
+            saClearSession('sa_current_teacher');
+        });
+
+        (function () {
+            const sidebar = document.querySelector('.dash-sidebar');
+            if (sidebar) {
+                sidebar.scrollLeft = -(sidebar.scrollWidth - sidebar.clientWidth);
+            }
+        })();
+    </script>
+</body>
+</html>

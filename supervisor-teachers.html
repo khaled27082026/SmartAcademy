@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المعلمين | Smart Academy</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script>
+        window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_admin', loginUrl: 'admin-login.html' };
+    </script>
+    <script src="js/route-guard.js"></script>
+
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.1.0 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.rtl.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .dash-layout {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .dash-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 28px 20px;
+            background: var(--bg-card);
+            border-inline-end: 1px solid var(--border-glass);
+        }
+
+        .dash-brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 36px;
+            padding-inline: 6px;
+        }
+
+        .dash-brand img {
+            height: 64px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: filter var(--transition-fast), height var(--transition-fast);
+        }
+
+        [data-theme="light"] .dash-brand img {
+            filter: none;
+        }
+
+        .dash-sidebar > .theme-toggle,
+        .dash-sidebar > .dash-logout {
+            align-self: center;
+        }
+
+        .dash-logout {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--logout-red);
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .dash-logout:hover {
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.35);
+        }
+
+        .dash-main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px clamp(20px, 4vw, 48px);
+        }
+
+        .dash-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .dash-topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .dash-topbar p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .dash-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            transition: color var(--transition-fast);
+        }
+
+        .dash-back-link:hover {
+            color: var(--cyan);
+        }
+
+        .dash-card {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .dash-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .dash-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 20px;
+        }
+
+        .dash-form-grid .btn-glow {
+            grid-column: 1 / -1;
+            border: none;
+            width: fit-content;
+            margin-top: 4px;
+        }
+
+        #teacher-phone,
+        #teacher-email {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .dash-table-wrap {
+            overflow-x: auto;
+        }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 720px;
+        }
+
+        .dash-table th,
+        .dash-table td {
+            padding: 12px 14px;
+            text-align: start;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dash-table th:nth-child(1),
+        .dash-table td:nth-child(1) {
+            width: 20%;
+        }
+
+        .dash-table th:nth-child(2),
+        .dash-table td:nth-child(2) {
+            width: 17%;
+        }
+
+        .dash-table th:nth-child(3),
+        .dash-table td:nth-child(3) {
+            white-space: normal;
+            width: 25%;
+        }
+
+        .dash-table th:nth-child(4),
+        .dash-table td:nth-child(4) {
+            width: 17%;
+        }
+
+        .dash-table th:nth-child(5),
+        .dash-table td:nth-child(5) {
+            width: 11%;
+        }
+
+        .dash-table th:nth-child(6),
+        .dash-table td:nth-child(6) {
+            width: 10%;
+        }
+
+        .dash-table th {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .dash-table td {
+            color: var(--text-sec);
+        }
+
+        .dash-table tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .dash-delete-btn {
+            background: none;
+            border: none;
+            color: var(--logout-red);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .dash-delete-btn:hover {
+            color: var(--logout-red-hover);
+        }
+
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 24px 0 4px;
+        }
+
+        .dash-stage-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            margin: 2px;
+            border-radius: var(--radius-tag);
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--cyan);
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        .dash-manage-btn {
+            background: none;
+            border: none;
+            color: var(--cyan);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-inline-end: 12px;
+            transition: color var(--transition-fast);
+        }
+
+        .dash-manage-btn:hover {
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .dash-manage-btn:hover {
+            color: var(--accent);
+        }
+
+        .manage-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(7, 26, 38, 0.7);
+            backdrop-filter: blur(6px);
+        }
+
+        .manage-modal-overlay.is-open {
+            display: flex;
+        }
+
+        .manage-modal {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            max-height: 88vh;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+        }
+
+        @media (max-width: 360px) {
+            .manage-modal-overlay {
+                padding: 10px;
+            }
+
+            .manage-modal {
+                padding: 16px;
+            }
+        }
+
+        .manage-modal-close {
+            position: absolute;
+            top: 18px;
+            inset-inline-start: 18px;
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .manage-modal-close:hover {
+            color: var(--logout-red);
+        }
+
+        .manage-modal h2 {
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
+
+        .manage-modal .manage-modal-sub {
+            text-align: center;
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+
+        .manage-section {
+            border-top: 1px solid var(--border-glass);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .manage-section:first-of-type {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .manage-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .manage-section h3 i {
+            color: var(--cyan);
+        }
+
+        .manage-subjects-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .manage-subject-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-tag);
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .manage-subject-option i {
+            font-size: 0.75rem;
+            color: var(--text-sec);
+            transition: color var(--transition-fast);
+        }
+
+        .manage-subject-option:hover {
+            border-color: var(--cyan);
+        }
+
+        .manage-subject-option.is-selected {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .manage-subject-option.is-selected i {
+            color: #fff;
+        }
+
+        .manage-btn-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .manage-btn-row .btn-glow {
+            border: none;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+
+        .manage-week-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+        }
+
+        .manage-week-table {
+            width: 100%;
+            min-width: 560px;
+            border-collapse: collapse;
+        }
+
+        .manage-week-table th {
+            padding: 10px 12px;
+            text-align: start;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.82rem;
+            border-bottom: 1px solid var(--border-glass);
+            background: var(--bg-core);
+        }
+
+        .manage-week-table td {
+            padding: 6px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .manage-week-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .manage-week-day-label {
+            padding: 6px 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .manage-week-table input,
+        .manage-week-table select {
+            width: 100%;
+            min-width: 110px;
+            padding: 8px 10px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--input-radius);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .manage-week-table select {
+            background: var(--input-bg);
+            border-color: var(--input-border);
+            cursor: pointer;
+        }
+
+        .manage-week-table input:focus,
+        .manage-week-table select:focus {
+            outline: none;
+            background: var(--input-bg);
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .manage-week-table input::placeholder {
+            color: var(--text-sec);
+        }
+
+        .manage-week-table select option {
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        .manage-time-picker {
+            display: flex;
+            gap: 4px;
+        }
+
+        .manage-week-table .manage-time-picker select {
+            min-width: 0;
+            flex: 1;
+            padding: 8px 2px;
+            font-size: 0.78rem;
+            text-align: center;
+            text-align-last: center;
+        }
+
+        .manage-week-row-actions {
+            text-align: center;
+            width: 36px;
+        }
+
+        .manage-week-row-remove {
+            background: none;
+            border: none;
+            color: var(--logout-red);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .manage-week-row-remove:hover {
+            color: var(--logout-red-hover);
+        }
+
+        .manage-week-add-row td {
+            padding: 8px 4px;
+        }
+
+        .manage-week-add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: 1px dashed var(--input-border);
+            border-radius: var(--input-radius);
+            padding: 6px 14px;
+            color: var(--cyan);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color var(--transition-fast), color var(--transition-fast);
+        }
+
+        .manage-week-add-btn:hover {
+            border-color: var(--cyan);
+        }
+
+        @media (max-width: 640px) {
+            .manage-week-table-wrap {
+                overflow-x: visible;
+                border: none;
+            }
+
+            .manage-week-table {
+                display: block;
+                min-width: 0;
+            }
+
+            .manage-week-table thead {
+                display: none;
+            }
+
+            .manage-week-table tbody {
+                display: block;
+            }
+
+            .manage-week-table tr {
+                display: block;
+                background: var(--bg-core);
+                border: 1px solid var(--border-glass);
+                border-radius: var(--radius-sm);
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .manage-week-table tr:last-child {
+                margin-bottom: 0;
+            }
+
+            .manage-week-table td {
+                display: block;
+                padding: 6px 2px;
+                border-bottom: none;
+            }
+
+            .manage-week-day-cell {
+                padding-bottom: 8px !important;
+                margin-bottom: 6px;
+                border-bottom: 1px solid var(--border-glass);
+            }
+
+            .manage-week-day-label {
+                padding: 0;
+                font-size: 0.95rem;
+                color: var(--cyan);
+            }
+
+            .manage-week-table td[data-label]::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.72rem;
+                font-weight: 600;
+                color: var(--text-sec);
+                margin-bottom: 4px;
+            }
+
+            .manage-week-table input,
+            .manage-week-table select {
+                background: var(--input-bg);
+                border-color: var(--input-border);
+            }
+
+            .manage-week-row-actions {
+                width: auto;
+                text-align: end;
+                padding-top: 8px !important;
+                margin-top: 8px;
+                border-top: 1px solid var(--border-glass);
+            }
+
+            .manage-week-add-row td {
+                padding: 4px 2px;
+            }
+
+            .manage-week-add-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dash-layout {
+                flex-direction: column;
+            }
+
+            .dash-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                gap: 14px;
+                border-inline-end: none;
+                border-bottom: 1px solid var(--border-glass);
+                padding: 14px;
+                overflow-x: auto;
+            }
+
+            .dash-sidebar > .dash-brand,
+            .dash-sidebar > .theme-toggle,
+            .dash-sidebar > .dash-logout {
+                align-self: center;
+                flex-shrink: 0;
+            }
+
+            .dash-logout {
+                order: 1;
+                margin-top: 0;
+            }
+
+            .theme-toggle {
+                order: 2;
+            }
+
+            .dash-brand {
+                order: 3;
+                margin-bottom: 0;
+                margin-inline-start: auto;
+            }
+
+            .dash-brand img {
+                height: 40px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.88rem;
+            }
+
+            .dash-logout {
+                gap: 6px;
+                padding: 8px 14px;
+                font-size: 0.76rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dash-form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dash-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <img src="assets/images/SMART%20ACADEMY.png" alt="سمارت أكاديمي">
+            </div>
+
+            <button class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري" style="margin-inline: 6px;">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </button>
+
+            <a href="admin-login.html" class="dash-logout" id="teachers-logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                تسجيل الخروج
+            </a>
+        </aside>
+
+        <main class="dash-main">
+            <a href="supervisor-dashboard.html" class="dash-back-link">
+                <i class="fa-solid fa-arrow-right"></i>
+                الرجوع إلى لوحتك الرئيسية
+            </a>
+
+            <div class="dash-topbar">
+                <div>
+                    <h1>إدارة المعلمين</h1>
+                    <p id="teachers-subtitle">المعلمون المسجّلون تحت إشرافك</p>
+                </div>
+            </div>
+
+            <section id="teachers">
+                <div class="dash-card">
+                    <h2>إضافة معلم جديد</h2>
+                    <form id="add-teacher-form" class="dash-form-grid">
+                        <div class="form-field">
+                            <label for="teacher-full-name">اسم المعلم</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                                <input type="text" id="teacher-full-name" placeholder="اكتب الاسم" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="teacher-phone">رقم الهاتف</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" id="teacher-phone" placeholder="مثال: 01012345678" inputmode="numeric" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="teacher-email">البريد الإلكتروني</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="teacher-email" placeholder="example@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="teacher-password">كلمة المرور</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="teacher-password" placeholder="كلمة مرور المعلم" required>
+                            </div>
+                        </div>
+
+                        <p id="add-teacher-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                        <button type="submit" class="btn-glow">
+                            <i class="fa-solid fa-plus"></i>
+                            حفظ وإضافة المعلم
+                        </button>
+                    </form>
+                </div>
+
+                <div class="dash-card">
+                    <h2>المعلمون الحاليون</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم المعلم</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>المواد الدراسية</th>
+                                    <th>تاريخ الإضافة</th>
+                                    <th>إدارة المعلم</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachers-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="teachers-empty" class="dash-empty">لا يوجد معلمون مضافون بعد.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="manage-modal-overlay" id="edit-teacher-overlay">
+        <div class="manage-modal">
+            <button type="button" class="manage-modal-close" id="edit-teacher-close" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2>تعديل بيانات المعلم</h2>
+            <p class="manage-modal-sub" id="edit-teacher-sub">—</p>
+
+            <form id="edit-teacher-form" class="dash-form-grid">
+                <div class="form-field">
+                    <label for="edit-teacher-name">الاسم الكامل</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-id-badge"></i>
+                        <input type="text" id="edit-teacher-name" placeholder="اكتب الاسم" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-teacher-phone">رقم الهاتف</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="edit-teacher-phone" placeholder="مثال: 01012345678" inputmode="numeric" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-teacher-email">البريد الإلكتروني</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="edit-teacher-email" placeholder="example@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-teacher-subject">المادة</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-book"></i>
+                        <input type="text" id="edit-teacher-subject" placeholder="مثال: رياضيات">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-teacher-password">كلمة المرور الجديدة (اختياري)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="edit-teacher-password" placeholder="اتركه فارغًا للإبقاء على كلمة المرور الحالية">
+                    </div>
+                </div>
+
+                <p id="edit-teacher-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                <button type="submit" class="btn-glow">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    حفظ التعديلات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="manage-modal-overlay" id="manage-modal-overlay">
+        <div class="manage-modal">
+            <button type="button" class="manage-modal-close" id="manage-modal-close" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2>إدارة بيانات المعلم</h2>
+            <p class="manage-modal-sub" id="manage-modal-sub">—</p>
+
+            <div class="manage-section">
+                <h3><i class="fa-solid fa-book"></i> المواد الدراسية</h3>
+                <div class="manage-subjects-options" id="manage-subjects-options"></div>
+                <div class="manage-btn-row">
+                    <button type="button" class="btn-glow" id="manage-subjects-save">
+                        <i class="fa-solid fa-check"></i>
+                        حفظ المواد
+                    </button>
+                </div>
+            </div>
+
+            <div class="manage-section">
+                <h3><i class="fa-solid fa-calendar-week"></i> جدول الحصص الأسبوعي</h3>
+                <div class="manage-week-table-wrap">
+                    <table class="manage-week-table">
+                        <thead>
+                            <tr>
+                                <th>اليوم</th>
+                                <th>المادة</th>
+                                <th>الموعد</th>
+                                <th>رابط الحصة</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="manage-week-table-body"></tbody>
+                    </table>
+                </div>
+                <p id="manage-week-error" style="color: var(--logout-red); font-size: 0.72rem; display: none; margin-top: 16px; margin-bottom: 10px;"></p>
+                <div class="manage-btn-row">
+                    <button type="button" class="btn-glow" id="manage-week-save">
+                        <i class="fa-solid fa-check"></i>
+                        حفظ جدول الحصص
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <script>
+        const TEACHERS_KEY = 'sa_teachers';
+
+        function getCurrentAdmin() {
+            return saGetSession('sa_current_admin');
+        }
+
+        function getAllTeachers() {
+            try {
+                return JSON.parse(localStorage.getItem(TEACHERS_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveAllTeachers(teachers) {
+            localStorage.setItem(TEACHERS_KEY, JSON.stringify(teachers));
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return saFormatDubai(d, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        const currentAdmin = getCurrentAdmin();
+
+        if (currentAdmin && currentAdmin.fullName) {
+            document.getElementById('teachers-subtitle').textContent = 'المعلمون المسجّلون تحت إشراف ' + currentAdmin.fullName;
+        }
+
+        function renderTeachers() {
+            const teachers = getAllTeachers();
+            const tbody = document.getElementById('teachers-table-body');
+            const emptyMsg = document.getElementById('teachers-empty');
+            const tableWrap = document.querySelector('.dash-table-wrap');
+
+            tbody.innerHTML = '';
+
+            if (teachers.length === 0) {
+                tableWrap.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            tableWrap.style.display = 'block';
+            emptyMsg.style.display = 'none';
+
+            teachers.forEach(function (teacher) {
+                const tr = document.createElement('tr');
+
+                const nameTd = document.createElement('td');
+                nameTd.textContent = teacher.fullName;
+
+                const phoneTd = document.createElement('td');
+                phoneTd.textContent = teacher.phone;
+
+                const subjectsTd = document.createElement('td');
+                const subjects = teacher.subjects || [];
+                if (subjects.length === 0) {
+                    const noneTag = document.createElement('span');
+                    noneTag.className = 'dash-stage-tag';
+                    noneTag.textContent = 'بدون مواد';
+                    subjectsTd.appendChild(noneTag);
+                } else {
+                    subjects.forEach(function (subject) {
+                        const tag = document.createElement('span');
+                        tag.className = 'dash-stage-tag';
+                        tag.textContent = subject;
+                        subjectsTd.appendChild(tag);
+                    });
+                }
+
+                const dateTd = document.createElement('td');
+                dateTd.textContent = formatDate(teacher.createdAt);
+
+                const manageTd = document.createElement('td');
+                const manageBtn = document.createElement('button');
+                manageBtn.type = 'button';
+                manageBtn.className = 'dash-manage-btn';
+                manageBtn.setAttribute('aria-label', 'إدارة بيانات المعلم');
+                manageBtn.innerHTML = '<i class="fa-solid fa-sliders"></i> إدارة';
+                manageBtn.addEventListener('click', function () {
+                    openManageModal(teacher.id);
+                });
+                manageTd.appendChild(manageBtn);
+
+                const actionsTd = document.createElement('td');
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'dash-manage-btn';
+                editBtn.setAttribute('aria-label', 'تعديل بيانات المعلم');
+                editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                editBtn.addEventListener('click', function () {
+                    openEditTeacherModal(teacher);
+                });
+                actionsTd.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'dash-delete-btn';
+                deleteBtn.setAttribute('aria-label', 'حذف المعلم');
+                deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                deleteBtn.addEventListener('click', function () {
+                    const updated = getAllTeachers().filter(function (t) { return t.id !== teacher.id; });
+                    saveAllTeachers(updated);
+                    renderTeachers();
+                });
+                actionsTd.appendChild(deleteBtn);
+
+                tr.append(nameTd, phoneTd, subjectsTd, dateTd, manageTd, actionsTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('add-teacher-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('teacher-full-name').value.trim();
+            const phone = document.getElementById('teacher-phone').value.trim();
+            const email = document.getElementById('teacher-email').value.trim();
+            const password = document.getElementById('teacher-password').value;
+            const errorEl = document.getElementById('add-teacher-error');
+
+            if (!fullName || !phone || !email || !password) {
+                errorEl.textContent = 'من فضلك املأ كل الحقول: الاسم، رقم الهاتف، البريد الإلكتروني، وكلمة المرور.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const all = getAllTeachers();
+            const phoneTaken = all.some(function (t) { return t.phone === phone; });
+
+            if (phoneTaken) {
+                errorEl.textContent = 'رقم الهاتف هذا مسجّل بالفعل لمعلم آخر، يرجى التأكد من الرقم.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+
+            all.push({
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+                fullName: fullName,
+                phone: phone,
+                email: email,
+                password: password,
+                subjects: [],
+                sessions: [],
+                addedByPhone: currentAdmin ? currentAdmin.phone : null,
+                addedByName: currentAdmin ? currentAdmin.fullName : null,
+                createdAt: new Date().toISOString()
+            });
+
+            saveAllTeachers(all);
+            renderTeachers();
+            this.reset();
+
+            syncNewTeacherToSupabase(phone, fullName, email, password);
+        });
+
+        async function syncNewTeacherToSupabase(phone, fullName, email, password) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin) return;
+
+            try {
+                const { data, error } = await sb.rpc('create_teacher', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_name: fullName,
+                    p_phone: phone,
+                    p_email: email,
+                    p_subject: null,
+                    p_password: password
+                });
+                if (error) throw error;
+
+                const match = data && data[0];
+                if (!match) return;
+
+                const all = getAllTeachers();
+                const teacher = all.find(function (t) { return t.phone === phone; });
+                if (teacher) {
+                    teacher.supabaseId = match.id;
+                    saveAllTeachers(all);
+                }
+            } catch (e) {
+                console.error('تعذّر حفظ المعلم في Supabase (المعلم محفوظ محليًا بنجاح على أي حال):', e);
+            }
+        }
+
+        let editingTeacherPhone = null;
+
+        function openEditTeacherModal(teacher) {
+            editingTeacherPhone = teacher.phone;
+            document.getElementById('edit-teacher-sub').textContent = teacher.fullName + ' — ' + teacher.phone;
+            document.getElementById('edit-teacher-name').value = teacher.fullName || '';
+            document.getElementById('edit-teacher-phone').value = teacher.phone || '';
+            document.getElementById('edit-teacher-email').value = teacher.email || '';
+            document.getElementById('edit-teacher-subject').value = (teacher.subjects && teacher.subjects[0]) || '';
+            document.getElementById('edit-teacher-password').value = '';
+            document.getElementById('edit-teacher-error').style.display = 'none';
+            document.getElementById('edit-teacher-overlay').classList.add('is-open');
+        }
+
+        function closeEditTeacherModal() {
+            document.getElementById('edit-teacher-overlay').classList.remove('is-open');
+            editingTeacherPhone = null;
+        }
+
+        document.getElementById('edit-teacher-close').addEventListener('click', closeEditTeacherModal);
+        document.getElementById('edit-teacher-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeEditTeacherModal();
+        });
+
+        document.getElementById('edit-teacher-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('edit-teacher-name').value.trim();
+            const phone = document.getElementById('edit-teacher-phone').value.trim();
+            const email = document.getElementById('edit-teacher-email').value.trim();
+            const subject = document.getElementById('edit-teacher-subject').value.trim();
+            const password = document.getElementById('edit-teacher-password').value;
+            const errorEl = document.getElementById('edit-teacher-error');
+
+            const all = getAllTeachers();
+            const teacher = all.find(function (t) { return t.phone === editingTeacherPhone; });
+            if (!teacher) return;
+
+            if (!window.saSupabase || !currentAdmin) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const sb = window.saSupabase;
+            let result;
+
+            if (teacher.supabaseId) {
+                result = await sb.rpc('update_teacher', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_teacher_id: teacher.supabaseId,
+                    p_name: name,
+                    p_phone: phone,
+                    p_email: email,
+                    p_subject: subject || null,
+                    p_password: password
+                });
+            } else {
+                result = await sb.rpc('create_teacher', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_name: name,
+                    p_phone: phone,
+                    p_email: email,
+                    p_subject: subject || null,
+                    p_password: password || Math.random().toString(36).slice(2, 10)
+                });
+            }
+
+            if (result.error) {
+                if ((result.error.message || '').includes('phone_taken')) {
+                    errorEl.textContent = 'رقم الهاتف هذا مستخدم بالفعل، يرجى التأكد من الرقم.';
+                } else {
+                    console.error('تعذّر حفظ تعديلات المعلم:', result.error);
+                    errorEl.textContent = 'تعذّر حفظ التعديلات، حاول مرة أخرى.';
+                }
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const match = result.data && result.data[0];
+            if (match) teacher.supabaseId = match.id;
+
+            teacher.fullName = name;
+            teacher.phone = phone;
+            teacher.email = email;
+            if (password) teacher.password = password;
+
+            saveAllTeachers(all);
+            errorEl.style.display = 'none';
+            closeEditTeacherModal();
+            renderTeachers();
+        });
+
+        renderTeachers();
+
+        document.getElementById('teachers-logout').addEventListener('click', function () {
+            saClearSession('sa_current_admin');
+        });
+
+        let manageTeacherId = null;
+        let manageSelectedSubjects = [];
+
+        const AVAILABLE_SUBJECTS = ['رياضيات', 'لغة عربية', 'لغة إنجليزية', 'علوم', 'دراسات اجتماعية', 'حاسب آلي', 'تربية دينية', 'لغة فرنسية', 'فيزياء', 'كيمياء', 'أحياء'];
+
+        function getTeacherById(id) {
+            return getAllTeachers().find(function (t) { return t.id === id; });
+        }
+
+        function updateTeacher(id, patchFn) {
+            const all = getAllTeachers();
+            const idx = all.findIndex(function (t) { return t.id === id; });
+            if (idx === -1) return;
+            patchFn(all[idx]);
+            saveAllTeachers(all);
+        }
+
+        function openManageModal(id) {
+            manageTeacherId = id;
+            const teacher = getTeacherById(id);
+            if (!teacher) return;
+
+            document.getElementById('manage-modal-sub').textContent = teacher.fullName + ' — ' + teacher.phone;
+            manageSelectedSubjects = (teacher.subjects || []).slice();
+
+            renderManageSubjects();
+            renderManageWeekTable(teacher);
+
+            document.getElementById('manage-modal-overlay').classList.add('is-open');
+        }
+
+        function closeManageModal() {
+            manageTeacherId = null;
+            document.getElementById('manage-modal-overlay').classList.remove('is-open');
+        }
+
+        function renderManageSubjects() {
+            const wrap = document.getElementById('manage-subjects-options');
+            wrap.innerHTML = '';
+
+            AVAILABLE_SUBJECTS.forEach(function (subject) {
+                const isSelected = manageSelectedSubjects.indexOf(subject) !== -1;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'manage-subject-option' + (isSelected ? ' is-selected' : '');
+                btn.innerHTML = '<i class="fa-solid ' + (isSelected ? 'fa-check' : 'fa-plus') + '"></i> ' + subject;
+
+                btn.addEventListener('click', function () {
+                    const pos = manageSelectedSubjects.indexOf(subject);
+                    if (pos === -1) {
+                        manageSelectedSubjects.push(subject);
+                    } else {
+                        manageSelectedSubjects.splice(pos, 1);
+                    }
+                    renderManageSubjects();
+                });
+
+                wrap.appendChild(btn);
+            });
+        }
+
+        const WEEK_DAYS = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+
+        function parseTimeString(str) {
+            const match = (str || '').match(/^(\d{1,2}):(\d{2})\s*(صباحاً|مساءً)?$/);
+            if (!match) return { hour: '', minute: '', period: '' };
+            return { hour: match[1], minute: match[2], period: match[3] || '' };
+        }
+
+        function timeStringToMinutes(str) {
+            const parsed = parseTimeString(str);
+            if (!parsed.hour || !parsed.minute || !parsed.period) return null;
+
+            let hour = parseInt(parsed.hour, 10);
+            const minute = parseInt(parsed.minute, 10);
+            if (parsed.period === 'مساءً' && hour !== 12) hour += 12;
+            if (parsed.period === 'صباحاً' && hour === 12) hour = 0;
+
+            return hour * 60 + minute;
+        }
+
+        const SESSION_START_GAP_MINUTES = 50;
+
+        function findScheduleConflict(sessions) {
+            const byDay = {};
+            sessions.forEach(function (s) {
+                if (!s.time) return;
+                const startMinutes = timeStringToMinutes(s.time);
+                if (startMinutes === null) return;
+                if (!byDay[s.day]) byDay[s.day] = [];
+                byDay[s.day].push({ subject: s.subject, time: s.time, start: startMinutes });
+            });
+
+            for (const day in byDay) {
+                const daySessions = byDay[day];
+                for (let i = 0; i < daySessions.length; i++) {
+                    for (let j = i + 1; j < daySessions.length; j++) {
+                        const a = daySessions[i];
+                        const b = daySessions[j];
+                        if (Math.abs(a.start - b.start) < SESSION_START_GAP_MINUTES) {
+                            return { day: day, first: a, second: b };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        function buildTimePicker(existingTime) {
+            const parsed = parseTimeString(existingTime);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'manage-time-picker';
+
+            const hourSelect = document.createElement('select');
+            hourSelect.dataset.field = 'hour';
+            const hourEmpty = document.createElement('option');
+            hourEmpty.value = '';
+            hourEmpty.textContent = 'الساعة';
+            hourSelect.appendChild(hourEmpty);
+            for (let h = 1; h <= 12; h++) {
+                const opt = document.createElement('option');
+                opt.value = String(h);
+                opt.textContent = String(h);
+                if (parsed.hour && parseInt(parsed.hour, 10) === h) opt.selected = true;
+                hourSelect.appendChild(opt);
+            }
+
+            const minuteSelect = document.createElement('select');
+            minuteSelect.dataset.field = 'minute';
+            const minuteEmpty = document.createElement('option');
+            minuteEmpty.value = '';
+            minuteEmpty.textContent = 'الدقيقة';
+            minuteSelect.appendChild(minuteEmpty);
+            ['00', '15', '30', '45'].forEach(function (m) {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                if (parsed.minute === m) opt.selected = true;
+                minuteSelect.appendChild(opt);
+            });
+
+            const periodSelect = document.createElement('select');
+            periodSelect.dataset.field = 'period';
+            const periodEmpty = document.createElement('option');
+            periodEmpty.value = '';
+            periodEmpty.textContent = 'الفترة';
+            periodSelect.appendChild(periodEmpty);
+            ['صباحاً', 'مساءً'].forEach(function (p) {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                if (parsed.period === p) opt.selected = true;
+                periodSelect.appendChild(opt);
+            });
+
+            wrap.append(hourSelect, minuteSelect, periodSelect);
+            return wrap;
+        }
+
+        function buildSessionRow(day, existing, teacherSubjects) {
+            const tr = document.createElement('tr');
+            tr.dataset.day = day;
+
+            const dayTd = document.createElement('td');
+            dayTd.className = 'manage-week-day-cell';
+            const dayLabel = document.createElement('div');
+            dayLabel.className = 'manage-week-day-label';
+            dayLabel.textContent = day;
+            dayTd.appendChild(dayLabel);
+
+            const subjectTd = document.createElement('td');
+            subjectTd.dataset.label = 'المادة';
+            const subjectSelect = document.createElement('select');
+            subjectSelect.dataset.field = 'subject';
+
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = teacherSubjects.length ? 'بدون حصة' : 'لا توجد مواد مفعّلة لهذا المعلم';
+            subjectSelect.appendChild(emptyOption);
+
+            teacherSubjects.forEach(function (subject) {
+                const opt = document.createElement('option');
+                opt.value = subject;
+                opt.textContent = subject;
+                if (existing.subject === subject) opt.selected = true;
+                subjectSelect.appendChild(opt);
+            });
+
+            subjectTd.appendChild(subjectSelect);
+
+            const timeTd = document.createElement('td');
+            timeTd.dataset.label = 'الموعد';
+            timeTd.appendChild(buildTimePicker(existing.time));
+
+            const linkTd = document.createElement('td');
+            linkTd.dataset.label = 'رابط الحصة';
+            const linkInput = document.createElement('input');
+            linkInput.type = 'url';
+            linkInput.placeholder = 'https://...';
+            linkInput.value = existing.link || '';
+            linkInput.dataset.field = 'link';
+            linkTd.appendChild(linkInput);
+
+            const actionTd = document.createElement('td');
+            actionTd.className = 'manage-week-row-actions';
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'manage-week-row-remove';
+            removeBtn.setAttribute('aria-label', 'حذف الحصة');
+            removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            removeBtn.addEventListener('click', function () {
+                tr.remove();
+            });
+            actionTd.appendChild(removeBtn);
+
+            tr.append(dayTd, subjectTd, timeTd, linkTd, actionTd);
+            return tr;
+        }
+
+        function renderManageWeekTable(teacher) {
+            const tbody = document.getElementById('manage-week-table-body');
+            const sessions = teacher.sessions || [];
+            const teacherSubjects = teacher.subjects || [];
+            tbody.innerHTML = '';
+
+            WEEK_DAYS.forEach(function (day) {
+                const daySessions = sessions.filter(function (s) { return s.day === day; });
+
+                daySessions.forEach(function (existing) {
+                    tbody.appendChild(buildSessionRow(day, existing, teacherSubjects));
+                });
+
+                const addTr = document.createElement('tr');
+                addTr.className = 'manage-week-add-row';
+                addTr.dataset.addDay = day;
+                const addTd = document.createElement('td');
+                addTd.colSpan = 5;
+                const addBtn = document.createElement('button');
+                addBtn.type = 'button';
+                addBtn.className = 'manage-week-add-btn';
+                addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> إضافة حصة أخرى — ' + day;
+                addBtn.addEventListener('click', function () {
+                    const fresh = getTeacherById(manageTeacherId) || teacher;
+                    const newRow = buildSessionRow(day, {}, fresh.subjects || []);
+                    tbody.insertBefore(newRow, addTr);
+                });
+                addTd.appendChild(addBtn);
+                addTr.appendChild(addTd);
+                tbody.appendChild(addTr);
+            });
+        }
+
+        document.getElementById('manage-week-save').addEventListener('click', function () {
+            const sessions = [];
+
+            document.querySelectorAll('#manage-week-table-body tr[data-day]').forEach(function (tr) {
+                const day = tr.dataset.day;
+                const subject = tr.querySelector('[data-field="subject"]').value.trim();
+                const hour = tr.querySelector('[data-field="hour"]').value;
+                const minute = tr.querySelector('[data-field="minute"]').value;
+                const period = tr.querySelector('[data-field="period"]').value;
+                const time = (hour && minute && period) ? (hour + ':' + minute + ' ' + period) : '';
+                const link = tr.querySelector('[data-field="link"]').value.trim();
+
+                if (subject || time || link) {
+                    sessions.push({ day: day, subject: subject, time: time, link: link });
+                }
+            });
+
+            const errorEl = document.getElementById('manage-week-error');
+            const conflict = findScheduleConflict(sessions);
+
+            if (conflict) {
+                errorEl.textContent = 'تنبيه: يجب أن يكون الفارق بين بداية كل حصة والأخرى 50 دقيقة على الأقل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+
+            updateTeacher(manageTeacherId, function (t) {
+                t.sessions = sessions;
+            });
+        });
+
+        document.getElementById('manage-modal-close').addEventListener('click', closeManageModal);
+        document.getElementById('manage-modal-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeManageModal();
+        });
+
+        document.getElementById('manage-subjects-save').addEventListener('click', function () {
+            updateTeacher(manageTeacherId, function (t) {
+                t.subjects = manageSelectedSubjects.slice();
+            });
+            renderTeachers();
+            renderManageWeekTable(getTeacherById(manageTeacherId));
+        });
+
+        (function () {
+            const sidebar = document.querySelector('.dash-sidebar');
+            if (sidebar) {
+                sidebar.scrollLeft = -(sidebar.scrollWidth - sidebar.clientWidth);
+            }
+        })();
+    </script>
+</body>
+</html>

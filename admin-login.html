@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول المشرف | Smart Academy</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.1.0 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.rtl.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .admin-login-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-block: 16px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        [data-theme="light"] .admin-login-header {
+            background: rgba(244, 247, 249, 0.9);
+        }
+
+        .account-role {
+            display: inline-flex;
+            width: fit-content;
+            max-width: 100%;
+            gap: 6px;
+            padding: 6px;
+            margin-block: 8px 24px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-pill);
+        }
+
+        .account-role__input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .account-role .account-role__option {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            line-height: 1;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            cursor: pointer;
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .account-role__icon {
+            display: inline-flex;
+            justify-content: center;
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .account-role__input:checked + .account-role__option {
+            color: #fff;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            box-shadow: 0 0 15px rgba(10, 66, 91, 0.5);
+        }
+
+        .account-role__input:focus-visible + .account-role__option {
+            outline: 2px solid var(--cyan);
+            outline-offset: 2px;
+        }
+
+        .form-field--role {
+            text-align: center;
+        }
+
+        .form-field--role .account-role {
+            margin-inline: auto;
+        }
+
+        #admin-phone {
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="admin-login-header">
+        <button class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري">
+            <i class="fa-solid fa-sun icon-sun"></i>
+            <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-glow"></div>
+        <div class="container d-flex justify-content-center">
+            <div class="auth-card">
+                <div class="auth-head">
+                    <img src="assets/images/SMART%20ACADEMY.png" alt="سمارت أكاديمي" class="auth-logo-img">
+                    <h1>تسجيل الدخول</h1>
+                    <p>هذه الصفحة مخصصة لإدارة المنصة فقط</p>
+                </div>
+
+                <form id="admin-login-form">
+                    <div class="form-field form-field--role">
+                        <label>صفة الحساب</label>
+                        <div class="account-role">
+                            <input type="radio" class="account-role__input" name="login-role" id="role-teacher" value="teacher">
+                            <label for="role-teacher" class="account-role__option">
+                                <span class="account-role__icon"><i class="fa-solid fa-chalkboard-user"></i></span>
+                                <span class="account-role__text">معلم</span>
+                            </label>
+                            <input type="radio" class="account-role__input" name="login-role" id="role-admin" value="admin" checked>
+                            <label for="role-admin" class="account-role__option">
+                                <span class="account-role__icon"><i class="fa-solid fa-user-shield"></i></span>
+                                <span class="account-role__text">مشرف</span>
+                            </label>
+                            <input type="radio" class="account-role__input" name="login-role" id="role-manager" value="manager">
+                            <label for="role-manager" class="account-role__option">
+                                <span class="account-role__icon"><i class="fa-solid fa-user-tie"></i></span>
+                                <span class="account-role__text">مدير</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="admin-phone">رقم الهاتف</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="tel" id="admin-phone" name="admin-phone" placeholder="أدخل رقم الهاتف" inputmode="numeric" autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="admin-password">كلمة المرور</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="admin-password" name="admin-password" placeholder="أدخل كلمة المرور" autocomplete="current-password">
+                        </div>
+                    </div>
+
+                    <p id="login-error" style="color: var(--logout-red); font-size: 0.9rem; margin-bottom: 16px; display: none;"></p>
+
+                    <button type="submit" class="btn-glow auth-submit">
+                        تسجيل الدخول
+                        <i class="fa-solid fa-arrow-right-to-bracket icon-rtl-flip"></i>
+                    </button>
+                </form>
+
+                <a href="index.html" class="auth-back"><i class="fa-solid fa-house"></i> عودة للصفحة الرئيسية</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const role = document.querySelector('input[name="login-role"]:checked').value;
+            const phone = document.getElementById('admin-phone').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const errorEl = document.getElementById('login-error');
+
+            function showError(message) {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+            }
+
+            if (role === 'manager') {
+                if (!window.saSupabase) {
+                    showError('تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.');
+                    return;
+                }
+
+                window.saSupabase
+                    .rpc('verify_manager_login', { p_phone: phone, p_password: password })
+                    .then(function (res) {
+                        if (res.error) {
+                            console.error('تعذّر التحقق من بيانات دخول المدير:', res.error);
+                            showError('تعذّر التحقق من بيانات الدخول، حاول مرة أخرى.');
+                            return;
+                        }
+
+                        const match = res.data && res.data[0];
+                        if (match) {
+                            saSetSession('sa_current_manager', { id: match.id, name: match.name, phone: phone });
+                            window.location.href = 'manager-dashboard.html';
+                        } else {
+                            showError('بيانات دخول المدير غير صحيحة.');
+                        }
+                    });
+                return;
+            }
+
+            if (role === 'teacher') {
+                let teachers = [];
+                try {
+                    teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
+                } catch (err) {
+                    teachers = [];
+                }
+
+                const teacherMatch = teachers.find(function (t) {
+                    return t.phone === phone && t.password === password;
+                });
+
+                if (teacherMatch) {
+                    saSetSession('sa_current_teacher', teacherMatch);
+                    window.location.href = 'teacher-dashboard.html';
+                } else {
+                    showError('بيانات دخول المعلم غير صحيحة، أو الحساب غير موجود.');
+                }
+                return;
+            }
+
+            if (!window.saSupabase) {
+                showError('تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.');
+                return;
+            }
+
+            window.saSupabase
+                .rpc('verify_supervisor_login', { p_phone: phone, p_password: password })
+                .then(function (res) {
+                    if (res.error) {
+                        console.error('تعذّر التحقق من بيانات دخول المشرف:', res.error);
+                        showError('تعذّر التحقق من بيانات الدخول، حاول مرة أخرى.');
+                        return;
+                    }
+
+                    const match = res.data && res.data[0];
+                    if (match) {
+                        saSetSession('sa_current_admin', { id: match.id, fullName: match.name, phone: phone });
+                        window.location.href = 'supervisor-dashboard.html';
+                    } else {
+                        showError('بيانات دخول المشرف غير صحيحة، أو الحساب غير موجود.');
+                    }
+                });
+        });
+    </script>
+</body>
+</html>

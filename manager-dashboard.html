@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المدير | Smart Academy</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script>
+        window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_manager', loginUrl: 'admin-login.html' };
+    </script>
+    <script src="js/route-guard.js"></script>
+
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.1.0 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.rtl.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .dash-layout {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .dash-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 28px 20px;
+            background: var(--bg-card);
+            border-inline-end: 1px solid var(--border-glass);
+        }
+
+        .dash-brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 36px;
+            padding-inline: 6px;
+        }
+
+        .dash-brand img {
+            height: 64px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: filter var(--transition-fast), height var(--transition-fast);
+        }
+
+        [data-theme="light"] .dash-brand img {
+            filter: none;
+        }
+
+        .dash-sidebar > .theme-toggle,
+        .dash-sidebar > .dash-logout {
+            align-self: center;
+        }
+
+        .dash-logout {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--logout-red);
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .dash-logout:hover {
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.35);
+        }
+
+        .dash-main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px clamp(20px, 4vw, 48px);
+        }
+
+        .dash-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .dash-topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .dash-topbar p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .dash-card {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .dash-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .dash-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 20px;
+        }
+
+        .dash-form-grid .btn-glow {
+            grid-column: 1 / -1;
+            border: none;
+            width: fit-content;
+            margin-top: 4px;
+        }
+
+        .dash-table-wrap {
+            overflow-x: auto;
+        }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        .dash-table th,
+        .dash-table td {
+            padding: 12px 14px;
+            text-align: start;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .dash-table th {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .dash-table td {
+            color: var(--text-sec);
+        }
+
+        .dash-table tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .dash-delete-btn {
+            background: none;
+            border: none;
+            color: var(--logout-red);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .dash-delete-btn:hover {
+            color: var(--logout-red-hover);
+        }
+
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 24px 0 4px;
+        }
+
+        @media (max-width: 900px) {
+            .dash-layout {
+                flex-direction: column;
+            }
+
+            .dash-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                gap: 14px;
+                border-inline-end: none;
+                border-bottom: 1px solid var(--border-glass);
+                padding: 14px;
+                overflow-x: auto;
+            }
+
+            .dash-sidebar > .dash-brand,
+            .dash-sidebar > .theme-toggle,
+            .dash-sidebar > .dash-logout {
+                align-self: center;
+                flex-shrink: 0;
+            }
+
+            .dash-logout {
+                order: 1;
+                margin-top: 0;
+            }
+
+            .theme-toggle {
+                order: 2;
+            }
+
+            .dash-brand {
+                order: 3;
+                margin-bottom: 0;
+                margin-inline-start: auto;
+            }
+
+            .dash-brand img {
+                height: 40px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.88rem;
+            }
+
+            .dash-logout {
+                gap: 6px;
+                padding: 8px 14px;
+                font-size: 0.76rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dash-form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #admin-new-phone {
+            direction: rtl;
+            text-align: right;
+        }
+
+        #edit-admin-phone {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .dash-manage-btn {
+            background: none;
+            border: none;
+            color: var(--cyan);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-inline-end: 12px;
+            transition: color var(--transition-fast);
+        }
+
+        .dash-manage-btn:hover {
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .dash-manage-btn:hover {
+            color: var(--accent);
+        }
+
+        .manage-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(7, 26, 38, 0.7);
+            backdrop-filter: blur(6px);
+        }
+
+        .manage-modal-overlay.is-open {
+            display: flex;
+        }
+
+        .manage-modal {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            max-height: 88vh;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+        }
+
+        .manage-modal-close {
+            position: absolute;
+            top: 18px;
+            inset-inline-start: 18px;
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .manage-modal-close:hover {
+            color: var(--logout-red);
+        }
+
+        .manage-modal h2 {
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
+
+        .manage-modal .manage-modal-sub {
+            text-align: center;
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dash-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <img src="assets/images/SMART%20ACADEMY.png" alt="سمارت أكاديمي">
+            </div>
+
+            <button class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري" style="margin-inline: 6px;">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </button>
+
+            <a href="admin-login.html" class="dash-logout" id="manager-logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                تسجيل الخروج
+            </a>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-topbar">
+                <div>
+                    <h1>لوحة المدير</h1>
+                    <p>إدارة حسابات المشرفين المصرّح لهم بالدخول على لوحة تحكم المنصة</p>
+                </div>
+            </div>
+
+            <section id="admins">
+                <div class="dash-card">
+                    <h2>إضافة مشرف جديد</h2>
+                    <form id="add-admin-form" class="dash-form-grid">
+                        <div class="form-field">
+                            <label for="admin-full-name">الاسم الكامل</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-id-badge"></i>
+                                <input type="text" id="admin-full-name" placeholder="اكتب الاسم" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="admin-new-phone">رقم الهاتف</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" id="admin-new-phone" placeholder="مثال: 01012345678" inputmode="numeric" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="admin-new-email">البريد الإلكتروني</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="admin-new-email" placeholder="example@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="admin-new-password">كلمة المرور</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="admin-new-password" placeholder="كلمة مرور المشرف" required>
+                            </div>
+                        </div>
+
+                        <p id="add-admin-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                        <button type="submit" class="btn-glow">
+                            <i class="fa-solid fa-user-plus"></i>
+                            حفظ وإضافة المشرف
+                        </button>
+                    </form>
+                </div>
+
+                <div class="dash-card">
+                    <h2>المشرفون الحاليون</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم الكامل</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>تاريخ الإضافة</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="admins-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="admins-empty" class="dash-empty">لا يوجد مشرفون مضافون بعد.</p>
+                </div>
+
+                <div class="dash-card">
+                    <h2>إحصائيات الطلاب حسب المشرف</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th>المشرف</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>عدد الطلاب</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-stats-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="students-stats-empty" class="dash-empty">لا يوجد طلاب مضافون من أي مشرف حتى الآن.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="manage-modal-overlay" id="edit-admin-overlay">
+        <div class="manage-modal">
+            <button type="button" class="manage-modal-close" id="edit-admin-close" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2>تعديل بيانات المشرف</h2>
+            <p class="manage-modal-sub" id="edit-admin-sub">—</p>
+
+            <form id="edit-admin-form" class="dash-form-grid">
+                <div class="form-field">
+                    <label for="edit-admin-name">الاسم الكامل</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-id-badge"></i>
+                        <input type="text" id="edit-admin-name" placeholder="اكتب الاسم" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-admin-phone">رقم الهاتف</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="edit-admin-phone" placeholder="مثال: 01012345678" inputmode="numeric" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-admin-email">البريد الإلكتروني</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="edit-admin-email" placeholder="example@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="edit-admin-password">كلمة المرور الجديدة (اختياري)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="edit-admin-password" placeholder="اتركه فارغًا للإبقاء على كلمة المرور الحالية">
+                    </div>
+                </div>
+
+                <p id="edit-admin-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                <button type="submit" class="btn-glow">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    حفظ التعديلات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <script>
+        document.getElementById('manager-logout').addEventListener('click', function () {
+            saClearSession('sa_current_manager');
+        });
+    </script>
+
+    <script>
+        const currentManager = saGetSession('sa_current_manager');
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return saFormatDubai(d, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        async function fetchSupervisors() {
+            if (!window.saSupabase || !currentManager) return [];
+
+            const { data, error } = await window.saSupabase.rpc('list_supervisors', { p_manager_id: currentManager.id });
+            if (error) {
+                console.error('تعذّر جلب قائمة المشرفين:', error);
+                return [];
+            }
+            return data || [];
+        }
+
+        function renderAdmins(admins) {
+            const tbody = document.getElementById('admins-table-body');
+            const emptyMsg = document.getElementById('admins-empty');
+            const tableWrap = document.querySelector('.dash-table-wrap');
+
+            tbody.innerHTML = '';
+
+            if (admins.length === 0) {
+                tableWrap.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            tableWrap.style.display = 'block';
+            emptyMsg.style.display = 'none';
+
+            admins.forEach(function (admin) {
+                const tr = document.createElement('tr');
+
+                const nameTd = document.createElement('td');
+                nameTd.textContent = admin.name;
+
+                const phoneTd = document.createElement('td');
+                phoneTd.textContent = admin.phone;
+
+                const emailTd = document.createElement('td');
+                emailTd.textContent = admin.email || '—';
+
+                const dateTd = document.createElement('td');
+                dateTd.textContent = formatDate(admin.created_at);
+
+                const actionsTd = document.createElement('td');
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'dash-manage-btn';
+                editBtn.setAttribute('aria-label', 'تعديل بيانات المشرف');
+                editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                editBtn.addEventListener('click', function () {
+                    openEditModal(admin);
+                });
+                actionsTd.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'dash-delete-btn';
+                deleteBtn.setAttribute('aria-label', 'حذف المشرف');
+                deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                deleteBtn.addEventListener('click', async function () {
+                    const { error } = await window.saSupabase.rpc('delete_supervisor', {
+                        p_manager_id: currentManager.id,
+                        p_supervisor_id: admin.id
+                    });
+                    if (error) {
+                        console.error('تعذّر حذف المشرف:', error);
+                        return;
+                    }
+                    await refreshAll();
+                });
+                actionsTd.appendChild(deleteBtn);
+
+                tr.append(nameTd, phoneTd, emailTd, dateTd, actionsTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('add-admin-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('admin-full-name').value.trim();
+            const phone = document.getElementById('admin-new-phone').value.trim();
+            const email = document.getElementById('admin-new-email').value.trim();
+            const password = document.getElementById('admin-new-password').value;
+            const errorEl = document.getElementById('add-admin-error');
+            const form = this;
+
+            if (!window.saSupabase) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const { error } = await window.saSupabase.rpc('create_supervisor', {
+                p_manager_id: currentManager.id,
+                p_name: fullName,
+                p_phone: phone,
+                p_email: email,
+                p_password: password
+            });
+
+            if (error) {
+                if ((error.message || '').includes('phone_taken')) {
+                    errorEl.textContent = 'رقم الهاتف هذا مستخدم بالفعل، يرجى التأكد من الرقم.';
+                } else {
+                    console.error('تعذّر إضافة المشرف:', error);
+                    errorEl.textContent = 'تعذّر إضافة المشرف، حاول مرة أخرى.';
+                }
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            form.reset();
+            await refreshAll();
+        });
+
+        function getStudents() {
+            try {
+                return JSON.parse(localStorage.getItem('sa_students')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function renderStudentStats(admins) {
+            const students = getStudents();
+            const tbody = document.getElementById('students-stats-table-body');
+            const emptyMsg = document.getElementById('students-stats-empty');
+            const tableWrap = document.querySelectorAll('.dash-table-wrap')[1];
+
+            tbody.innerHTML = '';
+
+            if (admins.length === 0 || students.length === 0) {
+                tableWrap.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            tableWrap.style.display = 'block';
+            emptyMsg.style.display = 'none';
+
+            admins.forEach(function (admin) {
+                const count = students.filter(function (s) { return s.addedByPhone === admin.phone; }).length;
+
+                const tr = document.createElement('tr');
+
+                const nameTd = document.createElement('td');
+                nameTd.textContent = admin.name;
+
+                const phoneTd = document.createElement('td');
+                phoneTd.textContent = admin.phone;
+
+                const countTd = document.createElement('td');
+                countTd.textContent = count;
+
+                tr.append(nameTd, phoneTd, countTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function refreshAll() {
+            const admins = await fetchSupervisors();
+            renderAdmins(admins);
+            renderStudentStats(admins);
+        }
+
+        refreshAll();
+
+        let editingSupervisorId = null;
+
+        function openEditModal(admin) {
+            editingSupervisorId = admin.id;
+            document.getElementById('edit-admin-sub').textContent = admin.name + ' — ' + admin.phone;
+            document.getElementById('edit-admin-name').value = admin.name || '';
+            document.getElementById('edit-admin-phone').value = admin.phone || '';
+            document.getElementById('edit-admin-email').value = admin.email || '';
+            document.getElementById('edit-admin-password').value = '';
+            document.getElementById('edit-admin-error').style.display = 'none';
+            document.getElementById('edit-admin-overlay').classList.add('is-open');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-admin-overlay').classList.remove('is-open');
+            editingSupervisorId = null;
+        }
+
+        document.getElementById('edit-admin-close').addEventListener('click', closeEditModal);
+        document.getElementById('edit-admin-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        document.getElementById('edit-admin-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('edit-admin-name').value.trim();
+            const phone = document.getElementById('edit-admin-phone').value.trim();
+            const email = document.getElementById('edit-admin-email').value.trim();
+            const password = document.getElementById('edit-admin-password').value;
+            const errorEl = document.getElementById('edit-admin-error');
+
+            if (!window.saSupabase || !editingSupervisorId) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const { error } = await window.saSupabase.rpc('update_supervisor', {
+                p_manager_id: currentManager.id,
+                p_supervisor_id: editingSupervisorId,
+                p_name: name,
+                p_phone: phone,
+                p_email: email,
+                p_password: password
+            });
+
+            if (error) {
+                if ((error.message || '').includes('phone_taken')) {
+                    errorEl.textContent = 'رقم الهاتف هذا مستخدم بالفعل، يرجى التأكد من الرقم.';
+                } else {
+                    console.error('تعذّر تعديل بيانات المشرف:', error);
+                    errorEl.textContent = 'تعذّر حفظ التعديلات، حاول مرة أخرى.';
+                }
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            closeEditModal();
+            await refreshAll();
+        });
+
+        (function () {
+            const sidebar = document.querySelector('.dash-sidebar');
+            if (sidebar) {
+                sidebar.scrollLeft = -(sidebar.scrollWidth - sidebar.clientWidth);
+            }
+        })();
+    </script>
+</body>
+</html>
