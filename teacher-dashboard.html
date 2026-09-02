@@ -137,6 +137,48 @@
             margin-bottom: 20px;
         }
 
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 12px 0 4px;
+        }
+
+        .earnings-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .earnings-stat {
+            flex: 1;
+            min-width: 130px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .earnings-stat-label {
+            display: block;
+            color: var(--text-sec);
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+
+        .earnings-stat-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .earnings-stat.is-total .earnings-stat-value {
+            color: var(--cyan);
+        }
+
+        .earnings-stat.is-penalty .earnings-stat-value {
+            color: var(--logout-red-hover);
+        }
+
 .student-list {
             list-style: none;
             padding: 0;
@@ -220,6 +262,10 @@
             gap: 14px;
         }
 
+        .student-today-session-info {
+            min-width: 0;
+        }
+
         .student-today-session-info span {
             display: block;
             color: var(--text-sec);
@@ -229,6 +275,54 @@
 
         .student-today-session-info strong {
             font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .student-today-session-duration {
+            margin-bottom: 0 !important;
+            margin-top: 4px;
+            font-size: 0.72rem !important;
+        }
+
+        .student-today-session-student {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-sec);
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .student-today-session-student-main {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .student-today-session-student .rating-widget {
+            flex-shrink: 0;
+        }
+
+        .student-today-session-student-main i {
+            color: var(--cyan);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .student-today-session-student-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .student-today-session-student strong {
+            color: var(--text-main);
             font-weight: 700;
         }
 
@@ -242,8 +336,8 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
-            flex-wrap: nowrap;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 10px;
             padding-top: 12px;
             border-top: 1px solid var(--border-glass);
@@ -274,7 +368,7 @@
         }
 
         .rating-star.is-filled {
-            color: var(--sun-gold);
+            color: #f39c12 !important;
             opacity: 1;
         }
 
@@ -289,8 +383,157 @@
 
         .rating-star.is-interactive:hover {
             transform: scale(1.2);
-            color: var(--sun-gold);
+            color: #f39c12 !important;
             opacity: 1;
+        }
+
+        .rating-star:disabled {
+            background: none;
+            border: none;
+            padding: 3px;
+            line-height: 1;
+            cursor: not-allowed;
+            opacity: 0.3;
+        }
+
+        .rating-widget.is-disabled {
+            opacity: 0.7;
+        }
+
+        .rating-widget.is-disabled .rating-label {
+            color: var(--logout-red-hover);
+        }
+
+        .attendance-widget {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .attendance-duration-field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .attendance-duration-label {
+            font-size: 0.64rem;
+            color: var(--text-sec);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+        .attendance-duration-input {
+            width: 58px;
+            min-height: 28px;
+            padding: 3px 4px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--input-radius);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.74rem;
+            text-align: center;
+            text-align-last: center;
+            cursor: pointer;
+        }
+
+        .attendance-duration-input option {
+            background: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        .attendance-duration-input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-buttons {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .attendance-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .attendance-btn:hover {
+            border-color: var(--cyan);
+            color: var(--text-main);
+        }
+
+        .attendance-btn.is-present.is-active {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .attendance-btn.is-absent.is-active {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+        }
+
+        @media (max-width: 420px) {
+            .attendance-widget {
+                flex-wrap: nowrap;
+                gap: 6px;
+            }
+
+            .attendance-duration-field {
+                gap: 3px;
+            }
+
+            .attendance-duration-label {
+                font-size: 0.58rem;
+            }
+
+            .attendance-duration-input {
+                width: 42px;
+                min-height: 34px;
+                flex-shrink: 0;
+            }
+
+            .attendance-buttons {
+                gap: 5px;
+            }
+
+            .attendance-btn {
+                padding: 6px 8px;
+                font-size: 0.72rem;
+                min-height: 38px;
+                gap: 3px;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .attendance-duration-label {
+                display: none;
+            }
         }
 
         .dash-table-wrap {
@@ -312,6 +555,16 @@
             border-bottom: 1px solid var(--border-glass);
             font-size: 0.9rem;
             vertical-align: middle;
+        }
+
+        #teacher-week-table th,
+        #teacher-week-table td {
+            text-align: center;
+        }
+
+        #teacher-week-table th:not(:last-child),
+        #teacher-week-table td:not(:last-child) {
+            border-inline-end: 1px solid var(--border-glass);
         }
 
         .dash-table th {
@@ -455,6 +708,24 @@
                     <h1 id="welcome-heading">أهلاً بك</h1>
                     <p>هذه لوحتك الخاصة لمتابعة جدول حصصك المباشرة في سمارت أكاديمي</p>
                 </div>
+
+                <div class="notif-bell-wrap">
+                    <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="الإشعارات">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notif-bell-badge" id="notif-bell-badge">0</span>
+                    </button>
+                    <div class="notif-bell-panel" id="notif-bell-panel">
+                        <div class="notif-bell-panel-head">
+                            <span>الإشعارات</span>
+                            <button type="button" class="notif-enable-btn" id="notif-enable-btn">
+                                <i class="fa-solid fa-bell-slash"></i> تفعيل تنبيهات الحصص
+                            </button>
+                        </div>
+                        <div class="notif-bell-list" id="notif-bell-list">
+                            <p class="notif-bell-empty">لا توجد إشعارات بعد.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <section id="teacher-home">
@@ -482,6 +753,35 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-sack-dollar" style="color: var(--cyan); margin-inline-end: 8px;"></i>المستحقات المالية هذا الشهر</h2>
+                    <div id="teacher-earnings-summary" class="earnings-summary">
+                        <p class="dash-empty">جارٍ تحميل بيانات المستحقات...</p>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-triangle-exclamation" style="color: var(--logout-red-hover); margin-inline-end: 8px;"></i>التنبيهات والخصومات</h2>
+                    <p id="teacher-penalties-empty" class="dash-empty">جارٍ تحميل بيانات التنبيهات...</p>
+                    <div class="dash-table-wrap" id="teacher-penalties-wrap" style="display: none;">
+                        <table class="dash-table" id="teacher-penalties-table">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 40%;">
+                                <col style="width: 40%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>القيمة</th>
+                                    <th>السبب</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-penalties-body"></tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -493,6 +793,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/supabaseClient.js"></script>
+    <script src="js/push-notifications.js"></script>
 
     <script>
         const WEEK_DAYS = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
@@ -512,9 +813,95 @@
             }
         }
 
+        // تجيب جدول المعلم الحقيقي (المواعيد) من Supabase بدل localStorage
+        // — عشان يبان صح من أي جهاز يسجّل دخول منه.
+        async function loadTeacherSessionsFromSupabase(phone) {
+            const sb = window.saSupabase;
+            if (!sb) return [];
+
+            try {
+                const { data, error } = await sb.rpc('get_teacher_sessions', { p_teacher_phone: phone });
+                if (error) throw error;
+
+                return (data || []).map(function (row) {
+                    return {
+                        day: row.day,
+                        time: row.time,
+                        subject: row.subject,
+                        link: row.link,
+                        duration: row.duration_minutes,
+                        studentId: row.student_id,
+                        studentName: row.student_name
+                    };
+                });
+            } catch (e) {
+                console.error('تعذّر جلب جدول المعلم من Supabase:', e);
+                return [];
+            }
+        }
+
         function sessionsForDay(teacher, day) {
             const sessions = (teacher && teacher.sessions) || [];
             return sessions.filter(function (s) { return s.day === day; });
+        }
+
+        function findLocalStudentName(day, time, subject) {
+            let students = [];
+            try {
+                students = JSON.parse(localStorage.getItem('sa_students')) || [];
+            } catch (e) {
+                students = [];
+            }
+
+            for (let i = 0; i < students.length; i++) {
+                const student = students[i];
+                const match = (student.sessions || []).find(function (s) {
+                    return s.day === day && s.time === time && s.subject === subject;
+                });
+                if (match) return student.fullName;
+            }
+
+            return null;
+        }
+
+        function updateStudentSection(wrap, studentName) {
+            let main = wrap.querySelector('.student-today-session-student-main');
+            if (!main) {
+                main = document.createElement('span');
+                main.className = 'student-today-session-student-main';
+                wrap.insertBefore(main, wrap.firstChild);
+            }
+
+            main.innerHTML = studentName
+                ? '<i class="fa-solid fa-user-graduate"></i><span class="student-today-session-student-text">الطالب: <strong>' + studentName + '</strong></span>'
+                : '<i class="fa-solid fa-user-graduate"></i><span class="student-today-session-student-text">لم يُحدَّد طالب لهذه الحصة بعد.</span>';
+        }
+
+        function buildStudentSection(session) {
+            const wrap = document.createElement('div');
+            wrap.className = 'student-today-session-student';
+            updateStudentSection(wrap, session.studentName || findLocalStudentName(session.day, session.time, session.subject));
+            return wrap;
+        }
+
+        async function refreshStudentFromSupabase(session, wrap, teacherPhone) {
+            const sb = window.saSupabase;
+            if (!sb) return;
+
+            try {
+                const { data: studentName, error } = await sb.rpc('get_class_student_name', {
+                    p_teacher_phone: teacherPhone,
+                    p_day: session.day,
+                    p_time: session.time,
+                    p_subject: session.subject
+                });
+                if (error) throw error;
+                if (!studentName) return;
+
+                updateStudentSection(wrap, studentName);
+            } catch (e) {
+                console.error('تعذّر جلب اسم الطالب من Supabase (العرض المحلي يفضل صحيح):', e);
+            }
         }
 
         function parseSessionTime(str) {
@@ -544,8 +931,9 @@
 
             const sessionDate = parseSessionTime(session.time);
             const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
+            const sessionDuration = session.duration || 60;
 
-            if (diffMinutes !== null && diffMinutes < -60) {
+            if (diffMinutes !== null && diffMinutes < -sessionDuration) {
                 const endedBtn = document.createElement('button');
                 endedBtn.type = 'button';
                 endedBtn.className = 'student-link-btn is-waiting';
@@ -625,10 +1013,10 @@
                 localStorage.setItem('sa_students', JSON.stringify(students));
             }
 
-            syncRatingToSupabase(teacher, matchedStudent, day, time, subject, rating);
+            syncRatingToSupabase(teacher, matchedStudent, day, time, subject, rating, session.duration);
         }
 
-        async function syncRatingToSupabase(teacher, student, day, time, subject, rating) {
+        async function syncRatingToSupabase(teacher, student, day, time, subject, rating, duration) {
             const sb = window.saSupabase;
             if (!sb) return;
 
@@ -639,7 +1027,8 @@
                     p_day: day,
                     p_time: time,
                     p_subject: subject,
-                    p_rating: rating
+                    p_rating: rating,
+                    p_duration_minutes: duration || null
                 });
                 if (error) throw error;
             } catch (e) {
@@ -647,13 +1036,261 @@
             }
         }
 
-        function buildRatingWidget(session, teacherPhone) {
+        function saveTeacherSessionAttendance(teacherPhone, day, time, subject, status, actualDuration) {
+            let teachers = [];
+            try {
+                teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
+            } catch (e) {
+                teachers = [];
+            }
+
+            const teacher = teachers.find(function (t) { return t.phone === teacherPhone; });
+            if (!teacher || !teacher.sessions) return;
+
+            const session = teacher.sessions.find(function (s) {
+                return s.day === day && s.time === time && s.subject === subject;
+            });
+            if (!session) return;
+
+            const markedAt = new Date().toISOString();
+            session.attendance = status;
+            session.attendanceUpdatedAt = markedAt;
+            if (actualDuration) session.actualDuration = actualDuration;
+            localStorage.setItem('sa_teachers', JSON.stringify(teachers));
+
+            let students = [];
+            try {
+                students = JSON.parse(localStorage.getItem('sa_students')) || [];
+            } catch (e) {
+                students = [];
+            }
+
+            let changed = false;
+            let matchedStudent = null;
+            students.forEach(function (student) {
+                (student.sessions || []).forEach(function (s) {
+                    if (s.day === day && s.time === time && s.subject === subject) {
+                        s.attendance = status;
+                        s.attendanceUpdatedAt = markedAt;
+                        changed = true;
+                        matchedStudent = student;
+                    }
+                });
+            });
+
+            if (changed) {
+                localStorage.setItem('sa_students', JSON.stringify(students));
+            }
+
+            syncAttendanceToSupabase(teacher, matchedStudent, day, time, subject, status, session.duration, actualDuration);
+        }
+
+        async function syncAttendanceToSupabase(teacher, student, day, time, subject, status, duration, actualDuration) {
+            const sb = window.saSupabase;
+            if (!sb) return;
+
+            try {
+                const { error } = await sb.rpc('sync_class_attendance', {
+                    p_teacher_phone: teacher.phone,
+                    p_student_phone: student ? student.phone : null,
+                    p_day: day,
+                    p_time: time,
+                    p_subject: subject,
+                    p_status: status,
+                    p_duration_minutes: duration || null,
+                    p_actual_duration_minutes: actualDuration || null
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر مزامنة الحضور مع Supabase (الحضور محفوظ محليًا بنجاح على أي حال):', e);
+            }
+        }
+
+        async function loadEarningsSummary(teacherPhone) {
+            const wrap = document.getElementById('teacher-earnings-summary');
+            if (!wrap) return;
+
+            if (!window.saSupabase) {
+                wrap.innerHTML = '<p class="dash-empty">تعذّر الاتصال بقاعدة البيانات الآن.</p>';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_teacher_monthly_earnings', {
+                    p_teacher_phone: teacherPhone
+                });
+                if (error) throw error;
+
+                const row = data && data[0];
+                if (!row) {
+                    wrap.innerHTML = '<p class="dash-empty">لا توجد بيانات مستحقات لهذا الشهر بعد.</p>';
+                    return;
+                }
+
+                // مصدر الحقيقة الوحيد لكل الأرقام المعروضة هو: عدد الدقائق
+                // الفعلية، وسعر الساعة، وإجمالي الخصومات، القادمة من قاعدة
+                // البيانات. كل قيمة أخرى (الساعات، الأجر، الصافي) تُحسب هنا
+                // مباشرة من نفس هذه القيم، حتى يتطابق أي رقمين معروضين على
+                // الشاشة تمامًا، من غير أي قيمة ثابتة (Hardcoded).
+                const sessionCount = row.session_count || 0;
+                const totalMinutes = row.total_minutes || 0;
+                const hourlyRate = row.hourly_rate != null ? Number(row.hourly_rate) : null;
+                const totalPenalties = Number(row.total_penalties) || 0;
+
+                const totalHours = totalMinutes / 60;
+                const totalAmount = hourlyRate != null ? Math.round(totalHours * hourlyRate * 100) / 100 : null;
+                const netAmount = totalAmount != null ? Math.round((totalAmount - totalPenalties) * 100) / 100 : null;
+
+                wrap.innerHTML =
+                    '<div class="earnings-stat"><span class="earnings-stat-label">عدد الحصص</span><span class="earnings-stat-value">' + sessionCount + '</span></div>' +
+                    '<div class="earnings-stat"><span class="earnings-stat-label">إجمالي الساعات</span><span class="earnings-stat-value">' + totalHours.toFixed(2) + ' ساعة</span></div>' +
+                    '<div class="earnings-stat"><span class="earnings-stat-label">سعر الساعة</span><span class="earnings-stat-value">' + (hourlyRate != null ? hourlyRate.toFixed(2) + ' ج.م' : 'غير محدد') + '</span></div>' +
+                    '<div class="earnings-stat"><span class="earnings-stat-label">إجمالي الأجر قبل الخصومات</span><span class="earnings-stat-value">' + (totalAmount != null ? totalAmount.toFixed(2) + ' ج.م' : '—') + '</span></div>' +
+                    '<div class="earnings-stat is-penalty"><span class="earnings-stat-label">إجمالي الخصومات</span><span class="earnings-stat-value">' + (totalPenalties > 0 ? '-' + totalPenalties.toFixed(2) + ' ج.م' : '0.00 ج.م') + '</span></div>' +
+                    '<div class="earnings-stat is-total"><span class="earnings-stat-label">الصافي النهائي</span><span class="earnings-stat-value">' + (netAmount != null ? netAmount.toFixed(2) + ' ج.م' : '—') + '</span></div>';
+            } catch (e) {
+                console.error('تعذّر جلب بيانات المستحقات المالية:', e);
+                wrap.innerHTML = '<p class="dash-empty">تعذّر تحميل بيانات المستحقات، حاول مرة أخرى لاحقًا.</p>';
+            }
+        }
+
+        function formatPenaltyDate(iso) {
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return '—';
+            return saFormatDubai(d, { day: 'numeric', month: 'short' });
+        }
+
+        async function loadPenalties(teacherPhone) {
+            const emptyEl = document.getElementById('teacher-penalties-empty');
+            const wrapEl = document.getElementById('teacher-penalties-wrap');
+            const bodyEl = document.getElementById('teacher-penalties-body');
+            if (!emptyEl || !wrapEl || !bodyEl) return;
+
+            if (!window.saSupabase) {
+                emptyEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن.';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_teacher_penalties_for_teacher', {
+                    p_teacher_phone: teacherPhone
+                });
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    emptyEl.textContent = 'لا توجد أي تنبيهات أو خصومات مسجّلة.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                bodyEl.innerHTML = '';
+                data.forEach(function (row) {
+                    const tr = document.createElement('tr');
+
+                    const amountTd = document.createElement('td');
+                    amountTd.textContent = '-' + row.amount + ' ج.م';
+                    amountTd.style.color = 'var(--logout-red-hover)';
+
+                    const reasonTd = document.createElement('td');
+                    reasonTd.textContent = row.reason || '—';
+
+                    const dateTd = document.createElement('td');
+                    dateTd.style.whiteSpace = 'nowrap';
+                    dateTd.textContent = formatPenaltyDate(row.created_at);
+
+                    tr.append(amountTd, reasonTd, dateTd);
+                    bodyEl.appendChild(tr);
+                });
+
+                emptyEl.style.display = 'none';
+                wrapEl.style.display = 'block';
+            } catch (e) {
+                console.error('تعذّر جلب بيانات التنبيهات والخصومات:', e);
+                emptyEl.textContent = 'تعذّر تحميل بيانات التنبيهات، حاول مرة أخرى لاحقًا.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+            }
+        }
+
+        // بعد تسجيل حضور أو تقييم، لازم نجيب الجدول الحقيقي من Supabase تاني
+        // قبل إعادة رسم "حصة اليوم" — لو اعتمدنا على getFreshTeacher() (اللي
+        // بيقرأ من localStorage) هنلاقي الجدول فاضي على أي جهاز جديد (بعد
+        // ترحيل الجدول الأسبوعي لقاعدة البيانات، localStorage بقى مش بيحتفظ
+        // بالمواعيد خالص).
+        async function refreshTodaySessionFromSupabase(teacherPhone) {
+            const teacher = getFreshTeacher(teacherPhone) || { phone: teacherPhone };
+            teacher.sessions = await loadTeacherSessionsFromSupabase(teacherPhone);
+            renderTodaySession(teacher);
+        }
+
+        function buildAttendanceWidget(session, teacherPhone) {
             const wrap = document.createElement('div');
-            wrap.className = 'rating-widget';
+            wrap.className = 'attendance-widget';
+
+            const durationField = document.createElement('div');
+            durationField.className = 'attendance-duration-field';
+
+            const durationLabel = document.createElement('label');
+            durationLabel.className = 'attendance-duration-label';
+            durationLabel.textContent = 'مدة الحصة';
+            durationLabel.setAttribute('for', 'attendance-duration-' + session.day + '-' + session.time);
+
+            const durationInput = document.createElement('select');
+            durationInput.id = 'attendance-duration-' + session.day + '-' + session.time;
+            durationInput.className = 'attendance-duration-input';
+
+            const rawDuration = session.actualDuration || session.duration || 60;
+            const closestDuration = Math.min(60, Math.max(30, Math.round(rawDuration / 5) * 5));
+            for (let minutes = 30; minutes <= 60; minutes += 5) {
+                const opt = document.createElement('option');
+                opt.value = minutes;
+                opt.textContent = minutes;
+                if (minutes === closestDuration) opt.selected = true;
+                durationInput.appendChild(opt);
+            }
+
+            durationField.append(durationLabel, durationInput);
+
+            const buttons = document.createElement('div');
+            buttons.className = 'attendance-buttons';
+
+            const presentBtn = document.createElement('button');
+            presentBtn.type = 'button';
+            presentBtn.className = 'attendance-btn is-present' + (session.attendance === 'present' ? ' is-active' : '');
+            presentBtn.innerHTML = '<i class="fa-solid fa-check"></i> حضر';
+            presentBtn.addEventListener('click', function () {
+                const actualDuration = parseInt(durationInput.value, 10) || session.duration || 60;
+                saveTeacherSessionAttendance(teacherPhone, session.day, session.time, session.subject, 'present', actualDuration);
+                refreshTodaySessionFromSupabase(teacherPhone);
+                setTimeout(function () { loadEarningsSummary(teacherPhone); }, 800);
+            });
+
+            const absentBtn = document.createElement('button');
+            absentBtn.type = 'button';
+            absentBtn.className = 'attendance-btn is-absent' + (session.attendance === 'absent' ? ' is-active' : '');
+            absentBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> غائب';
+            absentBtn.addEventListener('click', function () {
+                saveTeacherSessionAttendance(teacherPhone, session.day, session.time, session.subject, 'absent');
+                refreshTodaySessionFromSupabase(teacherPhone);
+                setTimeout(function () { loadEarningsSummary(teacherPhone); }, 800);
+            });
+
+            buttons.append(presentBtn, absentBtn);
+            wrap.append(buttons, durationField);
+
+            return wrap;
+        }
+
+        function buildRatingWidget(session, teacherPhone) {
+            const isAbsent = session.attendance === 'absent';
+
+            const wrap = document.createElement('div');
+            wrap.className = 'rating-widget' + (isAbsent ? ' is-disabled' : '');
 
             const label = document.createElement('span');
             label.className = 'rating-label';
-            label.textContent = 'تقييم أداء الطالب';
+            label.textContent = isAbsent ? 'لا يوجد تقييم (الطالب غائب)' : 'تقييم أداء الطالب';
             wrap.appendChild(label);
 
             const stars = document.createElement('div');
@@ -662,13 +1299,16 @@
             for (let i = 1; i <= 5; i++) {
                 const starBtn = document.createElement('button');
                 starBtn.type = 'button';
-                starBtn.className = 'rating-star is-interactive' + (session.rating >= i ? ' is-filled' : '');
+                starBtn.className = 'rating-star' + (isAbsent ? '' : ' is-interactive') + (!isAbsent && session.rating >= i ? ' is-filled' : '');
                 starBtn.innerHTML = '<i class="fa-solid fa-star"></i>';
                 starBtn.setAttribute('aria-label', 'تقييم ' + i + ' من 5');
-                starBtn.addEventListener('click', function () {
-                    saveTeacherSessionRating(teacherPhone, session.day, session.time, session.subject, i);
-                    renderTodaySession(getFreshTeacher(teacherPhone));
-                });
+                starBtn.disabled = isAbsent;
+                if (!isAbsent) {
+                    starBtn.addEventListener('click', function () {
+                        saveTeacherSessionRating(teacherPhone, session.day, session.time, session.subject, i);
+                        refreshTodaySessionFromSupabase(teacherPhone);
+                    });
+                }
                 stars.appendChild(starBtn);
             }
 
@@ -711,7 +1351,8 @@
 
                 const info = document.createElement('div');
                 info.className = 'student-today-session-info';
-                info.innerHTML = '<span>' + (session.subject || 'حصة') + '</span><strong>' + (session.time || '—') + '</strong>';
+                info.innerHTML = '<span>' + (session.subject || 'حصة') + '</span><strong>' + (session.time || '—') + '</strong>' +
+                    '<span class="student-today-session-duration">' + (session.duration || 60) + ' دقيقة</span>';
                 top.appendChild(info);
 
                 const status = document.createElement('div');
@@ -724,10 +1365,20 @@
 
                 const sessionDate = parseSessionTime(session.time);
                 const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
-                if (diffMinutes !== null && diffMinutes < -60) {
+                const showAttendance = diffMinutes !== null && diffMinutes <= 0;
+                const isAbsent = session.attendance === 'absent';
+                const sessionLikelyOver = diffMinutes !== null && diffMinutes < -(session.duration || 60);
+                const showRating = isAbsent ? showAttendance : sessionLikelyOver;
+
+                const studentSection = buildStudentSection(session);
+                if (showRating) studentSection.appendChild(buildRatingWidget(session, teacher.phone));
+                row.appendChild(studentSection);
+                refreshStudentFromSupabase(session, studentSection, teacher.phone);
+
+                if (showAttendance) {
                     const bottom = document.createElement('div');
                     bottom.className = 'student-today-session-bottom';
-                    bottom.appendChild(buildRatingWidget(session, teacher.phone));
+                    bottom.appendChild(buildAttendanceWidget(session, teacher.phone));
                     row.appendChild(bottom);
                 }
 
@@ -795,7 +1446,7 @@
             });
         }
 
-        (function () {
+        (async function () {
             const current = saGetSession('sa_current_teacher');
 
             if (!current) {
@@ -805,16 +1456,21 @@
             }
 
             const fresh = getFreshTeacher(current.phone) || current;
+            fresh.sessions = await loadTeacherSessionsFromSupabase(current.phone);
             const displayName = fresh.fullName || fresh.phone;
 
             document.getElementById('welcome-heading').textContent = 'أهلاً بك، ' + displayName;
 
             renderTodaySession(fresh);
             renderWeekTable(fresh);
+            loadEarningsSummary(fresh.phone);
+            loadPenalties(fresh.phone);
 
             setInterval(function () {
                 renderTodaySession(fresh);
             }, 30000);
+
+            if (current.id) saInitNotificationBell('teacher', current.id);
         })();
 
         document.getElementById('teacher-logout').addEventListener('click', function () {

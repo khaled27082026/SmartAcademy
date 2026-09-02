@@ -2,8 +2,7 @@
 // Smart Academy — Service Worker
 // ============================================================
 
-const CACHE_NAME = 'smart-academy-cache-v46';
-const ADMIN_PATH = '/sa-control-x7k9';
+const CACHE_NAME = 'smart-academy-cache-v183';
 
 const STATIC_ASSETS = [
     '/',
@@ -49,11 +48,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
 
-    if (requestUrl.pathname.startsWith(ADMIN_PATH)) {
-        event.respondWith(fetch(event.request));
-        return;
-    }
-
     if (requestUrl.pathname.startsWith('/student/') || requestUrl.pathname.startsWith('/dashboard') ||
         GUARDED_PATHS.includes(requestUrl.pathname)) {
         event.respondWith(
@@ -73,6 +67,43 @@ self.addEventListener('fetch', (event) => {
             }).catch(() => cachedResponse);
 
             return cachedResponse || fetchPromise;
+        })
+    );
+});
+
+// -------------------- Push (تذكير قبل الحصة بـ 10 دقائق) --------------------
+self.addEventListener('push', (event) => {
+    let payload = { title: 'سمارت أكاديمي', body: 'عندك تذكير جديد.', link: null };
+
+    try {
+        if (event.data) payload = Object.assign(payload, event.data.json());
+    } catch (e) {
+        // تجاهل — نستخدم القيم الافتراضية فوق
+    }
+
+    event.waitUntil(
+        self.registration.showNotification(payload.title, {
+            body: payload.body,
+            icon: '/assets/images/SMART ACADEMY.png',
+            badge: '/assets/images/SMART ACADEMY.png',
+            data: { link: payload.link },
+            dir: 'rtl',
+            lang: 'ar'
+        })
+    );
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const link = event.notification.data && event.notification.data.link;
+    const targetUrl = link || '/';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+            for (const client of windowClients) {
+                if (client.url === targetUrl && 'focus' in client) return client.focus();
+            }
+            if (clients.openWindow) return clients.openWindow(targetUrl);
         })
     );
 });

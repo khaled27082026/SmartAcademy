@@ -137,6 +137,44 @@
             margin-bottom: 20px;
         }
 
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 12px 0 4px;
+        }
+
+        .earnings-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .earnings-stat {
+            flex: 1;
+            min-width: 130px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .earnings-stat-label {
+            display: block;
+            color: var(--text-sec);
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+
+        .earnings-stat-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .earnings-stat.is-total .earnings-stat-value {
+            color: var(--cyan);
+        }
+
         .dash-card--profile {
             padding: 22px;
             margin-bottom: 16px;
@@ -156,26 +194,38 @@
 
         .profile-info-box {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            background: var(--bg-core);
-            border: 1px solid var(--border-glass);
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(155deg, var(--glass), transparent);
+            border: 1px solid transparent;
             border-radius: var(--radius-sm);
             padding: 10px 12px;
         }
 
-        .profile-info-label {
+        .profile-info-icon {
+            flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 5px;
-            color: var(--text-sec);
-            font-size: 0.68rem;
-            font-weight: 600;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(79, 179, 217, 0.12);
+            color: var(--cyan);
+            font-size: 0.85rem;
         }
 
-        .profile-info-label i {
-            color: var(--cyan);
-            font-size: 0.72rem;
+        .profile-info-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .profile-info-label {
+            color: var(--text-sec);
+            font-size: 0.66rem;
+            font-weight: 600;
         }
 
         .profile-info-value {
@@ -192,30 +242,35 @@
             width: fit-content;
             padding: 3px 10px;
             border-radius: var(--radius-pill);
-            font-size: 0.76rem;
+            font-size: 0.68rem;
             font-weight: 700;
+            line-height: 1.6;
+            border: none;
+        }
+
+        .profile-subscription-badge i {
+            font-size: 0.62rem;
         }
 
         .profile-subscription-badge.is-active {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid #22c55e;
+            background: rgba(34, 197, 94, 0.14);
             color: #22c55e;
         }
 
         .profile-subscription-badge.is-inactive {
-            background: rgba(148, 163, 184, 0.15);
-            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: rgba(148, 163, 184, 0.14);
             color: var(--text-sec);
         }
 
         .profile-subjects-box {
-            background: var(--bg-core);
-            border: 1px solid var(--border-glass);
+            background: linear-gradient(155deg, var(--glass), transparent);
+            border: 1px solid transparent;
             border-radius: var(--radius-sm);
-            padding: 12px 14px;
+            padding: 14px 16px;
         }
 
         .profile-subjects-box .profile-info-label {
+            display: block;
             margin-bottom: 10px;
         }
 
@@ -281,11 +336,11 @@
             display: inline-block;
             padding: 5px 14px;
             border-radius: var(--radius-tag);
-            background: var(--bg-core);
-            border: 1px solid var(--border-glass);
+            background: rgba(79, 179, 217, 0.1);
+            border: none;
             color: var(--cyan);
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.82rem;
+            font-weight: 600;
         }
 
 .student-list {
@@ -467,6 +522,26 @@
             opacity: 1;
         }
 
+        .attendance-absent-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid var(--logout-red);
+            color: var(--logout-red-hover);
+            white-space: nowrap;
+        }
+
+        .attendance-absent-badge.is-compact {
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 0.68rem;
+        }
+
         .dash-table-wrap {
             overflow: hidden;
             border: 1px solid var(--border-glass);
@@ -491,6 +566,11 @@
         #student-week-table th,
         #student-week-table td {
             text-align: center;
+        }
+
+        #student-week-table th:not(:last-child),
+        #student-week-table td:not(:last-child) {
+            border-inline-end: 1px solid var(--border-glass);
         }
 
         #student-week-table .rating-stars {
@@ -546,6 +626,13 @@
 
             .profile-info-box {
                 padding: 8px 10px;
+                gap: 9px;
+            }
+
+            .profile-info-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.72rem;
             }
 
             .profile-info-label {
@@ -650,6 +737,24 @@
                     <h1 id="welcome-heading">أهلاً بك</h1>
                     <p>هذه لوحتك الخاصة لمتابعة حصصك وتقاريرك في سمارت أكاديمي</p>
                 </div>
+
+                <div class="notif-bell-wrap">
+                    <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="الإشعارات">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notif-bell-badge" id="notif-bell-badge">0</span>
+                    </button>
+                    <div class="notif-bell-panel" id="notif-bell-panel">
+                        <div class="notif-bell-panel-head">
+                            <span>الإشعارات</span>
+                            <button type="button" class="notif-enable-btn" id="notif-enable-btn">
+                                <i class="fa-solid fa-bell-slash"></i> تفعيل تنبيهات الحصص
+                            </button>
+                        </div>
+                        <div class="notif-bell-list" id="notif-bell-list">
+                            <p class="notif-bell-empty">لا توجد إشعارات بعد.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <section id="student-home">
@@ -657,20 +762,32 @@
                     <h2>بياناتك</h2>
                     <div class="profile-info-grid">
                         <div class="profile-info-box">
-                            <span class="profile-info-label"><i class="fa-solid fa-user"></i> الاسم</span>
-                            <strong class="profile-info-value" id="info-name">—</strong>
+                            <span class="profile-info-icon"><i class="fa-solid fa-user"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">الاسم</span>
+                                <strong class="profile-info-value" id="info-name">—</strong>
+                            </span>
                         </div>
                         <div class="profile-info-box">
-                            <span class="profile-info-label"><i class="fa-solid fa-phone"></i> رقم الهاتف</span>
-                            <strong class="profile-info-value" id="info-phone">—</strong>
+                            <span class="profile-info-icon"><i class="fa-solid fa-phone"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">رقم الهاتف</span>
+                                <strong class="profile-info-value" id="info-phone">—</strong>
+                            </span>
                         </div>
                         <div class="profile-info-box">
-                            <span class="profile-info-label"><i class="fa-solid fa-layer-group"></i> المرحلة الدراسية</span>
-                            <strong class="profile-info-value" id="info-stage">—</strong>
+                            <span class="profile-info-icon"><i class="fa-solid fa-layer-group"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">المرحلة الدراسية</span>
+                                <strong class="profile-info-value" id="info-stage">—</strong>
+                            </span>
                         </div>
                         <div class="profile-info-box">
-                            <span class="profile-info-label"><i class="fa-solid fa-toggle-on"></i> حالة الاشتراك</span>
-                            <span class="profile-subscription-badge" id="info-subscription">—</span>
+                            <span class="profile-info-icon"><i class="fa-solid fa-toggle-on"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">حالة الاشتراك</span>
+                                <span class="profile-subscription-badge" id="info-subscription">—</span>
+                            </span>
                         </div>
                     </div>
                     <div class="profile-subjects-box">
@@ -708,6 +825,13 @@
                 </div>
 
                 <div class="dash-card">
+                    <h2><i class="fa-solid fa-sack-dollar" style="color: var(--cyan); margin-inline-end: 8px;"></i>تفاصيل التكلفة هذا الشهر</h2>
+                    <div id="student-cost-summary" class="earnings-summary">
+                        <p class="dash-empty">جارٍ تحميل بيانات التكلفة...</p>
+                    </div>
+                </div>
+
+                <div class="dash-card">
                     <h2><i class="fa-solid fa-clipboard-list" style="color: var(--cyan); margin-inline-end: 8px;"></i>التقارير والمتابعة</h2>
                     <ul class="student-list" id="student-reports"></ul>
                     <p class="student-empty-note" id="student-reports-empty" style="display: none;">لا توجد تقارير متابعة مضافة من المشرف حتى الآن.</p>
@@ -723,6 +847,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/supabaseClient.js"></script>
+    <script src="js/push-notifications.js"></script>
 
     <script>
         function formatDate(iso) {
@@ -736,6 +861,33 @@
                 return all.find(function (s) { return s.phone === phone; }) || null;
             } catch (e) {
                 return null;
+            }
+        }
+
+        // تجيب جدول الطالب الحقيقي (المواعيد) من Supabase بدل localStorage
+        // — عشان يبان صح من أي جهاز يسجّل دخول منه.
+        async function loadStudentSessionsFromSupabase(phone) {
+            const sb = window.saSupabase;
+            if (!sb) return [];
+
+            try {
+                const { data, error } = await sb.rpc('get_student_sessions', { p_student_phone: phone });
+                if (error) throw error;
+
+                return (data || []).map(function (row) {
+                    return {
+                        day: row.day,
+                        time: row.time,
+                        subject: row.subject,
+                        link: row.link,
+                        duration: row.duration_minutes,
+                        teacherId: row.teacher_id,
+                        teacherName: row.teacher_name
+                    };
+                });
+            } catch (e) {
+                console.error('تعذّر جلب جدول الطالب من Supabase:', e);
+                return [];
             }
         }
 
@@ -841,7 +993,7 @@
             const sessionDate = parseSessionTime(session.time);
             const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
 
-            if (diffMinutes !== null && diffMinutes < -60) {
+            if (diffMinutes !== null && diffMinutes < -(session.duration || 60)) {
                 const endedBtn = document.createElement('button');
                 endedBtn.type = 'button';
                 endedBtn.className = 'student-link-btn is-waiting';
@@ -876,8 +1028,22 @@
             return btn;
         }
 
-        function updateRatingDisplay(wrap, rating) {
+        function buildAbsentBadge(isCompact) {
+            const badge = document.createElement('span');
+            badge.className = 'attendance-absent-badge' + (isCompact ? ' is-compact' : '');
+            badge.innerHTML = '<i class="fa-solid fa-user-xmark"></i> ' + (isCompact ? 'غائب' : 'غائب عن هذه الحصة');
+            return badge;
+        }
+
+        function updateSessionFeedbackDisplay(wrap, session) {
             wrap.innerHTML = '';
+
+            if (session.attendance === 'absent') {
+                wrap.appendChild(buildAbsentBadge());
+                return;
+            }
+
+            const rating = session.rating;
 
             if (!rating) {
                 const note = document.createElement('span');
@@ -903,11 +1069,44 @@
             wrap.appendChild(stars);
         }
 
-        function buildRatingDisplay(session) {
+        function buildSessionFeedbackDisplay(session) {
             const wrap = document.createElement('div');
             wrap.className = 'rating-widget';
-            updateRatingDisplay(wrap, session.rating);
+            updateSessionFeedbackDisplay(wrap, session);
             return wrap;
+        }
+
+        async function loadCostSummary(studentPhone) {
+            const wrap = document.getElementById('student-cost-summary');
+            if (!wrap) return;
+
+            if (!window.saSupabase) {
+                wrap.innerHTML = '<p class="dash-empty">تعذّر الاتصال بقاعدة البيانات الآن.</p>';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_student_monthly_cost', {
+                    p_student_phone: studentPhone
+                });
+                if (error) throw error;
+
+                const row = data && data[0];
+                if (!row) {
+                    wrap.innerHTML = '<p class="dash-empty">لا توجد بيانات تكلفة لهذا الشهر بعد.</p>';
+                    return;
+                }
+
+                const sessionPrice = row.session_price;
+
+                wrap.innerHTML =
+                    '<div class="earnings-stat"><span class="earnings-stat-label">عدد الحصص المحضورة</span><span class="earnings-stat-value">' + (row.session_count || 0) + '</span></div>' +
+                    '<div class="earnings-stat"><span class="earnings-stat-label">سعر الحصة</span><span class="earnings-stat-value">' + (sessionPrice != null ? sessionPrice + ' د.إ' : 'غير محدد') + '</span></div>' +
+                    '<div class="earnings-stat is-total"><span class="earnings-stat-label">إجمالي هذا الشهر</span><span class="earnings-stat-value">' + (row.total_amount != null ? row.total_amount + ' د.إ' : '—') + '</span></div>';
+            } catch (e) {
+                console.error('تعذّر جلب بيانات التكلفة الشهرية:', e);
+                wrap.innerHTML = '<p class="dash-empty">تعذّر تحميل بيانات التكلفة، حاول مرة أخرى لاحقًا.</p>';
+            }
         }
 
         async function refreshRatingFromSupabase(studentPhone, day, time, subject, wrap, session) {
@@ -915,16 +1114,20 @@
             if (!sb) return;
 
             try {
-                const { data: rating, error } = await sb.rpc('get_class_rating', {
-                    p_student_phone: studentPhone,
-                    p_day: day,
-                    p_time: time,
-                    p_subject: subject
-                });
-                if (error) throw error;
-                if (rating === session.rating) return;
+                const [ratingRes, attendanceRes] = await Promise.all([
+                    sb.rpc('get_class_rating', { p_student_phone: studentPhone, p_day: day, p_time: time, p_subject: subject }),
+                    sb.rpc('get_class_attendance', { p_student_phone: studentPhone, p_day: day, p_time: time, p_subject: subject })
+                ]);
+                if (ratingRes.error) throw ratingRes.error;
+                if (attendanceRes.error) throw attendanceRes.error;
 
-                updateRatingDisplay(wrap, rating);
+                const rating = ratingRes.data;
+                const attendance = attendanceRes.data;
+                if (rating === session.rating && attendance === session.attendance) return;
+
+                session.rating = rating;
+                session.attendance = attendance;
+                updateSessionFeedbackDisplay(wrap, session);
 
                 let students = [];
                 try {
@@ -938,10 +1141,11 @@
                 });
                 if (cachedSession) {
                     cachedSession.rating = rating;
+                    cachedSession.attendance = attendance;
                     localStorage.setItem('sa_students', JSON.stringify(students));
                 }
             } catch (e) {
-                console.error('تعذّر جلب التقييم من Supabase (العرض المحلي يفضل صحيح):', e);
+                console.error('تعذّر جلب حالة الحضور والتقييم من Supabase (العرض المحلي يفضل صحيح):', e);
             }
         }
 
@@ -987,27 +1191,91 @@
             return ratedDate.getTime() >= getCurrentWeekStart().getTime();
         }
 
-        function buildWeekRatingCell(session) {
-            const td = document.createElement('td');
-            td.dataset.label = 'التقييم';
-
-            const hasCurrentRating = session && session.rating && isRatingFromCurrentWeek(session.ratingUpdatedAt);
-
-            if (!hasCurrentRating) {
-                td.textContent = '-';
-                return td;
-            }
-
+        function buildWeekRatingStars(rating) {
             const stars = document.createElement('div');
             stars.className = 'rating-stars';
             for (let i = 1; i <= 5; i++) {
                 const star = document.createElement('span');
-                star.className = 'rating-star' + (session.rating >= i ? ' is-filled' : '');
+                star.className = 'rating-star' + (rating >= i ? ' is-filled' : '');
                 star.innerHTML = '<i class="fa-solid fa-star"></i>';
                 stars.appendChild(star);
             }
-            td.appendChild(stars);
+            return stars;
+        }
+
+        function renderWeekRatingCellContent(td, session) {
+            td.innerHTML = '';
+
+            if (session && session.attendance === 'absent') {
+                td.appendChild(buildAbsentBadge(true));
+                return;
+            }
+
+            const rating = session && session.rating;
+            const ratingUpdatedAt = session && session.ratingUpdatedAt;
+            const hasCurrentRating = rating && isRatingFromCurrentWeek(ratingUpdatedAt);
+            if (!hasCurrentRating) {
+                td.textContent = '-';
+                return;
+            }
+            td.appendChild(buildWeekRatingStars(rating));
+        }
+
+        function buildWeekRatingCell(session) {
+            const td = document.createElement('td');
+            td.dataset.label = 'التقييم';
+            renderWeekRatingCellContent(td, session);
             return td;
+        }
+
+        async function refreshWeekRatingFromSupabase(studentPhone, session, td) {
+            const sb = window.saSupabase;
+            if (!sb || !session.subject) return;
+
+            try {
+                const [ratingRes, attendanceRes] = await Promise.all([
+                    sb.rpc('get_class_rating_with_date', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject }),
+                    sb.rpc('get_class_attendance', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject })
+                ]);
+                if (ratingRes.error) throw ratingRes.error;
+                if (attendanceRes.error) throw attendanceRes.error;
+
+                const row = ratingRes.data && ratingRes.data[0];
+                const attendance = attendanceRes.data;
+
+                const ratingUnchanged = (!row || !row.rating_score) || (session.rating === row.rating_score && session.ratingUpdatedAt === row.updated_at);
+                const attendanceUnchanged = attendance === session.attendance;
+                if (ratingUnchanged && attendanceUnchanged) return;
+
+                if (row && row.rating_score) {
+                    session.rating = row.rating_score;
+                    session.ratingUpdatedAt = row.updated_at;
+                }
+                session.attendance = attendance;
+
+                renderWeekRatingCellContent(td, session);
+
+                let students = [];
+                try {
+                    students = JSON.parse(localStorage.getItem('sa_students')) || [];
+                } catch (e) {
+                    students = [];
+                }
+                const student = students.find(function (s) { return s.phone === studentPhone; });
+                const cachedSession = student && (student.sessions || []).find(function (s) {
+                    return s.day === session.day && s.time === session.time && s.subject === session.subject;
+                });
+                if (cachedSession) {
+                    if (row && row.rating_score) {
+                        cachedSession.rating = row.rating_score;
+                        cachedSession.ratingUpdatedAt = row.updated_at;
+                    }
+                    cachedSession.attendance = attendance;
+                    localStorage.setItem('sa_students', JSON.stringify(students));
+                }
+            } catch (e) {
+                console.error('تعذّر جلب حالة الحضور والتقييم الأسبوعي من Supabase (العرض المحلي يفضل صحيح):', e);
+            }
         }
 
         function sortSessionsByProximity(sessions) {
@@ -1064,8 +1332,8 @@
 
                 const sessionDate = parseSessionTime(session.time);
                 const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
-                if (diffMinutes !== null && diffMinutes < -60) {
-                    const ratingEl = buildRatingDisplay(session);
+                if (diffMinutes !== null && diffMinutes < -(session.duration || 60)) {
+                    const ratingEl = buildSessionFeedbackDisplay(session);
                     bottom.appendChild(ratingEl);
                     refreshRatingFromSupabase(student.phone, session.day, session.time, session.subject, ratingEl, session);
                 }
@@ -1132,15 +1400,20 @@
                     timeTd.dataset.label = 'الموعد';
                     timeTd.textContent = session.time || '—';
 
-                    tr.append(subjectTd, timeTd, buildWeekRatingCell(session));
+                    const ratingTd = buildWeekRatingCell(session);
+                    tr.append(subjectTd, timeTd, ratingTd);
                     tbody.appendChild(tr);
+
+                    if (student && student.phone) {
+                        refreshWeekRatingFromSupabase(student.phone, session, ratingTd);
+                    }
                 });
 
                 table.appendChild(tbody);
             });
         }
 
-        (function () {
+        (async function () {
             const current = saGetSession('sa_current_student');
 
             if (!current) {
@@ -1152,6 +1425,7 @@
             }
 
             const fresh = getFreshStudent(current.phone) || current;
+            fresh.sessions = await loadStudentSessionsFromSupabase(current.phone);
 
             if (fresh.fullName) {
                 document.getElementById('welcome-heading').textContent = 'أهلاً بك، ' + fresh.fullName;
@@ -1169,10 +1443,13 @@
             renderReports(fresh);
             renderTodaySession(fresh);
             renderWeekTable(fresh);
+            loadCostSummary(fresh.phone);
 
             setInterval(function () {
                 renderTodaySession(fresh);
             }, 30000);
+
+            if (current.id) saInitNotificationBell('student', current.id);
         })();
 
         document.getElementById('student-logout').addEventListener('click', function () {

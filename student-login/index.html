@@ -14,6 +14,29 @@
         })();
     </script>
 
+    <script>
+        (function () {
+            var key = 'sa_current_student';
+            var stored = localStorage.getItem(key);
+            if (!stored) return;
+
+            var raw;
+            try {
+                raw = JSON.parse(stored);
+            } catch (e) {
+                localStorage.removeItem(key);
+                return;
+            }
+
+            if (!raw || !raw.data || !raw.expiresAt || Date.now() > raw.expiresAt) {
+                localStorage.removeItem(key);
+                return;
+            }
+
+            window.location.replace('../student-dashboard.html');
+        })();
+    </script>
+
     <!-- PWA -->
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#0a425b">
@@ -112,6 +135,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/app.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/supabaseClient.js"></script>
+
     <script>
         document.getElementById('student-login-form').addEventListener('submit', function (e) {
             e.preventDefault();
@@ -119,27 +146,49 @@
             const phone = document.getElementById('student-id').value.trim();
             const password = document.getElementById('student-code').value;
             const errorEl = document.getElementById('student-login-error');
+            const submitBtn = e.target.querySelector('.auth-submit');
 
-            let students = [];
-            try {
-                students = JSON.parse(localStorage.getItem('sa_students')) || [];
-            } catch (err) {
-                students = [];
+            function showError(message) {
+                errorEl.style.color = 'var(--logout-red)';
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
             }
 
-            const match = students.find(function (s) {
-                return s.phone === phone && s.password === password;
-            });
-
-            if (match) {
-                saSetSession('sa_current_student', match);
-                window.location.href = '../student-dashboard.html';
+            if (!window.saSupabase) {
+                showError('تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.');
                 return;
             }
 
-            errorEl.style.color = 'var(--logout-red)';
-            errorEl.textContent = 'رقم الهاتف أو كلمة المرور غير صحيحة.';
-            errorEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            if (submitBtn) submitBtn.disabled = true;
+
+            window.saSupabase
+                .rpc('verify_student_login', { p_phone: phone, p_password: password })
+                .then(function (res) {
+                    if (submitBtn) submitBtn.disabled = false;
+
+                    if (res.error) {
+                        console.error('تعذّر التحقق من بيانات دخول الطالب:', res.error);
+                        showError('تعذّر التحقق من بيانات الدخول، حاول مرة أخرى.');
+                        return;
+                    }
+
+                    const match = res.data && res.data[0];
+                    if (!match) {
+                        showError('رقم الهاتف أو كلمة المرور غير صحيحة.');
+                        return;
+                    }
+
+                    saSetSession('sa_current_student', {
+                        id: match.id,
+                        fullName: match.full_name,
+                        phone: match.phone,
+                        stage: match.stage,
+                        parentPhone: match.parent_phone,
+                        sessionPrice: match.session_price
+                    });
+                    window.location.href = '../student-dashboard.html';
+                });
         });
     </script>
 </body>

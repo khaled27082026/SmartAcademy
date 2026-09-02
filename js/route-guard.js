@@ -12,12 +12,23 @@
     if (!role || !role.sessionKey || !role.loginUrl) return;
 
     function isValidSession(key) {
+        var stored = localStorage.getItem(key);
+        if (!stored) return false;
+
+        var raw;
         try {
-            var raw = JSON.parse(localStorage.getItem(key));
-            return !!(raw && raw.data && raw.expiresAt && Date.now() <= raw.expiresAt);
+            raw = JSON.parse(stored);
         } catch (e) {
+            localStorage.removeItem(key);
             return false;
         }
+
+        if (!raw || !raw.data || !raw.expiresAt || Date.now() > raw.expiresAt) {
+            localStorage.removeItem(key);
+            return false;
+        }
+
+        return true;
     }
 
     if (!isValidSession(role.sessionKey)) {

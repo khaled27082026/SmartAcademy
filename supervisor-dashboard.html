@@ -197,6 +197,276 @@
             color: #fff;
         }
 
+        .attendance-summary-counters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-summary-counter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .attendance-summary-counter-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 0.95rem;
+            background: rgba(79, 179, 217, 0.12);
+            color: var(--cyan);
+        }
+
+        .attendance-summary-counter.is-present .attendance-summary-counter-icon {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .attendance-summary-counter.is-absent .attendance-summary-counter-icon {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--logout-red-hover);
+        }
+
+        .attendance-summary-counter-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .attendance-summary-counter-value {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .attendance-summary-counter.is-present .attendance-summary-counter-value {
+            color: #22c55e;
+        }
+
+        .attendance-summary-counter.is-absent .attendance-summary-counter-value {
+            color: var(--logout-red-hover);
+        }
+
+        .attendance-summary-counter-label {
+            font-size: 0.72rem;
+            color: var(--text-sec);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .attendance-summary-counters {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .attendance-summary-counter {
+                flex-direction: column;
+                text-align: center;
+                gap: 6px;
+                padding: 10px 8px;
+            }
+
+            .attendance-summary-counter-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .attendance-summary-counter-value {
+                font-size: 1.05rem;
+            }
+
+            .attendance-summary-counter-label {
+                font-size: 0.6rem;
+                white-space: normal;
+                line-height: 1.2;
+            }
+        }
+
+        .attendance-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-filter-search {
+            position: relative;
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        .attendance-filter-search i {
+            position: absolute;
+            inset-inline-start: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        .attendance-filter-search input {
+            width: 100%;
+            padding: 10px 14px 10px 14px;
+            padding-inline-start: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .attendance-filter-search input::placeholder {
+            color: var(--text-sec);
+        }
+
+        .attendance-filter-search input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-filter-select {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            padding-inline-end: 34px;
+            background-color: var(--input-bg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%2394a3b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            background-size: 11px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        [data-theme="light"] .attendance-filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23475569' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+
+        .attendance-filter-select:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-filter-select option {
+            background: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        @media (max-width: 640px) {
+            .attendance-filters {
+                gap: 8px;
+            }
+
+            .attendance-filter-search {
+                flex: 1 1 100%;
+            }
+
+            .attendance-filter-select {
+                flex: 1 1 calc(50% - 4px);
+            }
+        }
+
+        .dash-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+        }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 980px;
+        }
+
+        .dash-table th,
+        .dash-table td {
+            padding: 12px 14px;
+            text-align: start;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dash-table th {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .dash-table td {
+            color: var(--text-sec);
+        }
+
+        .dash-table tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .attendance-status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+        }
+
+        .attendance-status-tag.is-present {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .attendance-status-tag.is-absent {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+        }
+
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 24px 0 4px;
+        }
+
+        @media (max-width: 640px) {
+            .dash-table th,
+            .dash-table td {
+                padding: 8px 10px;
+                font-size: 0.78rem;
+            }
+        }
+
         @media (max-width: 900px) {
             .dash-layout {
                 flex-direction: column;
@@ -251,6 +521,209 @@
                 font-size: 0.76rem;
             }
         }
+
+        #global-time-filter-card {
+            border-color: var(--cyan);
+            padding: 12px 16px;
+            margin-bottom: 24px;
+        }
+
+        #global-time-filter-card:has(.global-time-filter-head.is-collapsed) {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .global-time-filter-head {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .global-time-filter-head:not(.is-collapsed) {
+            margin-bottom: 8px;
+        }
+
+        .global-time-filter-head h2 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .global-time-filter-head h2 i:first-of-type {
+            color: var(--cyan);
+            font-size: 0.82rem;
+        }
+
+        .global-time-filter-head.is-collapsed .section-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .global-time-filter-head p {
+            color: var(--text-sec);
+            font-size: 0.7rem;
+        }
+
+        .section-toggle-icon {
+            transition: transform var(--transition-fast);
+        }
+
+        .attendance-date-range {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1 1 100%;
+        }
+
+        .attendance-date-range.is-collapsed {
+            display: none;
+        }
+
+        #global-time-filter-card .attendance-date-range {
+            margin: 0;
+            gap: 6px;
+        }
+
+        .attendance-date-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .attendance-date-preset-btn {
+            flex-shrink: 0;
+            padding: 4px 11px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-pill);
+            color: var(--cyan);
+            font-family: inherit;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .attendance-date-preset-btn:hover {
+            border-color: var(--cyan);
+        }
+
+        .attendance-date-preset-btn.is-active {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .attendance-date-range-fields {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .attendance-filter-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1 1 140px;
+            min-width: 130px;
+            padding-inline-start: 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+        }
+
+        .attendance-filter-date:focus-within {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-date-label {
+            flex-shrink: 0;
+            color: var(--text-sec);
+            font-size: 0.66rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .attendance-date-input {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 6px 4px;
+            min-height: 30px;
+            background: transparent;
+            border: none;
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.72rem;
+            cursor: pointer;
+            color-scheme: dark;
+        }
+
+        [data-theme="light"] .attendance-date-input {
+            color-scheme: light;
+        }
+
+        .attendance-date-input:focus {
+            outline: none;
+        }
+
+        .attendance-date-clear-btn {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            margin-inline-end: 4px;
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+
+        .attendance-date-clear-btn:hover {
+            color: var(--logout-red-hover);
+        }
+
+        @media (max-width: 640px) {
+            .attendance-date-range-fields {
+                justify-content: center;
+            }
+
+            .attendance-filter-date {
+                flex: 1 1 calc(50% - 4px);
+                min-width: 0;
+            }
+
+            .attendance-date-label {
+                font-size: 0.6rem;
+            }
+
+            .attendance-date-input {
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 900px) {
+            #global-time-filter-card {
+                margin-bottom: 20px;
+            }
+
+            .global-time-filter-head h2 {
+                font-size: 0.88rem;
+            }
+
+            .global-time-filter-head p {
+                font-size: 0.65rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -298,12 +771,125 @@
                             <span class="dash-task-badge dash-task-badge--active">افتح القسم</span>
                         </a>
 
-                        <div class="dash-task-card">
-                            <i class="fa-solid fa-clipboard-list"></i>
-                            <h3>تقارير المتابعة</h3>
-                            <p>لسا هنحدد انواع التقارير اللي هنحتاجها</p>
-                            <span class="dash-task-badge dash-task-badge--active">افتح القسم</span>
+                    </div>
+                </div>
+
+                <div class="dash-card" id="global-time-filter-card">
+                    <div class="global-time-filter-head" data-target="global-time-filter-body">
+                        <h2><i class="fa-solid fa-filter-circle-dollar"></i> النطاق الزمني العام <i class="fa-solid fa-chevron-down section-toggle-icon"></i></h2>
+                        <p>يتحكم في جدول المتابعة الشامل</p>
+                    </div>
+                    <div class="attendance-date-range" id="global-time-filter-body">
+                        <div class="attendance-date-presets">
+                            <button type="button" class="attendance-date-preset-btn" data-preset="today">اليوم</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="yesterday">الأمس</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="last7">آخر 7 أيام</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="last30">آخر 30 يومًا</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="thisWeek">هذا الأسبوع</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="thisMonth">هذا الشهر</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="lastMonth">الشهر الماضي</button>
+                            <button type="button" class="attendance-date-preset-btn" data-preset="all">الكل</button>
                         </div>
+                        <div class="attendance-date-range-fields">
+                            <div class="attendance-filter-date">
+                                <span class="attendance-date-label">من</span>
+                                <input type="date" id="attendance-filter-date-from" class="attendance-date-input" aria-label="من تاريخ">
+                            </div>
+                            <div class="attendance-filter-date">
+                                <span class="attendance-date-label">إلى</span>
+                                <input type="date" id="attendance-filter-date-to" class="attendance-date-input" aria-label="إلى تاريخ">
+                            </div>
+                            <button type="button" id="attendance-filter-date-clear" class="attendance-date-clear-btn" aria-label="مسح فلتر التاريخ" style="display: none;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2>جدول المتابعة الشامل</h2>
+
+                    <div class="attendance-summary-counters">
+                        <div class="attendance-summary-counter is-total">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-list-check"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-total">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الحصص الظاهرة</span>
+                            </span>
+                        </div>
+                        <div class="attendance-summary-counter is-present">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-user-check"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-present">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الحاضرين</span>
+                            </span>
+                        </div>
+                        <div class="attendance-summary-counter is-absent">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-user-xmark"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-absent">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الغائبين</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="attendance-filters">
+                        <div class="attendance-filter-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="attendance-filter-search" placeholder="بحث بالاسم أو المادة...">
+                        </div>
+                        <select id="attendance-filter-subject" class="attendance-filter-select">
+                            <option value="">كل المواد</option>
+                        </select>
+                        <select id="attendance-filter-day" class="attendance-filter-select">
+                            <option value="">كل الأيام</option>
+                            <option value="السبت">السبت</option>
+                            <option value="الأحد">الأحد</option>
+                            <option value="الاثنين">الاثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                        </select>
+                        <select id="attendance-filter-status" class="attendance-filter-select">
+                            <option value="">كل الحالات</option>
+                            <option value="present">حضر</option>
+                            <option value="absent">غائب</option>
+                            <option value="none">لم يُسجَّل بعد</option>
+                        </select>
+                    </div>
+
+                    <p id="attendance-overview-empty" class="dash-empty">جارٍ تحميل بيانات المتابعة...</p>
+                    <div class="dash-table-wrap" id="attendance-overview-wrap" style="display: none;">
+                        <table class="dash-table" id="attendance-overview-table">
+                            <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 8%;">
+                                <col style="width: 9%;">
+                                <col style="width: 9%;">
+                                <col style="width: 12%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 9%;">
+                                <col style="width: 8%;">
+                                <col style="width: 10%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اليوم</th>
+                                    <th>الموعد</th>
+                                    <th>المدة</th>
+                                    <th>المادة</th>
+                                    <th>الطالب</th>
+                                    <th>المعلم</th>
+                                    <th>الحضور</th>
+                                    <th>آخر تحديث</th>
+                                    <th>المستحق</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-overview-body"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -314,7 +900,323 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/app.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+
     <script>
+        const ATTENDANCE_STATUS_LABELS = { present: 'حضر', absent: 'غائب' };
+
+        function formatAttendanceUpdatedAt(iso) {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return '—';
+            return saFormatDubai(d, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function buildAttendanceStatusTag(status) {
+            const span = document.createElement('span');
+            span.className = 'attendance-status-tag' + (status ? ' is-' + status : '');
+            span.textContent = status ? ATTENDANCE_STATUS_LABELS[status] : 'لم يُسجَّل بعد';
+            return span;
+        }
+
+        let cachedAttendanceOverview = [];
+
+        function renderAttendanceRows(rows) {
+            const emptyEl = document.getElementById('attendance-overview-empty');
+            const wrapEl = document.getElementById('attendance-overview-wrap');
+            const bodyEl = document.getElementById('attendance-overview-body');
+
+            bodyEl.innerHTML = '';
+
+            if (!rows || rows.length === 0) {
+                emptyEl.textContent = cachedAttendanceOverview.length === 0
+                    ? 'لا توجد بيانات متابعة حتى الآن.'
+                    : 'لا توجد نتائج مطابقة لبحثك أو الفلاتر المحددة.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+                return;
+            }
+
+            rows.forEach(function (row, index) {
+                const tr = document.createElement('tr');
+
+                const serialTd = document.createElement('td');
+                serialTd.textContent = index + 1;
+
+                const dayTd = document.createElement('td');
+                dayTd.textContent = row.day || '—';
+
+                const timeTd = document.createElement('td');
+                timeTd.textContent = row.time || '—';
+
+                const durationTd = document.createElement('td');
+                const effectiveDuration = row.actual_duration_minutes || row.duration_minutes;
+                durationTd.textContent = effectiveDuration ? (effectiveDuration + ' د') : '—';
+
+                const subjectTd = document.createElement('td');
+                subjectTd.textContent = row.subject || '—';
+
+                const studentTd = document.createElement('td');
+                studentTd.textContent = row.student_name || '—';
+
+                const teacherTd = document.createElement('td');
+                teacherTd.textContent = row.teacher_name || '—';
+
+                const statusTd = document.createElement('td');
+                statusTd.appendChild(buildAttendanceStatusTag(row.status));
+
+                const updatedTd = document.createElement('td');
+                updatedTd.textContent = formatAttendanceUpdatedAt(row.updated_at);
+
+                const amountTd = document.createElement('td');
+                amountTd.textContent = row.amount != null ? (row.amount + ' د.إ') : '—';
+
+                tr.append(serialTd, dayTd, timeTd, durationTd, subjectTd, studentTd, teacherTd, statusTd, updatedTd, amountTd);
+                bodyEl.appendChild(tr);
+            });
+
+            emptyEl.style.display = 'none';
+            wrapEl.style.display = 'block';
+        }
+
+        function populateSubjectFilterOptions(rows) {
+            const select = document.getElementById('attendance-filter-subject');
+            const currentValue = select.value;
+            const subjects = Array.from(new Set(rows.map(function (r) { return r.subject; }).filter(Boolean))).sort();
+
+            select.innerHTML = '<option value="">كل المواد</option>';
+            subjects.forEach(function (subject) {
+                const opt = document.createElement('option');
+                opt.value = subject;
+                opt.textContent = subject;
+                select.appendChild(opt);
+            });
+
+            if (subjects.includes(currentValue)) select.value = currentValue;
+        }
+
+        function updateAttendanceSummaryCounters(rows) {
+            const total = rows.length;
+            const present = rows.filter(function (r) { return r.status === 'present'; }).length;
+            const absent = rows.filter(function (r) { return r.status === 'absent'; }).length;
+
+            document.getElementById('attendance-count-total').textContent = total;
+            document.getElementById('attendance-count-present').textContent = present;
+            document.getElementById('attendance-count-absent').textContent = absent;
+        }
+
+        function dubaiDateStringFromISO(iso) {
+            if (!iso) return null;
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return null;
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Dubai',
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            }).formatToParts(d).reduce(function (acc, p) { acc[p.type] = p.value; return acc; }, {});
+            return parts.year + '-' + parts.month + '-' + parts.day;
+        }
+
+        function formatYMD(year, monthIndex, date) {
+            return year + '-' + String(monthIndex + 1).padStart(2, '0') + '-' + String(date).padStart(2, '0');
+        }
+
+        function computeDatePresetRange(preset) {
+            const now = saDubaiNow();
+
+            if (preset === 'today') {
+                const todayStr = formatYMD(now.year, now.month, now.date);
+                return { from: todayStr, to: todayStr };
+            }
+
+            if (preset === 'yesterday') {
+                const y = new Date(now.year, now.month, now.date - 1);
+                const yStr = formatYMD(y.getFullYear(), y.getMonth(), y.getDate());
+                return { from: yStr, to: yStr };
+            }
+
+            if (preset === 'last7') {
+                const start = new Date(now.year, now.month, now.date - 6);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(now.year, now.month, now.date)
+                };
+            }
+
+            if (preset === 'last30') {
+                const start = new Date(now.year, now.month, now.date - 29);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(now.year, now.month, now.date)
+                };
+            }
+
+            if (preset === 'thisWeek') {
+                const daysSinceSaturday = (now.day + 1) % 7;
+                const start = new Date(now.year, now.month, now.date - daysSinceSaturday);
+                const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(end.getFullYear(), end.getMonth(), end.getDate())
+                };
+            }
+
+            if (preset === 'thisMonth') {
+                const lastDay = new Date(now.year, now.month + 1, 0).getDate();
+                return {
+                    from: formatYMD(now.year, now.month, 1),
+                    to: formatYMD(now.year, now.month, lastDay)
+                };
+            }
+
+            if (preset === 'lastMonth') {
+                const prevMonthDate = new Date(now.year, now.month - 1, 1);
+                const prevYear = prevMonthDate.getFullYear();
+                const prevMonth = prevMonthDate.getMonth();
+                const lastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
+                return {
+                    from: formatYMD(prevYear, prevMonth, 1),
+                    to: formatYMD(prevYear, prevMonth, lastDay)
+                };
+            }
+
+            return { from: '', to: '' };
+        }
+
+        function clearActiveDatePreset() {
+            document.querySelectorAll('.attendance-date-preset-btn').forEach(function (btn) {
+                btn.classList.remove('is-active');
+            });
+        }
+
+        function applyAttendanceFilters() {
+            const searchTerm = document.getElementById('attendance-filter-search').value.trim().toLowerCase();
+            const subjectFilter = document.getElementById('attendance-filter-subject').value;
+            const dayFilter = document.getElementById('attendance-filter-day').value;
+            const statusFilter = document.getElementById('attendance-filter-status').value;
+            const dateFrom = document.getElementById('attendance-filter-date-from').value;
+            const dateTo = document.getElementById('attendance-filter-date-to').value;
+
+            document.getElementById('attendance-filter-date-clear').style.display = (dateFrom || dateTo) ? 'flex' : 'none';
+
+            const filtered = cachedAttendanceOverview.filter(function (row) {
+                if (subjectFilter && row.subject !== subjectFilter) return false;
+                if (dayFilter && row.day !== dayFilter) return false;
+
+                if (dateFrom || dateTo) {
+                    const rowDate = dubaiDateStringFromISO(row.updated_at);
+                    if (!rowDate) return false;
+                    if (dateFrom && rowDate < dateFrom) return false;
+                    if (dateTo && rowDate > dateTo) return false;
+                }
+
+                const rowStatus = row.status || 'none';
+                if (statusFilter && rowStatus !== statusFilter) return false;
+
+                if (searchTerm) {
+                    const haystack = ((row.student_name || '') + ' ' + (row.subject || '')).toLowerCase();
+                    if (!haystack.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            updateAttendanceSummaryCounters(filtered);
+            renderAttendanceRows(filtered);
+        }
+
+        document.getElementById('attendance-filter-search').addEventListener('input', applyAttendanceFilters);
+        document.getElementById('attendance-filter-subject').addEventListener('change', applyAttendanceFilters);
+        document.getElementById('attendance-filter-day').addEventListener('change', applyAttendanceFilters);
+        document.getElementById('attendance-filter-status').addEventListener('change', applyAttendanceFilters);
+
+        document.getElementById('attendance-filter-date-from').addEventListener('change', function () {
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+        document.getElementById('attendance-filter-date-to').addEventListener('change', function () {
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+
+        document.querySelectorAll('.attendance-date-preset-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const preset = btn.dataset.preset;
+                const range = computeDatePresetRange(preset);
+
+                document.getElementById('attendance-filter-date-from').value = range.from;
+                document.getElementById('attendance-filter-date-to').value = range.to;
+
+                clearActiveDatePreset();
+                btn.classList.add('is-active');
+
+                applyAttendanceFilters();
+            });
+        });
+
+        document.getElementById('attendance-filter-date-clear').addEventListener('click', function () {
+            document.getElementById('attendance-filter-date-from').value = '';
+            document.getElementById('attendance-filter-date-to').value = '';
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+
+        document.querySelectorAll('.global-time-filter-head[data-target]').forEach(function (head) {
+            const body = document.getElementById(head.dataset.target);
+            if (!body) return;
+
+            head.setAttribute('role', 'button');
+            head.setAttribute('aria-expanded', String(!head.classList.contains('is-collapsed')));
+
+            head.addEventListener('click', function () {
+                const isCollapsed = head.classList.toggle('is-collapsed');
+                body.classList.toggle('is-collapsed', isCollapsed);
+                head.setAttribute('aria-expanded', String(!isCollapsed));
+            });
+        });
+
+        async function loadAttendanceOverview() {
+            const emptyEl = document.getElementById('attendance-overview-empty');
+            const wrapEl = document.getElementById('attendance-overview-wrap');
+
+            const current = saGetSession('sa_current_admin');
+            if (!current || !current.id) {
+                emptyEl.textContent = 'تعذّر تحديد هوية المشرف الحالي.';
+                return;
+            }
+
+            if (!window.saSupabase) {
+                emptyEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن.';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_attendance_overview', {
+                    p_supervisor_id: current.id
+                });
+                if (error) throw error;
+
+                cachedAttendanceOverview = data || [];
+                populateSubjectFilterOptions(cachedAttendanceOverview);
+
+                if (cachedAttendanceOverview.length === 0) {
+                    updateAttendanceSummaryCounters([]);
+                    emptyEl.textContent = 'لا توجد بيانات متابعة حتى الآن.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                applyAttendanceFilters();
+            } catch (e) {
+                console.error('تعذّر جلب جدول المتابعة الشامل:', e);
+                emptyEl.textContent = 'تعذّر تحميل بيانات المتابعة، حاول مرة أخرى لاحقًا.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+            }
+        }
+
         (function () {
             const current = saGetSession('sa_current_admin');
             if (current && current.fullName) {
@@ -332,6 +1234,9 @@
                 sidebar.scrollLeft = -(sidebar.scrollWidth - sidebar.clientWidth);
             }
         })();
+
+        loadAttendanceOverview();
+        setInterval(loadAttendanceOverview, 60000);
     </script>
 </body>
 </html>

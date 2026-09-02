@@ -196,6 +196,101 @@
             box-shadow: 0 0 0 3px var(--input-focus-shadow);
         }
 
+        .roster-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .roster-search {
+            position: relative;
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        .roster-search i {
+            position: absolute;
+            inset-inline-start: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        .roster-search input {
+            width: 100%;
+            padding: 10px 14px;
+            padding-inline-start: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .roster-search input::placeholder {
+            color: var(--text-sec);
+        }
+
+        .roster-search input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .roster-filter-select {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            padding-inline-end: 34px;
+            background-color: var(--input-bg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%2394a3b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            background-size: 11px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        [data-theme="light"] .roster-filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23475569' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+
+        .roster-filter-select:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .roster-filter-select option {
+            background: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        @media (max-width: 640px) {
+            .roster-filters {
+                gap: 8px;
+            }
+
+            .roster-search {
+                flex: 1 1 100%;
+            }
+
+            .roster-filter-select {
+                flex: 1 1 100%;
+            }
+        }
+
         .dash-table-wrap {
             overflow-x: auto;
         }
@@ -947,6 +1042,14 @@
                             </div>
                         </div>
 
+                        <div class="form-field">
+                            <label for="student-session-price">سعر الحصة (بالدرهم)</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                <input type="number" id="student-session-price" placeholder="مثال: 50" min="0" step="0.01">
+                            </div>
+                        </div>
+
                         <p id="add-student-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
 
                         <button type="submit" class="btn-glow">
@@ -958,6 +1061,17 @@
 
                 <div class="dash-card">
                     <h2>الطلاب الحاليون</h2>
+
+                    <div class="roster-filters">
+                        <div class="roster-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="students-filter-search" placeholder="بحث بالاسم أو رقم الهاتف...">
+                        </div>
+                        <select id="students-filter-stage" class="roster-filter-select">
+                            <option value="">كل المراحل</option>
+                        </select>
+                    </div>
+
                     <div class="dash-table-wrap">
                         <table class="dash-table">
                             <thead>
@@ -1033,6 +1147,14 @@
                     </div>
                 </div>
 
+                <div class="form-field">
+                    <label for="edit-student-session-price">سعر الحصة (بالدرهم)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="edit-student-session-price" placeholder="مثال: 50" min="0" step="0.01">
+                    </div>
+                </div>
+
                 <p id="edit-student-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
 
                 <button type="submit" class="btn-glow">
@@ -1087,6 +1209,7 @@
                                 <th>المادة</th>
                                 <th>المعلم</th>
                                 <th>الموعد</th>
+                                <th>المدة (دقيقة)</th>
                                 <th>رابط الحصة</th>
                                 <th></th>
                             </tr>
@@ -1168,8 +1291,7 @@
             return all.filter(function (s) { return s.addedByPhone === currentAdmin.phone; });
         }
 
-        function renderStudents() {
-            const students = myStudents();
+        function renderStudentRows(students) {
             const tbody = document.getElementById('students-table-body');
             const emptyMsg = document.getElementById('students-empty');
             const tableWrap = document.querySelector('.dash-table-wrap');
@@ -1178,6 +1300,9 @@
 
             if (students.length === 0) {
                 tableWrap.style.display = 'none';
+                emptyMsg.textContent = myStudents().length === 0
+                    ? 'لا يوجد طلاب مضافون بعد.'
+                    : 'لا توجد نتائج مطابقة لبحثك أو الفلتر المحدد.';
                 emptyMsg.style.display = 'block';
                 return;
             }
@@ -1243,6 +1368,48 @@
             });
         }
 
+        function populateStudentStageFilterOptions() {
+            const select = document.getElementById('students-filter-stage');
+            const currentValue = select.value;
+            const stages = Array.from(new Set(myStudents().map(function (s) { return s.stage; }).filter(Boolean))).sort();
+
+            select.innerHTML = '<option value="">كل المراحل</option>';
+            stages.forEach(function (stage) {
+                const opt = document.createElement('option');
+                opt.value = stage;
+                opt.textContent = stage;
+                select.appendChild(opt);
+            });
+
+            if (stages.includes(currentValue)) select.value = currentValue;
+        }
+
+        function applyStudentFilters() {
+            const searchTerm = document.getElementById('students-filter-search').value.trim().toLowerCase();
+            const stageFilter = document.getElementById('students-filter-stage').value;
+
+            const filtered = myStudents().filter(function (s) {
+                if (stageFilter && s.stage !== stageFilter) return false;
+
+                if (searchTerm) {
+                    const haystack = ((s.fullName || '') + ' ' + (s.phone || '')).toLowerCase();
+                    if (!haystack.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            renderStudentRows(filtered);
+        }
+
+        document.getElementById('students-filter-search').addEventListener('input', applyStudentFilters);
+        document.getElementById('students-filter-stage').addEventListener('change', applyStudentFilters);
+
+        function renderStudents() {
+            populateStudentStageFilterOptions();
+            applyStudentFilters();
+        }
+
         document.getElementById('add-student-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -1250,6 +1417,8 @@
             const phone = document.getElementById('student-phone').value.trim();
             const password = document.getElementById('student-password').value;
             const stage = document.getElementById('student-stage').value;
+            const sessionPriceRaw = parseFloat(document.getElementById('student-session-price').value);
+            const sessionPrice = sessionPriceRaw >= 0 ? sessionPriceRaw : null;
             const errorEl = document.getElementById('add-student-error');
 
             if (!fullName || !phone || !password || !stage) {
@@ -1276,6 +1445,7 @@
                 password: password,
                 stage: stage,
                 parentPhone: null,
+                sessionPrice: sessionPrice,
                 subjects: [],
                 reports: [],
                 sessions: [],
@@ -1289,10 +1459,10 @@
             renderStudents();
             this.reset();
 
-            syncNewStudentToSupabase(phone, fullName, stage, password);
+            syncNewStudentToSupabase(phone, fullName, stage, password, sessionPrice);
         });
 
-        async function syncNewStudentToSupabase(phone, fullName, stage, password) {
+        async function syncNewStudentToSupabase(phone, fullName, stage, password, sessionPrice) {
             const sb = window.saSupabase;
             if (!sb || !currentAdmin) return;
 
@@ -1303,7 +1473,8 @@
                     p_phone: phone,
                     p_parent_phone: null,
                     p_stage: stage,
-                    p_password: password
+                    p_password: password,
+                    p_session_price: sessionPrice
                 });
                 if (error) throw error;
 
@@ -1331,6 +1502,7 @@
             document.getElementById('edit-student-parent-phone').value = student.parentPhone || '';
             document.getElementById('edit-student-stage').value = student.stage || '';
             document.getElementById('edit-student-password').value = '';
+            document.getElementById('edit-student-session-price').value = (student.sessionPrice || student.sessionPrice === 0) ? student.sessionPrice : '';
             document.getElementById('edit-student-error').style.display = 'none';
             document.getElementById('edit-student-overlay').classList.add('is-open');
         }
@@ -1353,6 +1525,8 @@
             const parentPhone = document.getElementById('edit-student-parent-phone').value.trim();
             const stage = document.getElementById('edit-student-stage').value;
             const password = document.getElementById('edit-student-password').value;
+            const sessionPriceRaw = parseFloat(document.getElementById('edit-student-session-price').value);
+            const sessionPrice = sessionPriceRaw >= 0 ? sessionPriceRaw : null;
             const errorEl = document.getElementById('edit-student-error');
 
             const all = getAllStudents();
@@ -1376,7 +1550,8 @@
                     p_phone: phone,
                     p_parent_phone: parentPhone || null,
                     p_stage: stage,
-                    p_password: password
+                    p_password: password,
+                    p_session_price: sessionPrice
                 });
             } else {
                 result = await sb.rpc('create_student', {
@@ -1385,7 +1560,8 @@
                     p_phone: phone,
                     p_parent_phone: parentPhone || null,
                     p_stage: stage,
-                    p_password: password || Math.random().toString(36).slice(2, 10)
+                    p_password: password || Math.random().toString(36).slice(2, 10),
+                    p_session_price: sessionPrice
                 });
             }
 
@@ -1407,6 +1583,7 @@
             student.phone = phone;
             student.parentPhone = parentPhone || null;
             student.stage = stage;
+            student.sessionPrice = sessionPrice;
             if (password) student.password = password;
 
             saveAllStudents(all);
@@ -1463,13 +1640,48 @@
             document.getElementById('manage-modal-sub').textContent = student.fullName + ' — ' + student.phone;
             manageSelectedSubjects = (student.subjects || []).slice();
             document.getElementById('manage-report-text').value = '';
+            document.getElementById('manage-report-add').disabled = false;
 
             renderManageSubjects();
             renderSubscriptionToggle(student.subscriptionStatus || 'active');
-            renderManageWeekTable(student);
+            renderManageWeekTable([], student.subjects || []);
             renderManageReports(student);
 
             document.getElementById('manage-modal-overlay').classList.add('is-open');
+
+            loadManageWeekTableFromSupabase(student);
+        }
+
+        // تجيب جدول الطالب الحقيقي من Supabase (بدل localStorage) عشان
+        // شاشة "تعديل جدول الطالب" تعرض القيم المحفوظة فعليًا في قاعدة
+        // البيانات، من أي جهاز كان.
+        async function loadManageWeekTableFromSupabase(student) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin || !student.supabaseId) return;
+
+            try {
+                const { data, error } = await sb.rpc('get_student_sessions_for_manage', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_student_id: student.supabaseId
+                });
+                if (error) throw error;
+                if (manageStudentId !== student.id) return;
+
+                const sessions = (data || []).map(function (row) {
+                    return {
+                        day: row.day,
+                        time: row.time,
+                        subject: row.subject,
+                        duration: row.duration_minutes,
+                        link: row.link,
+                        teacherId: row.teacher_id
+                    };
+                });
+
+                renderManageWeekTable(sessions, student.subjects || []);
+            } catch (e) {
+                console.error('تعذّر جلب جدول الطالب من Supabase:', e);
+            }
         }
 
         function closeManageModal() {
@@ -1634,6 +1846,16 @@
             timeTd.dataset.label = 'الموعد';
             timeTd.appendChild(buildTimePicker(existing.time));
 
+            const durationTd = document.createElement('td');
+            durationTd.dataset.label = 'المدة (دقيقة)';
+            const durationInput = document.createElement('input');
+            durationInput.type = 'number';
+            durationInput.min = '1';
+            durationInput.placeholder = '60';
+            durationInput.value = existing.duration || '';
+            durationInput.dataset.field = 'duration';
+            durationTd.appendChild(durationInput);
+
             const linkTd = document.createElement('td');
             linkTd.dataset.label = 'رابط الحصة';
             const linkInput = document.createElement('input');
@@ -1655,14 +1877,14 @@
             });
             actionTd.appendChild(removeBtn);
 
-            tr.append(dayTd, subjectTd, teacherTd, timeTd, linkTd, actionTd);
+            tr.append(dayTd, subjectTd, teacherTd, timeTd, durationTd, linkTd, actionTd);
             return tr;
         }
 
-        function renderManageWeekTable(student) {
+        function renderManageWeekTable(sessions, studentSubjects) {
             const tbody = document.getElementById('manage-week-table-body');
-            const sessions = student.sessions || [];
-            const studentSubjects = student.subjects || [];
+            sessions = sessions || [];
+            studentSubjects = studentSubjects || [];
             tbody.innerHTML = '';
 
             WEEK_DAYS.forEach(function (day) {
@@ -1676,7 +1898,7 @@
                 addTr.className = 'manage-week-add-row';
                 addTr.dataset.addDay = day;
                 const addTd = document.createElement('td');
-                addTd.colSpan = 5;
+                addTd.colSpan = 6;
                 const addBtn = document.createElement('button');
                 addBtn.type = 'button';
                 addBtn.className = 'manage-week-add-btn';
@@ -1732,7 +1954,8 @@
             return null;
         }
 
-        document.getElementById('manage-week-save').addEventListener('click', function () {
+        document.getElementById('manage-week-save').addEventListener('click', async function () {
+            const saveBtn = this;
             const sessions = [];
 
             document.querySelectorAll('#manage-week-table-body tr[data-day]').forEach(function (tr) {
@@ -1744,6 +1967,8 @@
                 const minute = tr.querySelector('[data-field="minute"]').value;
                 const period = tr.querySelector('[data-field="period"]').value;
                 const time = (hour && minute && period) ? (hour + ':' + minute + ' ' + period) : '';
+                const durationRaw = parseInt(tr.querySelector('[data-field="duration"]').value, 10);
+                const duration = durationRaw > 0 ? durationRaw : 60;
                 const link = tr.querySelector('[data-field="link"]').value.trim();
 
                 if (subject || time || link) {
@@ -1751,6 +1976,7 @@
                         day: day,
                         subject: subject,
                         time: time,
+                        duration: duration,
                         link: link,
                         teacherId: teacherId,
                         teacherName: teacherMatch ? teacherMatch.name : null
@@ -1769,9 +1995,37 @@
 
             errorEl.style.display = 'none';
 
-            updateStudent(manageStudentId, function (s) {
-                s.sessions = sessions;
-            });
+            const student = getStudentById(manageStudentId);
+            if (!student || !student.supabaseId) {
+                errorEl.textContent = 'تعذّر حفظ الجدول: الطالب غير مرتبط بقاعدة البيانات بعد، حاول تحديث الصفحة.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!window.saSupabase || !currentAdmin) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            saveBtn.disabled = true;
+
+            try {
+                const { error } = await window.saSupabase.rpc('set_student_sessions', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_student_id: student.supabaseId,
+                    p_sessions: sessions.map(function (s) {
+                        return { day: s.day, time: s.time, subject: s.subject, duration: s.duration, link: s.link, teacher_id: s.teacherId || null };
+                    })
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر حفظ جدول الطالب في Supabase:', e);
+                errorEl.textContent = 'تعذّر حفظ الجدول الآن، حاول مرة أخرى.';
+                errorEl.style.display = 'block';
+            } finally {
+                saveBtn.disabled = false;
+            }
         });
 
         function renderManageReports(student) {
@@ -1832,12 +2086,18 @@
                 s.subjects = manageSelectedSubjects.slice();
             });
             renderStudents();
-            renderManageWeekTable(getStudentById(manageStudentId));
+            const fresh = getStudentById(manageStudentId);
+            if (fresh) loadManageWeekTableFromSupabase(fresh);
         });
 
         document.getElementById('manage-report-add').addEventListener('click', function () {
+            const btn = this;
+            if (btn.disabled) return;
+
             const text = document.getElementById('manage-report-text').value.trim();
             if (!text) return;
+
+            btn.disabled = true;
 
             updateStudent(manageStudentId, function (s) {
                 s.reports = s.reports || [];
@@ -1850,6 +2110,8 @@
 
             document.getElementById('manage-report-text').value = '';
             renderManageReports(getStudentById(manageStudentId));
+
+            btn.disabled = false;
         });
 
         (function () {

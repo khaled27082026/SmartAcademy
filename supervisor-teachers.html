@@ -170,6 +170,101 @@
             text-align: right;
         }
 
+        .roster-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .roster-search {
+            position: relative;
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        .roster-search i {
+            position: absolute;
+            inset-inline-start: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        .roster-search input {
+            width: 100%;
+            padding: 10px 14px;
+            padding-inline-start: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .roster-search input::placeholder {
+            color: var(--text-sec);
+        }
+
+        .roster-search input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .roster-filter-select {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            padding-inline-end: 34px;
+            background-color: var(--input-bg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%2394a3b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            background-size: 11px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        [data-theme="light"] .roster-filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23475569' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+
+        .roster-filter-select:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .roster-filter-select option {
+            background: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        @media (max-width: 640px) {
+            .roster-filters {
+                gap: 8px;
+            }
+
+            .roster-search {
+                flex: 1 1 100%;
+            }
+
+            .roster-filter-select {
+                flex: 1 1 100%;
+            }
+        }
+
         .dash-table-wrap {
             overflow-x: auto;
         }
@@ -178,7 +273,7 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            min-width: 720px;
+            min-width: 800px;
         }
 
         .dash-table th,
@@ -220,7 +315,19 @@
 
         .dash-table th:nth-child(6),
         .dash-table td:nth-child(6) {
-            width: 10%;
+            width: 152px;
+        }
+
+        .dash-table td:nth-child(6) {
+            overflow: visible;
+            white-space: normal;
+        }
+
+        .dash-actions-group {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            align-items: center;
         }
 
         .dash-table th {
@@ -255,6 +362,23 @@
             padding: 24px 0 4px;
         }
 
+        .dash-manage-btn.dash-penalty-btn {
+            color: #f5a524;
+        }
+
+        .dash-manage-btn.dash-penalty-btn:hover {
+            color: #ffbf4d;
+        }
+
+        @media (max-width: 640px) {
+            .dash-manage-btn,
+            .dash-delete-btn {
+                min-width: 40px;
+                min-height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+
         .dash-stage-tag {
             display: inline-block;
             padding: 3px 10px;
@@ -273,7 +397,6 @@
             color: var(--cyan);
             font-size: 1rem;
             cursor: pointer;
-            margin-inline-end: 12px;
             transition: color var(--transition-fast);
         }
 
@@ -778,6 +901,14 @@
                             </div>
                         </div>
 
+                        <div class="form-field">
+                            <label for="teacher-hourly-rate">سعر الساعة (بالجنيه)</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                <input type="number" id="teacher-hourly-rate" placeholder="مثال: 40" min="0" step="0.01">
+                            </div>
+                        </div>
+
                         <p id="add-teacher-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
 
                         <button type="submit" class="btn-glow">
@@ -789,6 +920,17 @@
 
                 <div class="dash-card">
                     <h2>المعلمون الحاليون</h2>
+
+                    <div class="roster-filters">
+                        <div class="roster-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="teachers-filter-search" placeholder="بحث بالاسم أو رقم الهاتف...">
+                        </div>
+                        <select id="teachers-filter-subject" class="roster-filter-select">
+                            <option value="">كل المواد</option>
+                        </select>
+                    </div>
+
                     <div class="dash-table-wrap">
                         <table class="dash-table">
                             <thead>
@@ -805,6 +947,32 @@
                         </table>
                     </div>
                     <p id="teachers-empty" class="dash-empty">لا يوجد معلمون مضافون بعد.</p>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-triangle-exclamation" style="color: var(--logout-red-hover); margin-inline-end: 8px;"></i>سجل الخصومات والتنبيهات</h2>
+                    <p id="penalties-log-empty" class="dash-empty">جارٍ تحميل السجل...</p>
+                    <div class="dash-table-wrap" id="penalties-log-wrap" style="display: none;">
+                        <table class="dash-table" id="penalties-log-table">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 15%;">
+                                <col style="width: 30%;">
+                                <col style="width: 15%;">
+                                <col style="width: 20%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>المعلم</th>
+                                    <th>القيمة</th>
+                                    <th>السبب</th>
+                                    <th>المشرف المسؤول</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="penalties-log-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
         </main>
@@ -859,11 +1027,54 @@
                     </div>
                 </div>
 
+                <div class="form-field">
+                    <label for="edit-teacher-hourly-rate">سعر الساعة (بالجنيه)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="edit-teacher-hourly-rate" placeholder="مثال: 40" min="0" step="0.01">
+                    </div>
+                </div>
+
                 <p id="edit-teacher-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
 
                 <button type="submit" class="btn-glow">
                     <i class="fa-solid fa-floppy-disk"></i>
                     حفظ التعديلات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="manage-modal-overlay" id="penalty-overlay">
+        <div class="manage-modal">
+            <button type="button" class="manage-modal-close" id="penalty-close" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2>تسجيل خصم أو تنبيه</h2>
+            <p class="manage-modal-sub" id="penalty-sub">—</p>
+
+            <form id="penalty-form" class="dash-form-grid">
+                <div class="form-field" style="grid-column: 1 / -1;">
+                    <label for="penalty-amount">قيمة الخصم (بالجنيه)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="penalty-amount" placeholder="مثال: 50" min="0" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-field" style="grid-column: 1 / -1;">
+                    <label for="penalty-reason">السبب</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-comment"></i>
+                        <input type="text" id="penalty-reason" placeholder="مثال: تأخر عن موعد الحصة" required>
+                    </div>
+                </div>
+
+                <p id="penalty-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                <button type="submit" class="btn-glow">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    تسجيل الخصم
                 </button>
             </form>
         </div>
@@ -898,6 +1109,7 @@
                                 <th>اليوم</th>
                                 <th>المادة</th>
                                 <th>الموعد</th>
+                                <th>المدة (دقيقة)</th>
                                 <th>رابط الحصة</th>
                                 <th></th>
                             </tr>
@@ -954,8 +1166,7 @@
             document.getElementById('teachers-subtitle').textContent = 'المعلمون المسجّلون تحت إشراف ' + currentAdmin.fullName;
         }
 
-        function renderTeachers() {
-            const teachers = getAllTeachers();
+        function renderTeacherRows(teachers) {
             const tbody = document.getElementById('teachers-table-body');
             const emptyMsg = document.getElementById('teachers-empty');
             const tableWrap = document.querySelector('.dash-table-wrap');
@@ -964,6 +1175,9 @@
 
             if (teachers.length === 0) {
                 tableWrap.style.display = 'none';
+                emptyMsg.textContent = getAllTeachers().length === 0
+                    ? 'لا يوجد معلمون مضافون بعد.'
+                    : 'لا توجد نتائج مطابقة لبحثك أو الفلتر المحدد.';
                 emptyMsg.style.display = 'block';
                 return;
             }
@@ -1011,6 +1225,9 @@
                 manageTd.appendChild(manageBtn);
 
                 const actionsTd = document.createElement('td');
+                const actionsGroup = document.createElement('div');
+                actionsGroup.className = 'dash-actions-group';
+                actionsTd.appendChild(actionsGroup);
 
                 const editBtn = document.createElement('button');
                 editBtn.type = 'button';
@@ -1020,7 +1237,17 @@
                 editBtn.addEventListener('click', function () {
                     openEditTeacherModal(teacher);
                 });
-                actionsTd.appendChild(editBtn);
+                actionsGroup.appendChild(editBtn);
+
+                const penaltyBtn = document.createElement('button');
+                penaltyBtn.type = 'button';
+                penaltyBtn.className = 'dash-manage-btn dash-penalty-btn';
+                penaltyBtn.setAttribute('aria-label', 'تسجيل خصم أو تنبيه');
+                penaltyBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                penaltyBtn.addEventListener('click', function () {
+                    openPenaltyModal(teacher);
+                });
+                actionsGroup.appendChild(penaltyBtn);
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.type = 'button';
@@ -1032,11 +1259,56 @@
                     saveAllTeachers(updated);
                     renderTeachers();
                 });
-                actionsTd.appendChild(deleteBtn);
+                actionsGroup.appendChild(deleteBtn);
 
                 tr.append(nameTd, phoneTd, subjectsTd, dateTd, manageTd, actionsTd);
                 tbody.appendChild(tr);
             });
+        }
+
+        function populateTeacherSubjectFilterOptions() {
+            const select = document.getElementById('teachers-filter-subject');
+            const currentValue = select.value;
+            const allSubjects = getAllTeachers().reduce(function (acc, t) {
+                return acc.concat(t.subjects || []);
+            }, []);
+            const subjects = Array.from(new Set(allSubjects.filter(Boolean))).sort();
+
+            select.innerHTML = '<option value="">كل المواد</option>';
+            subjects.forEach(function (subject) {
+                const opt = document.createElement('option');
+                opt.value = subject;
+                opt.textContent = subject;
+                select.appendChild(opt);
+            });
+
+            if (subjects.includes(currentValue)) select.value = currentValue;
+        }
+
+        function applyTeacherFilters() {
+            const searchTerm = document.getElementById('teachers-filter-search').value.trim().toLowerCase();
+            const subjectFilter = document.getElementById('teachers-filter-subject').value;
+
+            const filtered = getAllTeachers().filter(function (t) {
+                if (subjectFilter && !(t.subjects || []).includes(subjectFilter)) return false;
+
+                if (searchTerm) {
+                    const haystack = ((t.fullName || '') + ' ' + (t.phone || '')).toLowerCase();
+                    if (!haystack.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            renderTeacherRows(filtered);
+        }
+
+        document.getElementById('teachers-filter-search').addEventListener('input', applyTeacherFilters);
+        document.getElementById('teachers-filter-subject').addEventListener('change', applyTeacherFilters);
+
+        function renderTeachers() {
+            populateTeacherSubjectFilterOptions();
+            applyTeacherFilters();
         }
 
         document.getElementById('add-teacher-form').addEventListener('submit', function (e) {
@@ -1046,6 +1318,8 @@
             const phone = document.getElementById('teacher-phone').value.trim();
             const email = document.getElementById('teacher-email').value.trim();
             const password = document.getElementById('teacher-password').value;
+            const hourlyRateRaw = parseFloat(document.getElementById('teacher-hourly-rate').value);
+            const hourlyRate = hourlyRateRaw >= 0 ? hourlyRateRaw : null;
             const errorEl = document.getElementById('add-teacher-error');
 
             if (!fullName || !phone || !email || !password) {
@@ -1071,6 +1345,7 @@
                 phone: phone,
                 email: email,
                 password: password,
+                hourlyRate: hourlyRate,
                 subjects: [],
                 sessions: [],
                 addedByPhone: currentAdmin ? currentAdmin.phone : null,
@@ -1082,10 +1357,10 @@
             renderTeachers();
             this.reset();
 
-            syncNewTeacherToSupabase(phone, fullName, email, password);
+            syncNewTeacherToSupabase(phone, fullName, email, password, hourlyRate);
         });
 
-        async function syncNewTeacherToSupabase(phone, fullName, email, password) {
+        async function syncNewTeacherToSupabase(phone, fullName, email, password, hourlyRate) {
             const sb = window.saSupabase;
             if (!sb || !currentAdmin) return;
 
@@ -1096,7 +1371,8 @@
                     p_phone: phone,
                     p_email: email,
                     p_subject: null,
-                    p_password: password
+                    p_password: password,
+                    p_hourly_rate: hourlyRate
                 });
                 if (error) throw error;
 
@@ -1124,6 +1400,7 @@
             document.getElementById('edit-teacher-email').value = teacher.email || '';
             document.getElementById('edit-teacher-subject').value = (teacher.subjects && teacher.subjects[0]) || '';
             document.getElementById('edit-teacher-password').value = '';
+            document.getElementById('edit-teacher-hourly-rate').value = (teacher.hourlyRate || teacher.hourlyRate === 0) ? teacher.hourlyRate : '';
             document.getElementById('edit-teacher-error').style.display = 'none';
             document.getElementById('edit-teacher-overlay').classList.add('is-open');
         }
@@ -1146,6 +1423,8 @@
             const email = document.getElementById('edit-teacher-email').value.trim();
             const subject = document.getElementById('edit-teacher-subject').value.trim();
             const password = document.getElementById('edit-teacher-password').value;
+            const hourlyRateRaw = parseFloat(document.getElementById('edit-teacher-hourly-rate').value);
+            const hourlyRate = hourlyRateRaw >= 0 ? hourlyRateRaw : null;
             const errorEl = document.getElementById('edit-teacher-error');
 
             const all = getAllTeachers();
@@ -1169,7 +1448,8 @@
                     p_phone: phone,
                     p_email: email,
                     p_subject: subject || null,
-                    p_password: password
+                    p_password: password,
+                    p_hourly_rate: hourlyRate
                 });
             } else {
                 result = await sb.rpc('create_teacher', {
@@ -1178,7 +1458,8 @@
                     p_phone: phone,
                     p_email: email,
                     p_subject: subject || null,
-                    p_password: password || Math.random().toString(36).slice(2, 10)
+                    p_password: password || Math.random().toString(36).slice(2, 10),
+                    p_hourly_rate: hourlyRate
                 });
             }
 
@@ -1199,6 +1480,7 @@
             teacher.fullName = name;
             teacher.phone = phone;
             teacher.email = email;
+            teacher.hourlyRate = hourlyRate;
             if (password) teacher.password = password;
 
             saveAllTeachers(all);
@@ -1207,7 +1489,137 @@
             renderTeachers();
         });
 
+        let penaltyTeacher = null;
+
+        function openPenaltyModal(teacher) {
+            penaltyTeacher = teacher;
+            document.getElementById('penalty-sub').textContent = teacher.fullName + ' — ' + teacher.phone;
+            document.getElementById('penalty-amount').value = '';
+            document.getElementById('penalty-reason').value = '';
+            const errorEl = document.getElementById('penalty-error');
+            if (!teacher.supabaseId) {
+                errorEl.textContent = 'هذا المعلم غير متزامن مع قاعدة البيانات بعد، يرجى تعديل بياناته أولاً قبل تسجيل خصم عليه.';
+                errorEl.style.display = 'block';
+            } else {
+                errorEl.style.display = 'none';
+            }
+            document.getElementById('penalty-overlay').classList.add('is-open');
+        }
+
+        function closePenaltyModal() {
+            document.getElementById('penalty-overlay').classList.remove('is-open');
+            penaltyTeacher = null;
+        }
+
+        document.getElementById('penalty-close').addEventListener('click', closePenaltyModal);
+        document.getElementById('penalty-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closePenaltyModal();
+        });
+
+        document.getElementById('penalty-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const amount = parseFloat(document.getElementById('penalty-amount').value);
+            const reason = document.getElementById('penalty-reason').value.trim();
+            const errorEl = document.getElementById('penalty-error');
+
+            if (!(amount >= 0) || !reason) {
+                errorEl.textContent = 'من فضلك أدخل قيمة صحيحة وسبب الخصم.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!window.saSupabase || !currentAdmin || !penaltyTeacher) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!penaltyTeacher.supabaseId) {
+                errorEl.textContent = 'هذا المعلم غير متزامن مع قاعدة البيانات بعد، يرجى تعديل بياناته أولاً قبل تسجيل خصم عليه.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const { error } = await window.saSupabase.rpc('create_teacher_penalty', {
+                p_supervisor_id: currentAdmin.id,
+                p_teacher_id: penaltyTeacher.supabaseId,
+                p_amount: amount,
+                p_reason: reason
+            });
+
+            if (error) {
+                console.error('تعذّر تسجيل الخصم:', error);
+                errorEl.textContent = 'تعذّر تسجيل الخصم، حاول مرة أخرى.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            closePenaltyModal();
+            loadPenaltiesLog();
+        });
+
+        async function loadPenaltiesLog() {
+            const emptyEl = document.getElementById('penalties-log-empty');
+            const wrapEl = document.getElementById('penalties-log-wrap');
+            const bodyEl = document.getElementById('penalties-log-body');
+
+            if (!window.saSupabase || !currentAdmin) {
+                emptyEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن.';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_teacher_penalties', {
+                    p_supervisor_id: currentAdmin.id
+                });
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    emptyEl.textContent = 'لا توجد أي خصومات أو تنبيهات مسجّلة حتى الآن.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                bodyEl.innerHTML = '';
+                data.forEach(function (row) {
+                    const tr = document.createElement('tr');
+
+                    const teacherTd = document.createElement('td');
+                    teacherTd.textContent = row.teacher_name || '—';
+
+                    const amountTd = document.createElement('td');
+                    amountTd.textContent = '-' + row.amount + ' ج.م';
+                    amountTd.style.color = 'var(--logout-red-hover)';
+
+                    const reasonTd = document.createElement('td');
+                    reasonTd.textContent = row.reason || '—';
+
+                    const supervisorTd = document.createElement('td');
+                    supervisorTd.textContent = row.supervisor_name || '—';
+
+                    const dateTd = document.createElement('td');
+                    const d = new Date(row.created_at);
+                    dateTd.textContent = isNaN(d.getTime()) ? '—' : saFormatDubai(d, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+                    tr.append(teacherTd, amountTd, reasonTd, supervisorTd, dateTd);
+                    bodyEl.appendChild(tr);
+                });
+
+                emptyEl.style.display = 'none';
+                wrapEl.style.display = 'block';
+            } catch (e) {
+                console.error('تعذّر جلب سجل الخصومات:', e);
+                emptyEl.textContent = 'تعذّر تحميل السجل، حاول مرة أخرى لاحقًا.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+            }
+        }
+
         renderTeachers();
+        loadPenaltiesLog();
 
         document.getElementById('teachers-logout').addEventListener('click', function () {
             saClearSession('sa_current_admin');
@@ -1239,9 +1651,42 @@
             manageSelectedSubjects = (teacher.subjects || []).slice();
 
             renderManageSubjects();
-            renderManageWeekTable(teacher);
+            renderManageWeekTable([], teacher.subjects || []);
 
             document.getElementById('manage-modal-overlay').classList.add('is-open');
+
+            loadManageWeekTableFromSupabase(teacher);
+        }
+
+        // تجيب جدول المعلم الحقيقي من Supabase (بدل localStorage) عشان
+        // شاشة "تعديل جدول المعلم" تعرض القيم المحفوظة فعليًا في قاعدة
+        // البيانات، من أي جهاز كان.
+        async function loadManageWeekTableFromSupabase(teacher) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin || !teacher.supabaseId) return;
+
+            try {
+                const { data, error } = await sb.rpc('get_teacher_sessions_for_manage', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_teacher_id: teacher.supabaseId
+                });
+                if (error) throw error;
+                if (manageTeacherId !== teacher.id) return;
+
+                const sessions = (data || []).map(function (row) {
+                    return {
+                        day: row.day,
+                        time: row.time,
+                        subject: row.subject,
+                        duration: row.duration_minutes,
+                        link: row.link
+                    };
+                });
+
+                renderManageWeekTable(sessions, teacher.subjects || []);
+            } catch (e) {
+                console.error('تعذّر جلب جدول المعلم من Supabase:', e);
+            }
         }
 
         function closeManageModal() {
@@ -1410,6 +1855,16 @@
             timeTd.dataset.label = 'الموعد';
             timeTd.appendChild(buildTimePicker(existing.time));
 
+            const durationTd = document.createElement('td');
+            durationTd.dataset.label = 'المدة (دقيقة)';
+            const durationInput = document.createElement('input');
+            durationInput.type = 'number';
+            durationInput.min = '1';
+            durationInput.placeholder = '60';
+            durationInput.value = existing.duration || '';
+            durationInput.dataset.field = 'duration';
+            durationTd.appendChild(durationInput);
+
             const linkTd = document.createElement('td');
             linkTd.dataset.label = 'رابط الحصة';
             const linkInput = document.createElement('input');
@@ -1431,14 +1886,14 @@
             });
             actionTd.appendChild(removeBtn);
 
-            tr.append(dayTd, subjectTd, timeTd, linkTd, actionTd);
+            tr.append(dayTd, subjectTd, timeTd, durationTd, linkTd, actionTd);
             return tr;
         }
 
-        function renderManageWeekTable(teacher) {
+        function renderManageWeekTable(sessions, teacherSubjects) {
             const tbody = document.getElementById('manage-week-table-body');
-            const sessions = teacher.sessions || [];
-            const teacherSubjects = teacher.subjects || [];
+            sessions = sessions || [];
+            teacherSubjects = teacherSubjects || [];
             tbody.innerHTML = '';
 
             WEEK_DAYS.forEach(function (day) {
@@ -1452,14 +1907,14 @@
                 addTr.className = 'manage-week-add-row';
                 addTr.dataset.addDay = day;
                 const addTd = document.createElement('td');
-                addTd.colSpan = 5;
+                addTd.colSpan = 6;
                 const addBtn = document.createElement('button');
                 addBtn.type = 'button';
                 addBtn.className = 'manage-week-add-btn';
                 addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> إضافة حصة أخرى — ' + day;
                 addBtn.addEventListener('click', function () {
-                    const fresh = getTeacherById(manageTeacherId) || teacher;
-                    const newRow = buildSessionRow(day, {}, fresh.subjects || []);
+                    const fresh = getTeacherById(manageTeacherId);
+                    const newRow = buildSessionRow(day, {}, (fresh && fresh.subjects) || teacherSubjects);
                     tbody.insertBefore(newRow, addTr);
                 });
                 addTd.appendChild(addBtn);
@@ -1468,7 +1923,8 @@
             });
         }
 
-        document.getElementById('manage-week-save').addEventListener('click', function () {
+        document.getElementById('manage-week-save').addEventListener('click', async function () {
+            const saveBtn = this;
             const sessions = [];
 
             document.querySelectorAll('#manage-week-table-body tr[data-day]').forEach(function (tr) {
@@ -1478,10 +1934,12 @@
                 const minute = tr.querySelector('[data-field="minute"]').value;
                 const period = tr.querySelector('[data-field="period"]').value;
                 const time = (hour && minute && period) ? (hour + ':' + minute + ' ' + period) : '';
+                const durationRaw = parseInt(tr.querySelector('[data-field="duration"]').value, 10);
+                const duration = durationRaw > 0 ? durationRaw : 60;
                 const link = tr.querySelector('[data-field="link"]').value.trim();
 
                 if (subject || time || link) {
-                    sessions.push({ day: day, subject: subject, time: time, link: link });
+                    sessions.push({ day: day, subject: subject, time: time, duration: duration, link: link });
                 }
             });
 
@@ -1496,9 +1954,35 @@
 
             errorEl.style.display = 'none';
 
-            updateTeacher(manageTeacherId, function (t) {
-                t.sessions = sessions;
-            });
+            const teacher = getTeacherById(manageTeacherId);
+            if (!teacher || !teacher.supabaseId) {
+                errorEl.textContent = 'تعذّر حفظ الجدول: المعلم غير مرتبط بقاعدة البيانات بعد، حاول تحديث الصفحة.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!window.saSupabase || !currentAdmin) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            saveBtn.disabled = true;
+
+            try {
+                const { error } = await window.saSupabase.rpc('set_teacher_sessions', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_teacher_id: teacher.supabaseId,
+                    p_sessions: sessions
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر حفظ جدول المعلم في Supabase:', e);
+                errorEl.textContent = 'تعذّر حفظ الجدول الآن، حاول مرة أخرى.';
+                errorEl.style.display = 'block';
+            } finally {
+                saveBtn.disabled = false;
+            }
         });
 
         document.getElementById('manage-modal-close').addEventListener('click', closeManageModal);
@@ -1511,7 +1995,8 @@
                 t.subjects = manageSelectedSubjects.slice();
             });
             renderTeachers();
-            renderManageWeekTable(getTeacherById(manageTeacherId));
+            const fresh = getTeacherById(manageTeacherId);
+            if (fresh) loadManageWeekTableFromSupabase(fresh);
         });
 
         (function () {

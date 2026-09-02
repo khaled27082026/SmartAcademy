@@ -14,6 +14,47 @@
         })();
     </script>
 
+    <script>
+        (function () {
+            function checkSession(key) {
+                var stored = localStorage.getItem(key);
+                if (!stored) return false;
+
+                var raw;
+                try {
+                    raw = JSON.parse(stored);
+                } catch (e) {
+                    localStorage.removeItem(key);
+                    return false;
+                }
+
+                if (!raw || !raw.data || !raw.expiresAt || Date.now() > raw.expiresAt) {
+                    localStorage.removeItem(key);
+                    return false;
+                }
+
+                return true;
+            }
+
+            var roles = [
+                { key: 'sa_current_manager', url: 'manager-dashboard.html' },
+                { key: 'sa_current_teacher', url: 'teacher-dashboard.html' },
+                { key: 'sa_current_admin', url: 'supervisor-dashboard.html' }
+            ];
+
+            var validRole = null;
+            for (var i = 0; i < roles.length; i++) {
+                if (checkSession(roles[i].key) && !validRole) {
+                    validRole = roles[i];
+                }
+            }
+
+            if (validRole) {
+                window.location.replace(validRole.url);
+            }
+        })();
+    </script>
+
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,9 +88,10 @@
         }
 
         .account-role {
-            display: inline-flex;
-            width: fit-content;
+            display: flex;
+            width: 100%;
             max-width: 100%;
+            box-sizing: border-box;
             gap: 6px;
             padding: 6px;
             margin-block: 8px 24px;
@@ -68,18 +110,21 @@
 
         .account-role .account-role__option {
             display: flex;
+            flex: 1 1 0;
+            min-width: 0;
             flex-direction: row;
             align-items: center;
             justify-content: center;
             gap: 8px;
             margin: 0;
-            padding: 10px 18px;
+            padding: 10px 12px;
             border-radius: var(--radius-pill);
             line-height: 1;
             font-weight: 500;
             font-size: 0.9rem;
             color: var(--text-sec);
             cursor: pointer;
+            white-space: nowrap;
             transition: color var(--transition-fast), background var(--transition-fast);
         }
 
@@ -88,6 +133,24 @@
             justify-content: center;
             width: 16px;
             flex-shrink: 0;
+        }
+
+        .account-role__text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 380px) {
+            .account-role .account-role__option {
+                padding: 8px 6px;
+                font-size: 0.78rem;
+                gap: 5px;
+            }
+
+            .account-role__icon {
+                width: 13px;
+                font-size: 0.8rem;
+            }
         }
 
         .account-role__input:checked + .account-role__option {
@@ -213,44 +276,65 @@
                     return;
                 }
 
+                // تسجيل الدخول الحقيقي يمر عبر Supabase Auth (بريد مُصنَّع من رقم
+                // الهاتف) بدل التحقق اليدوي من جدول managers مباشرة — auth.uid()
+                // الناتج هو ما تتحقق منه كل دوال RPC الخاصة بالمدير من الآن فصاعدًا.
+                window.saSupabase.auth.signInWithPassword({
+                    email: saManagerAuthEmail(phone),
+                    password: password
+                }).then(function (authRes) {
+                    if (authRes.error) {
+                        console.error('تعذّر تسجيل دخول المدير:', authRes.error);
+                        showError('بيانات دخول المدير غير صحيحة.');
+                        return;
+                    }
+
+                    return window.saSupabase.rpc('get_current_manager').then(function (res) {
+                        const match = res.data && res.data[0];
+                        if (res.error || !match) {
+                            console.error('تعذّر جلب بيانات المدير بعد تسجيل الدخول:', res.error);
+                            showError('تعذّر إتمام تسجيل الدخول، حاول مرة أخرى.');
+                            return;
+                        }
+
+                        saSetSession('sa_current_manager', { id: match.id, name: match.name, phone: phone });
+                        window.location.href = 'manager-dashboard.html';
+                    });
+                });
+                return;
+            }
+
+            if (role === 'teacher') {
+                if (!window.saSupabase) {
+                    showError('تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.');
+                    return;
+                }
+
                 window.saSupabase
-                    .rpc('verify_manager_login', { p_phone: phone, p_password: password })
+                    .rpc('verify_teacher_login', { p_phone: phone, p_password: password })
                     .then(function (res) {
                         if (res.error) {
-                            console.error('تعذّر التحقق من بيانات دخول المدير:', res.error);
+                            console.error('تعذّر التحقق من بيانات دخول المعلم:', res.error);
                             showError('تعذّر التحقق من بيانات الدخول، حاول مرة أخرى.');
                             return;
                         }
 
                         const match = res.data && res.data[0];
-                        if (match) {
-                            saSetSession('sa_current_manager', { id: match.id, name: match.name, phone: phone });
-                            window.location.href = 'manager-dashboard.html';
-                        } else {
-                            showError('بيانات دخول المدير غير صحيحة.');
+                        if (!match) {
+                            showError('بيانات دخول المعلم غير صحيحة، أو الحساب غير موجود.');
+                            return;
                         }
+
+                        saSetSession('sa_current_teacher', {
+                            id: match.id,
+                            fullName: match.full_name,
+                            phone: match.phone,
+                            email: match.email,
+                            subject: match.subject,
+                            hourlyRate: match.hourly_rate
+                        });
+                        window.location.href = 'teacher-dashboard.html';
                     });
-                return;
-            }
-
-            if (role === 'teacher') {
-                let teachers = [];
-                try {
-                    teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
-                } catch (err) {
-                    teachers = [];
-                }
-
-                const teacherMatch = teachers.find(function (t) {
-                    return t.phone === phone && t.password === password;
-                });
-
-                if (teacherMatch) {
-                    saSetSession('sa_current_teacher', teacherMatch);
-                    window.location.href = 'teacher-dashboard.html';
-                } else {
-                    showError('بيانات دخول المعلم غير صحيحة، أو الحساب غير موجود.');
-                }
                 return;
             }
 

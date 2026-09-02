@@ -8,7 +8,7 @@ const SA_TIMEZONE = 'Asia/Dubai';
 const SA_TIMEZONE_OFFSET_MINUTES = 4 * 60;
 
 function saFormatDubai(date, options) {
-    return new Intl.DateTimeFormat('ar-EG', Object.assign({ timeZone: SA_TIMEZONE }, options)).format(date);
+    return new Intl.DateTimeFormat('ar-EG', Object.assign({ timeZone: SA_TIMEZONE }, options, { numberingSystem: 'latn' })).format(date);
 }
 
 function saDubaiNow() {
@@ -39,6 +39,17 @@ function saDubaiNow() {
 
 function saDubaiTimestamp(year, month, date, hours, minutes) {
     return Date.UTC(year, month, date, hours, minutes, 0, 0) - SA_TIMEZONE_OFFSET_MINUTES * 60000;
+}
+
+// Supabase Auth يحتاج بريدًا إلكترونيًا كمعرّف دخول، والمنصة مبنية على
+// تسجيل الدخول برقم الهاتف — فبنولّد بريدًا مُصنَّعًا وثابتًا من رقم هاتف
+// المدير (أرقام فقط) لربطه بحساب Supabase Auth حقيقي دون تغيير تجربة
+// إدخال رقم الهاتف في واجهة تسجيل الدخول. يُستخدم في admin-login.html
+// وفي سكريبت الترحيل migrate-managers-to-auth.mjs — يجب أن يبقى نفس
+// المنطق في المكانين.
+function saManagerAuthEmail(phone) {
+    const digits = String(phone || '').replace(/[^0-9]/g, '');
+    return 'manager+' + digits + '@smartacademy.internal';
 }
 
 function saSetSession(key, data) {
@@ -80,6 +91,9 @@ if ('serviceWorker' in navigator) {
 }
 
 (function initInstallPrompt() {
+    const PWA_MODAL_SEEN_KEY = 'sa_pwa_modal_seen';
+    const PWA_MODAL_SHOW_DELAY_MS = 1500;
+
     let deferredPrompt = null;
 
     const isRunningStandalone = () =>
@@ -90,6 +104,35 @@ if ('serviceWorker' in navigator) {
         document.querySelectorAll('.pwa-install-btn').forEach((btn) => {
             btn.classList.remove('is-visible');
         });
+    };
+
+    const runInstallFlow = async () => {
+        if (!deferredPrompt || deferredPrompt === 'installed') return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        hideInstallOption();
+    };
+
+    // -------------------- نافذة تثبيت PWA التلقائية (أول زيارة فقط) --------------------
+    const modalOverlay = document.getElementById('pwa-install-overlay');
+
+    const dismissInstallModal = () => {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove('is-visible');
+        localStorage.setItem(PWA_MODAL_SEEN_KEY, '1');
+    };
+
+    const maybeShowInstallModal = () => {
+        if (!modalOverlay) return;
+        if (localStorage.getItem(PWA_MODAL_SEEN_KEY)) return;
+        if (isRunningStandalone()) return;
+        if (!deferredPrompt || deferredPrompt === 'installed') return;
+
+        setTimeout(() => {
+            if (!deferredPrompt || deferredPrompt === 'installed') return;
+            modalOverlay.classList.add('is-visible');
+        }, PWA_MODAL_SHOW_DELAY_MS);
     };
 
     if (isRunningStandalone()) {
@@ -103,25 +146,41 @@ if ('serviceWorker' in navigator) {
         document.querySelectorAll('.pwa-install-btn').forEach((btn) => {
             btn.classList.add('is-visible');
         });
+        maybeShowInstallModal();
     });
 
     document.addEventListener('DOMContentLoaded', () => {
         if (isRunningStandalone()) hideInstallOption();
 
         document.querySelectorAll('.pwa-install-btn').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-                if (!deferredPrompt || deferredPrompt === 'installed') return;
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                hideInstallOption();
-            });
+            btn.addEventListener('click', runInstallFlow);
         });
+
+        const modalInstallBtn = document.getElementById('pwa-modal-install-btn');
+        const modalLaterBtn = document.getElementById('pwa-modal-later-btn');
+        const modalCloseBtn = document.getElementById('pwa-modal-close');
+
+        if (modalInstallBtn) {
+            modalInstallBtn.addEventListener('click', async () => {
+                await runInstallFlow();
+                dismissInstallModal();
+            });
+        }
+
+        if (modalLaterBtn) modalLaterBtn.addEventListener('click', dismissInstallModal);
+        if (modalCloseBtn) modalCloseBtn.addEventListener('click', dismissInstallModal);
+
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) dismissInstallModal();
+            });
+        }
     });
 
     window.addEventListener('appinstalled', () => {
         deferredPrompt = 'installed';
         hideInstallOption();
+        dismissInstallModal();
     });
 })();
 
@@ -191,3 +250,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const countdownEl = document.getElementById('pricing-countdown');
+    if (!countdownEl) return;
+
+    const hEl = countdownEl.querySelector('[data-countdown-h]');
+    const mEl = countdownEl.querySelector('[data-countdown-m]');
+    const sEl = countdownEl.querySelector('[data-countdown-s]');
+
+    function tick() {
+        const now = new Date();
+        const deadline = new Date(now);
+        deadline.setHours(23, 59, 59, 999);
+
+        const diff = Math.max(0, deadline - now);
+        const totalSeconds = Math.floor(diff / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        hEl.textContent = String(hours).padStart(2, '0');
+        mEl.textContent = String(minutes).padStart(2, '0');
+        sEl.textContent = String(seconds).padStart(2, '0');
+    }
+
+    tick();
+    setInterval(tick, 1000);
+});
+

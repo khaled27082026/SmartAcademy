@@ -108,7 +108,8 @@
         .dash-topbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            text-align: center;
             margin-bottom: 28px;
         }
 
@@ -137,6 +138,61 @@
             margin-bottom: 20px;
         }
 
+        #global-time-filter-card {
+            border-color: var(--cyan);
+            padding: 12px 16px;
+            margin-bottom: 40px;
+        }
+
+        #global-time-filter-card:has(.global-time-filter-head.is-collapsed) {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .global-time-filter-head {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .global-time-filter-head:not(.is-collapsed) {
+            margin-bottom: 8px;
+        }
+
+        .global-time-filter-head h2 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .global-time-filter-head h2 i:first-of-type {
+            color: var(--cyan);
+            font-size: 0.82rem;
+        }
+
+        .global-time-filter-head.is-collapsed .section-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .global-time-filter-head p {
+            color: var(--text-sec);
+            font-size: 0.7rem;
+        }
+
+        .attendance-date-range.is-collapsed {
+            display: none;
+        }
+
+        #global-time-filter-card .attendance-date-range {
+            margin: 0;
+            gap: 6px;
+        }
+
         .dash-form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -152,6 +208,42 @@
 
         .dash-table-wrap {
             overflow-x: auto;
+        }
+
+        .students-count-line {
+            color: var(--text-sec);
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+        }
+
+        .students-count-line span {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .students-numbered-list {
+            list-style: decimal;
+            padding-inline-start: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .students-numbered-list li {
+            padding-inline-start: 6px;
+        }
+
+        .students-numbered-list .student-item-name {
+            font-weight: 600;
+        }
+
+        .students-numbered-list .student-item-meta {
+            color: var(--text-sec);
+            font-size: 0.82rem;
+            margin-top: 2px;
         }
 
         .dash-table {
@@ -180,6 +272,507 @@
 
         .dash-table tbody tr:hover {
             background: var(--glass);
+        }
+
+        .today-class-join-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(79, 179, 217, 0.12);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .today-class-join-btn:hover {
+            background: var(--cyan);
+            color: var(--bg-core);
+            transform: translateY(-1px);
+        }
+
+        .today-class-join-btn.is-disabled {
+            background: var(--glass);
+            border-color: var(--border-glass);
+            color: var(--text-sec);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .today-class-join-btn.is-disabled:hover {
+            background: var(--glass);
+            color: var(--text-sec);
+            transform: none;
+        }
+
+        #attendance-overview-table {
+            min-width: 980px;
+        }
+
+        .attendance-card-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-card-toolbar h2 {
+            margin-bottom: 0;
+        }
+
+        #attendance-export-excel-btn {
+            flex-shrink: 0;
+            gap: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .attendance-summary-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 6px 12px;
+            margin-bottom: 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+        }
+
+        .attendance-summary-item {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .attendance-summary-divider {
+            width: 1px;
+            height: 12px;
+            background: var(--border-glass);
+            flex-shrink: 0;
+        }
+
+        .attendance-summary-item-label {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.72rem;
+        }
+
+        .attendance-summary-item-value {
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 0.82rem;
+            line-height: 1;
+        }
+
+        .attendance-summary-item.is-highlight .attendance-summary-item-value {
+            color: var(--cyan);
+        }
+
+        .attendance-summary-item-unit {
+            color: var(--text-sec);
+            font-size: 0.66rem;
+            font-weight: 500;
+            margin-inline-start: 1px;
+        }
+
+        @media (max-width: 640px) {
+            .attendance-summary-bar {
+                gap: 6px;
+                padding: 6px 10px;
+            }
+
+            .attendance-summary-item-label {
+                font-size: 0.64rem;
+            }
+
+            .attendance-summary-item-value {
+                font-size: 0.74rem;
+            }
+
+            .attendance-summary-item-unit {
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .attendance-card-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #attendance-export-excel-btn {
+                justify-content: center;
+            }
+        }
+
+        .attendance-summary-counters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-summary-counter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .attendance-summary-counter-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 0.95rem;
+            background: rgba(79, 179, 217, 0.12);
+            color: var(--cyan);
+        }
+
+        .attendance-summary-counter.is-present .attendance-summary-counter-icon {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .attendance-summary-counter.is-absent .attendance-summary-counter-icon {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--logout-red-hover);
+        }
+
+        .attendance-summary-counter-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .attendance-summary-counter-value {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .attendance-summary-counter.is-present .attendance-summary-counter-value {
+            color: #22c55e;
+        }
+
+        .attendance-summary-counter.is-absent .attendance-summary-counter-value {
+            color: var(--logout-red-hover);
+        }
+
+        .attendance-summary-counter-label {
+            font-size: 0.72rem;
+            color: var(--text-sec);
+            white-space: nowrap;
+        }
+
+        .attendance-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-filter-search {
+            position: relative;
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        .attendance-filter-search i {
+            position: absolute;
+            inset-inline-start: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        .attendance-filter-search input {
+            width: 100%;
+            padding: 10px 14px;
+            padding-inline-start: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .attendance-filter-search input::placeholder {
+            color: var(--text-sec);
+        }
+
+        .attendance-filter-search input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-filter-select {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            padding-inline-end: 34px;
+            background-color: var(--input-bg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%2394a3b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            background-size: 11px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        [data-theme="light"] .attendance-filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23475569' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+
+        .attendance-filter-select:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-filter-select option {
+            background: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        .attendance-date-range {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1 1 100%;
+        }
+
+        .attendance-date-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .attendance-date-preset-btn {
+            flex-shrink: 0;
+            padding: 4px 11px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-pill);
+            color: var(--cyan);
+            font-family: inherit;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .attendance-date-preset-btn:hover {
+            border-color: var(--cyan);
+        }
+
+        .attendance-date-preset-btn.is-active {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .attendance-date-range-fields {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .attendance-filter-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1 1 140px;
+            min-width: 130px;
+            padding-inline-start: 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-pill);
+        }
+
+        .attendance-filter-date:focus-within {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .attendance-date-label {
+            flex-shrink: 0;
+            color: var(--text-sec);
+            font-size: 0.66rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .attendance-date-input {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 6px 4px;
+            min-height: 30px;
+            background: transparent;
+            border: none;
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: 0.72rem;
+            cursor: pointer;
+            color-scheme: dark;
+        }
+
+        [data-theme="light"] .attendance-date-input {
+            color-scheme: light;
+        }
+
+        .attendance-date-input:focus {
+            outline: none;
+        }
+
+        .attendance-date-clear-btn {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            margin-inline-end: 4px;
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+
+        .attendance-date-clear-btn:hover {
+            color: var(--logout-red-hover);
+        }
+
+        @media (max-width: 640px) {
+            .attendance-date-range-fields {
+                justify-content: center;
+            }
+
+            .attendance-filter-date {
+                flex: 1 1 calc(50% - 4px);
+                min-width: 0;
+            }
+
+            .attendance-date-label {
+                font-size: 0.6rem;
+            }
+
+            .attendance-date-input {
+                min-width: 0;
+                font-size: 0.66rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #global-time-filter-card {
+                padding: 10px 12px;
+            }
+
+            .global-time-filter-head h2 {
+                font-size: 0.86rem;
+            }
+
+            .global-time-filter-head p {
+                font-size: 0.64rem;
+            }
+        }
+
+        .attendance-status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+        }
+
+        .attendance-status-tag.is-present {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .attendance-status-tag.is-absent {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+        }
+
+        @media (max-width: 640px) {
+            .attendance-summary-counters {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .attendance-summary-counter {
+                flex-direction: column;
+                text-align: center;
+                gap: 6px;
+                padding: 10px 8px;
+            }
+
+            .attendance-summary-counter-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .attendance-summary-counter-value {
+                font-size: 1.05rem;
+            }
+
+            .attendance-summary-counter-label {
+                font-size: 0.6rem;
+                white-space: normal;
+                line-height: 1.2;
+            }
+
+            .attendance-filters {
+                gap: 8px;
+            }
+
+            .attendance-filter-search {
+                flex: 1 1 100%;
+            }
+
+            .attendance-filter-select {
+                flex: 1 1 calc(50% - 4px);
+            }
         }
 
         .dash-delete-btn {
@@ -348,6 +941,467 @@
             font-size: 0.85rem;
             margin-bottom: 24px;
         }
+
+        .section-divider {
+            margin: 40px 0 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .dash-main > section:first-of-type .section-divider {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .section-divider {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-divider h1 {
+            font-size: 1.3rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .section-toggle-icon {
+            font-size: 0.85rem;
+            color: var(--cyan);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .section-divider.is-collapsed .section-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section-divider p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .section-body {
+            overflow: hidden;
+        }
+
+        .section-body.is-collapsed {
+            display: none;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-card {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+        }
+
+        .kpi-card-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-sec);
+            font-size: 0.72rem;
+            margin-bottom: 5px;
+        }
+
+        .kpi-card-label i {
+            color: var(--cyan);
+            font-size: 0.8rem;
+        }
+
+        .kpi-card-value {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1.15;
+        }
+
+        .kpi-card.is-negative .kpi-card-value {
+            color: var(--logout-red-hover);
+        }
+
+        .kpi-card-sub {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 4px;
+            font-size: 0.68rem;
+            color: var(--text-sec);
+        }
+
+        .kpi-change {
+            font-weight: 700;
+        }
+
+        .kpi-change.is-up {
+            color: #22c55e;
+        }
+
+        .kpi-change.is-down {
+            color: var(--logout-red-hover);
+        }
+
+        .financial-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .financial-actions .btn-outline-glow {
+            gap: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: var(--glass);
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 280px;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .chart-wrap canvas {
+            width: 100% !important;
+            max-width: 100%;
+        }
+
+        .financial-chart-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .financial-chart-head h2 {
+            margin-bottom: 0;
+        }
+
+        .global-filter-sync-badge {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            background: rgba(79, 179, 217, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: var(--radius-tag);
+            padding: 4px 12px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .global-filter-sync-badge.is-inline {
+            display: inline-block;
+            margin-bottom: 0;
+            max-width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .global-filter-sync-badge {
+                font-size: 0.64rem;
+                padding: 3px 10px;
+            }
+        }
+
+        .subscription-status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+        }
+
+        .subscription-status-tag.is-paid {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .subscription-status-tag.is-overdue {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+        }
+
+        .dues-summary-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .dues-summary-scope {
+            font-size: 0.78rem;
+            color: var(--cyan);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            padding: 4px 12px;
+            border-radius: var(--radius-tag);
+            white-space: nowrap;
+        }
+
+        .dues-summary-hint {
+            font-size: 0.82rem;
+            color: var(--text-sec);
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .dues-summary-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .dues-value-block {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 15px;
+            padding: 14px 16px;
+        }
+
+        .dues-value-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: var(--text-sec);
+            margin-bottom: 8px;
+        }
+
+        .dues-value-block.is-collected .dues-value-label i {
+            color: #22c55e;
+        }
+
+        .dues-value-block.is-pending .dues-value-label i {
+            color: var(--logout-red-hover);
+        }
+
+        .dues-value-amount {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .dues-value-block.is-collected .dues-value-amount {
+            color: #22c55e;
+        }
+
+        .dues-value-block.is-pending .dues-value-amount {
+            color: var(--logout-red-hover);
+        }
+
+        .dues-progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dues-progress-track {
+            flex: 1;
+            height: 12px;
+            border-radius: 10px;
+            background: rgba(255, 107, 107, 0.18);
+            overflow: hidden;
+        }
+
+        .dues-progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            transition: width 0.4s ease;
+        }
+
+        .dues-progress-percent {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #22c55e;
+            min-width: 46px;
+            text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .dues-summary-values {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .transaction-type-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid var(--border-glass);
+        }
+
+        .transaction-type-tag.is-subscription {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .transaction-type-tag.is-teacher_salary,
+        .transaction-type-tag.is-supervisor_salary,
+        .transaction-type-tag.is-advertising {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+        }
+
+        .transaction-auto-tag {
+            display: inline-block;
+            margin-inline-start: 8px;
+            padding: 1px 8px;
+            border-radius: var(--radius-tag);
+            font-size: 0.68rem;
+            font-weight: 500;
+            background: rgba(79, 179, 217, 0.12);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            vertical-align: middle;
+        }
+
+        .teacher-dues-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .teacher-dues-head h2 {
+            margin-bottom: 0;
+        }
+
+        .teacher-dues-total-badge {
+            font-size: 0.82rem;
+            color: var(--text-sec);
+            background: var(--glass);
+            border: 1px solid var(--cyan);
+            padding: 6px 14px;
+            border-radius: var(--radius-tag);
+            white-space: nowrap;
+        }
+
+        .teacher-dues-total-badge strong {
+            color: var(--cyan);
+            font-size: 1rem;
+            font-weight: 900;
+            margin-inline-end: 4px;
+        }
+
+        .teacher-dues-net.is-negative {
+            color: var(--logout-red-hover);
+        }
+
+        @media (max-width: 640px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+
+            .kpi-card {
+                padding: 8px 10px;
+            }
+
+            .kpi-card-label {
+                font-size: 0.6rem;
+                gap: 4px;
+                margin-bottom: 3px;
+            }
+
+            .kpi-card-label i {
+                font-size: 0.66rem;
+            }
+
+            .kpi-card-value {
+                font-size: 0.92rem;
+            }
+
+            .kpi-card-sub {
+                font-size: 0.56rem;
+                gap: 3px;
+                margin-top: 3px;
+                flex-wrap: wrap;
+            }
+
+            .financial-actions {
+                flex-wrap: nowrap;
+                gap: 6px;
+            }
+
+            .financial-actions .btn-glow,
+            .financial-actions .btn-outline-glow {
+                flex: 1 1 0;
+                min-width: 0;
+                justify-content: center;
+                text-align: center;
+                white-space: normal;
+                line-height: 1.2;
+                gap: 4px;
+                padding: 8px 6px;
+                font-size: 0.68rem;
+            }
+
+            .financial-actions .btn-glow i,
+            .financial-actions .btn-outline-glow i {
+                font-size: 0.72rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .kpi-card {
+                padding: 7px 8px;
+            }
+
+            .kpi-card-value {
+                font-size: 0.82rem;
+            }
+
+            .kpi-card-label {
+                font-size: 0.56rem;
+            }
+
+            .financial-actions {
+                gap: 5px;
+            }
+
+            .financial-actions .btn-glow,
+            .financial-actions .btn-outline-glow {
+                padding: 7px 4px;
+                font-size: 0.6rem;
+            }
+
+            .financial-actions .btn-glow i,
+            .financial-actions .btn-outline-glow i {
+                font-size: 0.64rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -372,12 +1426,382 @@
         <main class="dash-main">
             <div class="dash-topbar">
                 <div>
-                    <h1>لوحة المدير</h1>
-                    <p>إدارة حسابات المشرفين المصرّح لهم بالدخول على لوحة تحكم المنصة</p>
+                    <h1>لوحة التحكم الشاملة</h1>
                 </div>
             </div>
 
+            <div class="dash-card" id="global-time-filter-card">
+                <div class="global-time-filter-head" data-target="global-time-filter-body">
+                    <h2><i class="fa-solid fa-filter-circle-dollar"></i> النطاق الزمني العام <i class="fa-solid fa-chevron-down section-toggle-icon"></i></h2>
+                    <p>يتحكم في كل بيانات اللوحة</p>
+                </div>
+                <div class="attendance-date-range" id="global-time-filter-body">
+                    <div class="attendance-date-presets">
+                        <button type="button" class="attendance-date-preset-btn" data-preset="today">اليوم</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="yesterday">الأمس</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="last7">آخر 7 أيام</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="last30">آخر 30 يومًا</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="thisWeek">هذا الأسبوع</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="thisMonth">هذا الشهر</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="lastMonth">الشهر الماضي</button>
+                        <button type="button" class="attendance-date-preset-btn" data-preset="all">الكل</button>
+                    </div>
+                    <div class="attendance-date-range-fields">
+                        <div class="attendance-filter-date">
+                            <span class="attendance-date-label">من</span>
+                            <input type="date" id="attendance-filter-date-from" class="attendance-date-input" aria-label="من تاريخ">
+                        </div>
+                        <div class="attendance-filter-date">
+                            <span class="attendance-date-label">إلى</span>
+                            <input type="date" id="attendance-filter-date-to" class="attendance-date-input" aria-label="إلى تاريخ">
+                        </div>
+                        <button type="button" id="attendance-filter-date-clear" class="attendance-date-clear-btn" aria-label="مسح فلتر التاريخ" style="display: none;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <section id="financial-hub">
+                <div class="section-divider is-collapsed" data-target="financial-hub-body">
+                    <h1>بوابة البيانات والشؤون المالية <i class="fa-solid fa-chevron-down section-toggle-icon"></i></h1>
+                    <p>نظرة شاملة على الإيرادات والمصروفات</p>
+                </div>
+
+                <div class="section-body is-collapsed" id="financial-hub-body">
+                <p class="global-filter-sync-badge" id="global-filter-badge-kpis">عرض البيانات: كل الفترات</p>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-card-label"><i class="fa-solid fa-sack-dollar"></i> إجمالي الإيرادات</div>
+                        <div class="kpi-card-value" id="kpi-revenue">—</div>
+                        <div class="kpi-card-sub">
+                            <span>الفترة السابقة: <span id="kpi-revenue-prev">—</span></span>
+                            <span class="kpi-change" id="kpi-revenue-change"></span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-card-label"><i class="fa-solid fa-file-invoice-dollar"></i> إجمالي المصروفات</div>
+                        <div class="kpi-card-value" id="kpi-expenses">—</div>
+                        <div class="kpi-card-sub">مصروفات تشغيلية ورواتب المعلمين</div>
+                    </div>
+
+                    <div class="kpi-card" id="kpi-profit-card">
+                        <div class="kpi-card-label"><i class="fa-solid fa-chart-line"></i> صافي الأرباح</div>
+                        <div class="kpi-card-value" id="kpi-profit">—</div>
+                        <div class="kpi-card-sub">الإيرادات - المصروفات</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-card-label"><i class="fa-solid fa-users"></i> إجمالي الطلاب والمعلمين</div>
+                        <div class="kpi-card-value" id="kpi-people">—</div>
+                        <div class="kpi-card-sub" id="kpi-people-sub">—</div>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="financial-chart-head">
+                        <h2>تطور الأرباح والإيرادات</h2>
+                        <span class="global-filter-sync-badge is-inline" id="global-filter-badge-chart">متزامن مع: كل الفترات</span>
+                    </div>
+                    <div class="chart-wrap">
+                        <canvas id="financial-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dash-card" id="dues-summary-card">
+                    <div class="dues-summary-head">
+                        <h2>نسبة تحصيل المستحقات</h2>
+                        <span class="dues-summary-scope" id="dues-summary-scope">كل الفترات</span>
+                    </div>
+                    <p class="dues-summary-hint">مرتبطة تلقائيًا بالنطاق الزمني العام أعلى الصفحة</p>
+
+                    <div id="dues-summary-body">
+                        <div class="dues-summary-values">
+                            <div class="dues-value-block is-collected">
+                                <span class="dues-value-label"><i class="fa-solid fa-circle-check"></i> تم تحصيله فعليًا</span>
+                                <span class="dues-value-amount" id="dues-collected-amount">0.00 د.إ</span>
+                            </div>
+                            <div class="dues-value-block is-pending">
+                                <span class="dues-value-label"><i class="fa-solid fa-hourglass-half"></i> مستحق ومعلّق</span>
+                                <span class="dues-value-amount" id="dues-pending-amount">0.00 د.إ</span>
+                            </div>
+                        </div>
+
+                        <div class="dues-progress-wrap">
+                            <div class="dues-progress-track">
+                                <div class="dues-progress-fill" id="dues-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <span class="dues-progress-percent" id="dues-progress-percent">0%</span>
+                        </div>
+                    </div>
+
+                    <p id="dues-summary-empty" class="dash-empty" style="display: none;">نسبة التحصيل تحتاج إعداد أخير على قاعدة البيانات — شغّل ملف add-attendance-payment-status.sql على Supabase.</p>
+                </div>
+
+                <div class="dash-card">
+                    <h2>سجل المعاملات المالية</h2>
+                    <div class="financial-actions">
+                        <button type="button" class="btn-glow" id="add-revenue-btn" style="background: linear-gradient(90deg, #16a34a, #22c55e);">
+                            <i class="fa-solid fa-plus"></i>
+                            إضافة إيراد جديد
+                        </button>
+                        <button type="button" class="btn-glow" id="add-expense-btn" style="background: linear-gradient(90deg, var(--logout-red), var(--logout-red-hover));">
+                            <i class="fa-solid fa-plus"></i>
+                            تسجيل مصروف
+                        </button>
+                        <button type="button" class="btn-outline-glow" id="export-transactions-btn">
+                            <i class="fa-solid fa-file-export"></i>
+                            تصدير التقارير
+                        </button>
+                    </div>
+
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="transactions-table">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 30%;">
+                                <col style="width: 18%;">
+                                <col style="width: 22%;">
+                                <col style="width: 10%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>النوع</th>
+                                    <th>الطالب/المعلم</th>
+                                    <th>المبلغ</th>
+                                    <th>التاريخ</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="transactions-empty" class="dash-empty">لا توجد معاملات مالية مسجّلة بعد.</p>
+                </div>
+
+                <div class="dash-card" id="teacher-dues-card">
+                    <div class="teacher-dues-head">
+                        <h2>مستحقات المعلمين</h2>
+                        <span class="teacher-dues-total-badge">إجمالي المستحقات: <strong id="teacher-dues-total">0.00</strong> ج.م</span>
+                    </div>
+                    <p class="global-filter-sync-badge" id="global-filter-badge-teacher-dues">متزامن مع: كل الفترات</p>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="teacher-dues-table">
+                            <colgroup>
+                                <col style="width: 40%;">
+                                <col style="width: 30%;">
+                                <col style="width: 30%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>المعلم</th>
+                                    <th>المادة</th>
+                                    <th>صافي المستحق</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-dues-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="teacher-dues-empty" class="dash-empty">لا يوجد معلمون مسجّلون بعد.</p>
+                </div>
+                </div>
+            </section>
+
+            <section id="sessions-tracking">
+                <div class="section-divider is-collapsed" data-target="sessions-tracking-body">
+                    <h1>الحصص والمتابعة والطلاب <i class="fa-solid fa-chevron-down section-toggle-icon"></i></h1>
+                    <p>حصص اليوم، سجل المتابعة الشامل، وحالة الطلاب المشتركين</p>
+                </div>
+
+                <div class="section-body is-collapsed" id="sessions-tracking-body">
+                <div class="dash-card">
+                    <h2>جدول الحصص الفعلية اليومية</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="today-classes-table">
+                            <colgroup>
+                                <col style="width: 16%;">
+                                <col style="width: 25%;">
+                                <col style="width: 25%;">
+                                <col style="width: 22%;">
+                                <col style="width: 12%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>الوقت</th>
+                                    <th>الطالب</th>
+                                    <th>المعلم</th>
+                                    <th>المادة</th>
+                                    <th>دخول الحصة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="today-classes-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="today-classes-empty" class="dash-empty">لا توجد حصص مجدولة اليوم.</p>
+                </div>
+
+                <div class="dash-card">
+                    <div class="attendance-card-toolbar">
+                        <h2>جدول المتابعة الشامل</h2>
+                        <button type="button" class="btn-outline-glow" id="attendance-export-excel-btn">
+                            <i class="fa-solid fa-file-excel"></i>
+                            تصدير إلى Excel
+                        </button>
+                    </div>
+
+                    <div class="attendance-summary-counters">
+                        <div class="attendance-summary-counter is-total">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-list-check"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-total">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الحصص الظاهرة</span>
+                            </span>
+                        </div>
+                        <div class="attendance-summary-counter is-present">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-user-check"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-present">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الحاضرين</span>
+                            </span>
+                        </div>
+                        <div class="attendance-summary-counter is-absent">
+                            <span class="attendance-summary-counter-icon"><i class="fa-solid fa-user-xmark"></i></span>
+                            <span class="attendance-summary-counter-text">
+                                <span class="attendance-summary-counter-value" id="attendance-count-absent">0</span>
+                                <span class="attendance-summary-counter-label">إجمالي الغائبين</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="attendance-filters">
+                        <div class="attendance-filter-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="attendance-filter-search" placeholder="بحث بالاسم أو المادة...">
+                        </div>
+                        <select id="attendance-filter-subject" class="attendance-filter-select">
+                            <option value="">كل المواد</option>
+                        </select>
+                        <select id="attendance-filter-status" class="attendance-filter-select">
+                            <option value="">كل الحالات</option>
+                            <option value="present">حضر</option>
+                            <option value="absent">غائب</option>
+                            <option value="none">لم يُسجَّل بعد</option>
+                        </select>
+                    </div>
+
+                    <div class="attendance-summary-bar" id="attendance-summary-bar" style="display: none;">
+                        <span class="attendance-summary-item" title="الحصص المكتملة">
+                            <span class="attendance-summary-item-label">الحصص:</span>
+                            <strong class="attendance-summary-item-value" id="attendance-footer-count">0</strong>
+                        </span>
+                        <span class="attendance-summary-divider"></span>
+                        <span class="attendance-summary-item" title="مجموع الساعات">
+                            <span class="attendance-summary-item-label">الساعات:</span>
+                            <strong class="attendance-summary-item-value" id="attendance-footer-hours">0.00</strong>
+                        </span>
+                        <span class="attendance-summary-divider"></span>
+                        <span class="attendance-summary-item is-highlight" title="إجمالي المستحق">
+                            <span class="attendance-summary-item-label">المستحق:</span>
+                            <strong class="attendance-summary-item-value" id="attendance-footer-amount">0.00</strong>
+                            <span class="attendance-summary-item-unit">د.إ</span>
+                        </span>
+                    </div>
+
+                    <p id="attendance-overview-empty" class="dash-empty">جارٍ تحميل بيانات المتابعة...</p>
+                    <div class="dash-table-wrap" id="attendance-overview-wrap" style="display: none;">
+                        <table class="dash-table" id="attendance-overview-table">
+                            <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 8%;">
+                                <col style="width: 9%;">
+                                <col style="width: 9%;">
+                                <col style="width: 12%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 9%;">
+                                <col style="width: 8%;">
+                                <col style="width: 10%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اليوم</th>
+                                    <th>الموعد</th>
+                                    <th>المدة</th>
+                                    <th>المادة</th>
+                                    <th>الطالب</th>
+                                    <th>المعلم</th>
+                                    <th>الحضور</th>
+                                    <th>آخر تحديث</th>
+                                    <th>المستحق</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-overview-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2>عدد الطلاب المشتركين بالفعل</h2>
+                    <p class="students-count-line">إجمالي الطلاب المسجّلين: <span id="enrolled-students-count">—</span></p>
+                    <ol class="students-numbered-list" id="enrolled-students-list"></ol>
+                    <p id="enrolled-students-empty" class="dash-empty">لا يوجد طلاب مسجّلون بعد.</p>
+                </div>
+
+                <div class="dash-card">
+                    <h2>حالة اشتراكات الطلاب</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="subscriptions-table">
+                            <colgroup>
+                                <col style="width: 35%;">
+                                <col style="width: 25%;">
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>الطالب</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>آخر دفعة</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriptions-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="subscriptions-empty" class="dash-empty">لا يوجد طلاب مسجّلون بعد.</p>
+                </div>
+                </div>
+            </section>
+
             <section id="admins">
+                <div class="section-divider is-collapsed" data-target="admins-body">
+                    <h1>إدارة المشرفين <i class="fa-solid fa-chevron-down section-toggle-icon"></i></h1>
+                    <p>إدارة حسابات دخول المشرفين</p>
+                </div>
+
+                <div class="section-body is-collapsed" id="admins-body">
+                <div class="dash-card">
+                    <h2>المشرفون الحاليون</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم الكامل</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>تاريخ الإضافة</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="admins-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="admins-empty" class="dash-empty">لا يوجد مشرفون مضافون بعد.</p>
+                </div>
+
                 <div class="dash-card">
                     <h2>إضافة مشرف جديد</h2>
                     <form id="add-admin-form" class="dash-form-grid">
@@ -421,44 +1845,79 @@
                         </button>
                     </form>
                 </div>
-
-                <div class="dash-card">
-                    <h2>المشرفون الحاليون</h2>
-                    <div class="dash-table-wrap">
-                        <table class="dash-table">
-                            <thead>
-                                <tr>
-                                    <th>الاسم الكامل</th>
-                                    <th>رقم الهاتف</th>
-                                    <th>البريد الإلكتروني</th>
-                                    <th>تاريخ الإضافة</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="admins-table-body"></tbody>
-                        </table>
-                    </div>
-                    <p id="admins-empty" class="dash-empty">لا يوجد مشرفون مضافون بعد.</p>
-                </div>
-
-                <div class="dash-card">
-                    <h2>إحصائيات الطلاب حسب المشرف</h2>
-                    <div class="dash-table-wrap">
-                        <table class="dash-table">
-                            <thead>
-                                <tr>
-                                    <th>المشرف</th>
-                                    <th>رقم الهاتف</th>
-                                    <th>عدد الطلاب</th>
-                                </tr>
-                            </thead>
-                            <tbody id="students-stats-table-body"></tbody>
-                        </table>
-                    </div>
-                    <p id="students-stats-empty" class="dash-empty">لا يوجد طلاب مضافون من أي مشرف حتى الآن.</p>
                 </div>
             </section>
         </main>
+    </div>
+
+    <div class="manage-modal-overlay" id="transaction-overlay">
+        <div class="manage-modal">
+            <button type="button" class="manage-modal-close" id="transaction-close" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 id="transaction-modal-title">إضافة معاملة مالية</h2>
+            <p class="manage-modal-sub">سجّل حركة مالية جديدة</p>
+
+            <form id="transaction-form" class="dash-form-grid">
+                <div class="form-field" style="grid-column: 1 / -1;">
+                    <label for="transaction-type">نوع المعاملة</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-list"></i>
+                        <select id="transaction-type" required>
+                            <option value="subscription" data-category="revenue">إيراد: اشتراك الطالب</option>
+                            <option value="teacher_salary" data-category="expense">رواتب المعلمين</option>
+                            <option value="supervisor_salary" data-category="expense">رواتب المشرفين</option>
+                            <option value="advertising" data-category="expense">مصروفات الإعلانات</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field" id="transaction-student-field" style="grid-column: 1 / -1;">
+                    <label for="transaction-student">الطالب</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <select id="transaction-student">
+                            <option value="">اختر الطالب (اختياري)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field" id="transaction-teacher-field" style="grid-column: 1 / -1; display: none;">
+                    <label for="transaction-teacher">المعلم</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                        <select id="transaction-teacher">
+                            <option value="">اختر المعلم</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field" id="transaction-supervisor-field" style="grid-column: 1 / -1; display: none;">
+                    <label for="transaction-supervisor">المشرف</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <select id="transaction-supervisor">
+                            <option value="">اختر المشرف</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field" style="grid-column: 1 / -1;">
+                    <label for="transaction-amount">المبلغ</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="transaction-amount" min="0" step="0.01" placeholder="مثال: 200" required>
+                    </div>
+                </div>
+
+                <p id="transaction-error" class="mb-2" style="color: var(--logout-red); display: none; font-size: 0.9rem;"></p>
+
+                <button type="submit" class="btn-glow">
+                    <i class="fa-solid fa-check"></i>
+                    حفظ المعاملة
+                </button>
+            </form>
+        </div>
     </div>
 
     <div class="manage-modal-overlay" id="edit-admin-overlay">
@@ -516,13 +1975,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/app.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/supabaseClient.js"></script>
 
+    <!-- SheetJS: تصدير جدول المتابعة الشامل لملف Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <script>
         document.getElementById('manager-logout').addEventListener('click', function () {
             saClearSession('sa_current_manager');
+            if (window.saSupabase && window.saSupabase.auth) {
+                window.saSupabase.auth.signOut();
+            }
         });
     </script>
 
@@ -651,54 +2118,9 @@
             await refreshAll();
         });
 
-        function getStudents() {
-            try {
-                return JSON.parse(localStorage.getItem('sa_students')) || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function renderStudentStats(admins) {
-            const students = getStudents();
-            const tbody = document.getElementById('students-stats-table-body');
-            const emptyMsg = document.getElementById('students-stats-empty');
-            const tableWrap = document.querySelectorAll('.dash-table-wrap')[1];
-
-            tbody.innerHTML = '';
-
-            if (admins.length === 0 || students.length === 0) {
-                tableWrap.style.display = 'none';
-                emptyMsg.style.display = 'block';
-                return;
-            }
-
-            tableWrap.style.display = 'block';
-            emptyMsg.style.display = 'none';
-
-            admins.forEach(function (admin) {
-                const count = students.filter(function (s) { return s.addedByPhone === admin.phone; }).length;
-
-                const tr = document.createElement('tr');
-
-                const nameTd = document.createElement('td');
-                nameTd.textContent = admin.name;
-
-                const phoneTd = document.createElement('td');
-                phoneTd.textContent = admin.phone;
-
-                const countTd = document.createElement('td');
-                countTd.textContent = count;
-
-                tr.append(nameTd, phoneTd, countTd);
-                tbody.appendChild(tr);
-            });
-        }
-
         async function refreshAll() {
             const admins = await fetchSupervisors();
             renderAdmins(admins);
-            renderStudentStats(admins);
         }
 
         refreshAll();
@@ -765,6 +2187,1206 @@
             closeEditModal();
             await refreshAll();
         });
+
+        document.querySelectorAll('.section-divider[data-target], .global-time-filter-head[data-target]').forEach(function (divider) {
+            const body = document.getElementById(divider.dataset.target);
+            if (!body) return;
+
+            divider.setAttribute('role', 'button');
+            divider.setAttribute('aria-expanded', String(!divider.classList.contains('is-collapsed')));
+
+            divider.addEventListener('click', function () {
+                const isCollapsed = divider.classList.toggle('is-collapsed');
+                body.classList.toggle('is-collapsed', isCollapsed);
+                divider.setAttribute('aria-expanded', String(!isCollapsed));
+            });
+        });
+
+        function formatMoney(value) {
+            if (value == null) return '—';
+            return Number(value).toLocaleString('ar-EG', { minimumFractionDigits: 0, maximumFractionDigits: 2, numberingSystem: 'latn' }) + ' د.إ';
+        }
+
+        function formatMoneyEGP(value) {
+            if (value == null) return '—';
+            return Number(value).toLocaleString('ar-EG', { minimumFractionDigits: 0, maximumFractionDigits: 2, numberingSystem: 'latn' }) + ' ج.م';
+        }
+
+        let globalTimeFilterFrom = '';
+        let globalTimeFilterTo = '';
+
+        function updateGlobalFilterBadges(label) {
+            const text1 = 'عرض البيانات: ' + label;
+            const text2 = 'متزامن مع: ' + label;
+
+            const kpiBadge = document.getElementById('global-filter-badge-kpis');
+            const chartBadge = document.getElementById('global-filter-badge-chart');
+            const duesBadge = document.getElementById('global-filter-badge-teacher-dues');
+
+            if (kpiBadge) kpiBadge.textContent = text1;
+            if (chartBadge) chartBadge.textContent = text2;
+            if (duesBadge) duesBadge.textContent = text2;
+        }
+
+        function refreshGlobalFilterConsumers(dateFrom, dateTo, label) {
+            globalTimeFilterFrom = dateFrom || '';
+            globalTimeFilterTo = dateTo || '';
+            updateGlobalFilterBadges(label || 'كل الفترات');
+
+            loadFinancialKpis(globalTimeFilterFrom, globalTimeFilterTo);
+            loadFinancialChart(globalTimeFilterFrom, globalTimeFilterTo);
+            loadTeacherDues(globalTimeFilterFrom, globalTimeFilterTo);
+        }
+
+        async function loadFinancialKpis(dateFrom, dateTo) {
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_financial_kpis', {
+                    p_manager_id: currentManager.id,
+                    p_date_from: dateFrom || null,
+                    p_date_to: dateTo || null
+                });
+                if (error) throw error;
+
+                const row = data && data[0];
+                if (!row) return;
+
+                document.getElementById('kpi-revenue').textContent = formatMoney(row.current_month_revenue);
+                document.getElementById('kpi-revenue-prev').textContent = formatMoney(row.previous_month_revenue);
+
+                const changeEl = document.getElementById('kpi-revenue-change');
+                if (row.revenue_change_percent == null) {
+                    changeEl.textContent = '';
+                } else {
+                    const isUp = row.revenue_change_percent >= 0;
+                    changeEl.className = 'kpi-change ' + (isUp ? 'is-up' : 'is-down');
+                    changeEl.innerHTML = '<i class="fa-solid fa-arrow-' + (isUp ? 'up' : 'down') + '"></i> ' + Math.abs(row.revenue_change_percent) + '%';
+                }
+
+                document.getElementById('kpi-expenses').textContent = formatMoney(row.current_month_expenses);
+
+                const profitCard = document.getElementById('kpi-profit-card');
+                const profitEl = document.getElementById('kpi-profit');
+                profitEl.textContent = formatMoney(row.net_profit);
+                profitCard.classList.toggle('is-negative', row.net_profit < 0);
+
+                document.getElementById('kpi-people').textContent = (row.total_students || 0) + ' / ' + (row.total_teachers || 0);
+                document.getElementById('kpi-people-sub').textContent = (row.total_students || 0) + ' طالب، ' + (row.total_teachers || 0) + ' معلم';
+            } catch (e) {
+                console.error('تعذّر جلب مؤشرات الأداء المالية:', e);
+            }
+        }
+
+        let financialChartInstance = null;
+
+        function computeChartRangeParams(dateFrom, dateTo) {
+            if (!dateFrom && !dateTo) {
+                return { monthsBack: 12, endMonthStart: null };
+            }
+
+            const now = saDubaiNow();
+            const toDate = dateTo ? new Date(dateTo + 'T00:00:00') : new Date(now.year, now.month, now.date);
+            const fromDate = dateFrom ? new Date(dateFrom + 'T00:00:00') : toDate;
+
+            const monthsBack = (toDate.getFullYear() - fromDate.getFullYear()) * 12
+                + (toDate.getMonth() - fromDate.getMonth()) + 1;
+
+            const endMonthStart = formatYMD(toDate.getFullYear(), toDate.getMonth(), 1);
+
+            return { monthsBack: Math.max(1, monthsBack), endMonthStart: endMonthStart };
+        }
+
+        async function loadFinancialChart(dateFrom, dateTo) {
+            if (!window.saSupabase || !currentManager || !window.Chart) return;
+
+            const rangeParams = computeChartRangeParams(dateFrom, dateTo);
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_monthly_financial_trend', {
+                    p_manager_id: currentManager.id,
+                    p_months_back: rangeParams.monthsBack,
+                    p_end_month_start: rangeParams.endMonthStart
+                });
+                if (error) throw error;
+                if (!data) return;
+
+                const labels = data.map(function (row) {
+                    return saFormatDubai(new Date(row.month_start), { month: 'short', year: 'numeric' });
+                });
+                const revenue = data.map(function (row) { return row.revenue; });
+                const expenses = data.map(function (row) { return row.expenses; });
+                const profit = data.map(function (row) { return row.profit; });
+
+                const ctx = document.getElementById('financial-chart').getContext('2d');
+                if (financialChartInstance) financialChartInstance.destroy();
+
+                const textSecColor = getComputedStyle(document.body).getPropertyValue('--text-sec');
+                const chartHeight = ctx.canvas.clientHeight || 280;
+
+                function verticalGradient(color) {
+                    const gradient = ctx.createLinearGradient(0, 0, 0, chartHeight);
+                    gradient.addColorStop(0, color + '55');
+                    gradient.addColorStop(1, color + '02');
+                    return gradient;
+                }
+
+                financialChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'الإيرادات', data: revenue,
+                                borderColor: '#22c55e', backgroundColor: verticalGradient('#22c55e'),
+                                borderWidth: 2.5, tension: 0.4, fill: true,
+                                pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#22c55e',
+                                pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2
+                            },
+                            {
+                                label: 'المصروفات', data: expenses,
+                                borderColor: '#ff6b6b', backgroundColor: verticalGradient('#ff6b6b'),
+                                borderWidth: 2.5, tension: 0.4, fill: true,
+                                pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#ff6b6b',
+                                pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2
+                            },
+                            {
+                                label: 'صافي الأرباح', data: profit,
+                                borderColor: '#4fb3d9', backgroundColor: verticalGradient('#4fb3d9'),
+                                borderWidth: 2.5, tension: 0.4, fill: true,
+                                pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#4fb3d9',
+                                pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        locale: 'en-US',
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                align: 'center',
+                                labels: {
+                                    color: textSecColor,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    boxWidth: 8,
+                                    boxHeight: 8,
+                                    padding: 18,
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 44, 61, 0.97)',
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                titleFont: { weight: '700', size: 13 },
+                                bodyFont: { size: 12 },
+                                bodySpacing: 6,
+                                boxPadding: 4,
+                                usePointStyle: true,
+                                callbacks: {
+                                    title: function (items) {
+                                        return items && items[0] ? items[0].label : '';
+                                    },
+                                    label: function (context) {
+                                        const value = Number(context.parsed.y).toLocaleString('en-US', { maximumFractionDigits: 2 });
+                                        return ' ' + context.dataset.label + ':  ' + value + ' د.إ';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: textSecColor },
+                                grid: { display: false }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: textSecColor,
+                                    callback: function (value) {
+                                        return Number(value).toLocaleString('en-US') + ' د.إ';
+                                    }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error('تعذّر جلب بيانات الرسم البياني المالي:', e);
+            }
+        }
+
+        let cachedTransactions = [];
+        const TRANSACTION_TYPE_LABELS = { subscription: 'إيراد اشتراك', teacher_salary: 'راتب معلم', supervisor_salary: 'راتب مشرف', advertising: 'مصروف إعلانات' };
+
+        async function loadTransactions() {
+            const emptyEl = document.getElementById('transactions-empty');
+            const wrapEl = document.querySelector('#transactions-table').closest('.dash-table-wrap');
+            const bodyEl = document.getElementById('transactions-table-body');
+
+            if (!window.saSupabase || !currentManager) {
+                emptyEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن.';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_transactions', {
+                    p_manager_id: currentManager.id,
+                    p_limit: 200
+                });
+                if (error) throw error;
+
+                cachedTransactions = data || [];
+
+                if (cachedTransactions.length === 0) {
+                    emptyEl.textContent = 'لا توجد معاملات مالية مسجّلة بعد.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                bodyEl.innerHTML = '';
+                cachedTransactions.forEach(function (row) {
+                    const tr = document.createElement('tr');
+
+                    const typeTd = document.createElement('td');
+                    const typeTag = document.createElement('span');
+                    typeTag.className = 'transaction-type-tag is-' + row.type;
+                    typeTag.textContent = TRANSACTION_TYPE_LABELS[row.type] || row.type;
+                    typeTd.appendChild(typeTag);
+
+                    const nameTd = document.createElement('td');
+                    nameTd.textContent = row.student_name || row.teacher_name || row.supervisor_name || '—';
+                    if (row.source === 'auto_teacher_dues') {
+                        const autoTag = document.createElement('span');
+                        autoTag.className = 'transaction-auto-tag';
+                        autoTag.title = 'تم إنشاء هذا المصروف تلقائيًا من مستحقات المعلم لهذا الشهر';
+                        autoTag.textContent = 'تلقائي';
+                        nameTd.appendChild(autoTag);
+                    }
+
+                    const amountTd = document.createElement('td');
+                    amountTd.textContent = row.source === 'auto_teacher_dues' ? formatMoneyEGP(row.amount) : formatMoney(row.amount);
+
+                    const dateTd = document.createElement('td');
+                    const d = new Date(row.created_at);
+                    dateTd.textContent = isNaN(d.getTime()) ? '—' : saFormatDubai(d, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+                    const spacerTd = document.createElement('td');
+
+                    tr.append(typeTd, nameTd, amountTd, dateTd, spacerTd);
+                    bodyEl.appendChild(tr);
+                });
+
+                emptyEl.style.display = 'none';
+                wrapEl.style.display = 'block';
+            } catch (e) {
+                console.error('تعذّر جلب سجل المعاملات المالية:', e);
+                emptyEl.textContent = 'تعذّر تحميل سجل المعاملات، حاول مرة أخرى لاحقًا.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+            }
+        }
+
+        function csvEscape(value) {
+            const str = String(value == null ? '' : value);
+            if (/[",\n]/.test(str)) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+
+        document.getElementById('export-transactions-btn').addEventListener('click', function () {
+            if (!cachedTransactions.length) return;
+
+            const header = ['النوع', 'الطالب/المعلم', 'المبلغ', 'العملة', 'التاريخ'];
+            const rows = cachedTransactions.map(function (row) {
+                return [
+                    TRANSACTION_TYPE_LABELS[row.type] || row.type,
+                    row.student_name || row.teacher_name || row.supervisor_name || '',
+                    row.amount,
+                    row.source === 'auto_teacher_dues' ? 'ج.م' : 'د.إ',
+                    row.created_at
+                ].map(csvEscape).join(',');
+            });
+            const csv = '﻿' + header.map(csvEscape).join(',') + '\n' + rows.join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'smart-academy-transactions.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        async function loadSubscriptionStatus() {
+            const emptyEl = document.getElementById('subscriptions-empty');
+            const wrapEl = document.querySelector('#subscriptions-table').closest('.dash-table-wrap');
+            const bodyEl = document.getElementById('subscriptions-table-body');
+
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_student_subscription_status', {
+                    p_manager_id: currentManager.id
+                });
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                bodyEl.innerHTML = '';
+                data.forEach(function (row) {
+                    const tr = document.createElement('tr');
+
+                    const nameTd = document.createElement('td');
+                    nameTd.textContent = row.student_name || '—';
+
+                    const phoneTd = document.createElement('td');
+                    phoneTd.textContent = row.phone || '—';
+
+                    const dateTd = document.createElement('td');
+                    const d = row.last_payment_date ? new Date(row.last_payment_date) : null;
+                    dateTd.textContent = d && !isNaN(d.getTime()) ? saFormatDubai(d, { day: 'numeric', month: 'short' }) : '—';
+
+                    const statusTd = document.createElement('td');
+                    const tag = document.createElement('span');
+                    tag.className = 'subscription-status-tag is-' + row.status;
+                    tag.textContent = row.status === 'paid' ? 'مدفوع هذا الشهر' : 'متأخر';
+                    statusTd.appendChild(tag);
+
+                    tr.append(nameTd, phoneTd, dateTd, statusTd);
+                    bodyEl.appendChild(tr);
+                });
+
+                emptyEl.style.display = 'none';
+                wrapEl.style.display = 'block';
+            } catch (e) {
+                console.error('تعذّر جلب حالة اشتراكات الطلاب:', e);
+            }
+        }
+
+        async function syncTeacherDuesExpenses() {
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { error } = await window.saSupabase.rpc('sync_teacher_dues_expenses', {
+                    p_manager_id: currentManager.id
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر مزامنة مستحقات المعلمين مع سجل المصروفات:', e);
+            }
+        }
+
+        async function loadTeacherDues(dateFrom, dateTo) {
+            const emptyEl = document.getElementById('teacher-dues-empty');
+            const wrapEl = document.querySelector('#teacher-dues-table').closest('.dash-table-wrap');
+            const bodyEl = document.getElementById('teacher-dues-table-body');
+            const totalEl = document.getElementById('teacher-dues-total');
+
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_teacher_dues_for_manager', {
+                    p_manager_id: currentManager.id,
+                    p_date_from: dateFrom || null,
+                    p_date_to: dateTo || null
+                });
+                if (error) throw error;
+
+                const rows = data || [];
+
+                if (rows.length === 0) {
+                    emptyEl.textContent = 'لا يوجد معلمون مسجّلون بعد.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    totalEl.textContent = '0.00';
+                    return;
+                }
+
+                bodyEl.innerHTML = '';
+                let totalDue = 0;
+
+                rows.forEach(function (row) {
+                    const tr = document.createElement('tr');
+
+                    const nameTd = document.createElement('td');
+                    nameTd.textContent = row.teacher_name || '—';
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.textContent = row.subject || '—';
+
+                    const netTd = document.createElement('td');
+                    const net = Number(row.net_amount || 0);
+                    netTd.textContent = formatMoneyEGP(net);
+                    netTd.className = 'teacher-dues-net' + (net < 0 ? ' is-negative' : '');
+
+                    if (net > 0) totalDue += net;
+
+                    tr.append(nameTd, subjectTd, netTd);
+                    bodyEl.appendChild(tr);
+                });
+
+                totalEl.textContent = totalDue.toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2, numberingSystem: 'latn' });
+
+                emptyEl.style.display = 'none';
+                wrapEl.style.display = 'block';
+            } catch (e) {
+                console.error('تعذّر جلب مستحقات المعلمين:', e);
+                emptyEl.textContent = 'تعذّر تحميل مستحقات المعلمين الآن، حاول مرة أخرى لاحقًا.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+            }
+        }
+
+        let allStudentsCache = [];
+        let allTeachersCache = [];
+        let allSupervisorsCache = [];
+
+        async function loadPeopleForTransactionForm() {
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const [studentsRes, teachersRes, supervisorsRes] = await Promise.all([
+                    window.saSupabase.rpc('list_all_students', { p_manager_id: currentManager.id }),
+                    window.saSupabase.rpc('list_all_teachers', { p_manager_id: currentManager.id }),
+                    window.saSupabase.rpc('list_supervisors', { p_manager_id: currentManager.id })
+                ]);
+
+                allStudentsCache = studentsRes.data || [];
+                allTeachersCache = teachersRes.data || [];
+                allSupervisorsCache = supervisorsRes.data || [];
+
+                const studentSelect = document.getElementById('transaction-student');
+                allStudentsCache.forEach(function (s) {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.textContent = s.full_name + ' — ' + s.phone;
+                    studentSelect.appendChild(opt);
+                });
+
+                const teacherSelect = document.getElementById('transaction-teacher');
+                allTeachersCache.forEach(function (t) {
+                    const opt = document.createElement('option');
+                    opt.value = t.id;
+                    opt.textContent = t.full_name + ' — ' + t.phone;
+                    teacherSelect.appendChild(opt);
+                });
+
+                const supervisorSelect = document.getElementById('transaction-supervisor');
+                allSupervisorsCache.forEach(function (sv) {
+                    const opt = document.createElement('option');
+                    opt.value = sv.id;
+                    opt.textContent = sv.name + (sv.phone ? ' — ' + sv.phone : '');
+                    supervisorSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('تعذّر جلب قائمة الطلاب والمعلمين والمشرفين للمعاملة المالية:', e);
+            }
+        }
+
+        function updateTransactionFormFields() {
+            const type = document.getElementById('transaction-type').value;
+            document.getElementById('transaction-student-field').style.display = type === 'subscription' ? 'block' : 'none';
+            document.getElementById('transaction-teacher-field').style.display = type === 'teacher_salary' ? 'block' : 'none';
+            document.getElementById('transaction-supervisor-field').style.display = type === 'supervisor_salary' ? 'block' : 'none';
+        }
+
+        document.getElementById('transaction-type').addEventListener('change', updateTransactionFormFields);
+
+        function openTransactionModal(defaultType) {
+            const category = defaultType === 'subscription' ? 'revenue' : 'expense';
+            const typeSelect = document.getElementById('transaction-type');
+
+            document.getElementById('transaction-form').reset();
+
+            Array.from(typeSelect.options).forEach(function (opt) {
+                opt.hidden = opt.dataset.category !== category;
+            });
+
+            typeSelect.value = defaultType;
+            document.getElementById('transaction-modal-title').textContent =
+                category === 'revenue' ? 'إضافة إيراد جديد' : 'تسجيل مصروف';
+            updateTransactionFormFields();
+            document.getElementById('transaction-error').style.display = 'none';
+            document.getElementById('transaction-overlay').classList.add('is-open');
+        }
+
+        function closeTransactionModal() {
+            document.getElementById('transaction-overlay').classList.remove('is-open');
+        }
+
+        document.getElementById('add-revenue-btn').addEventListener('click', function () {
+            openTransactionModal('subscription');
+        });
+
+        document.getElementById('add-expense-btn').addEventListener('click', function () {
+            openTransactionModal('teacher_salary');
+        });
+
+        document.getElementById('transaction-close').addEventListener('click', closeTransactionModal);
+        document.getElementById('transaction-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeTransactionModal();
+        });
+
+        document.getElementById('transaction-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const type = document.getElementById('transaction-type').value;
+            const amount = parseFloat(document.getElementById('transaction-amount').value);
+            const studentId = document.getElementById('transaction-student').value || null;
+            const teacherId = document.getElementById('transaction-teacher').value || null;
+            const supervisorId = document.getElementById('transaction-supervisor').value || null;
+            const errorEl = document.getElementById('transaction-error');
+
+            if (!(amount >= 0)) {
+                errorEl.textContent = 'من فضلك أدخل مبلغًا صحيحًا.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!window.saSupabase || !currentManager) {
+                errorEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن، حاول مرة أخرى بعد قليل.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const { error } = await window.saSupabase.rpc('create_transaction', {
+                p_manager_id: currentManager.id,
+                p_type: type,
+                p_amount: amount,
+                p_student_id: type === 'subscription' ? studentId : null,
+                p_teacher_id: type === 'teacher_salary' ? teacherId : null,
+                p_supervisor_id: type === 'supervisor_salary' ? supervisorId : null
+            });
+
+            if (error) {
+                console.error('تعذّر حفظ المعاملة المالية:', error);
+                errorEl.textContent = 'تعذّر حفظ المعاملة، حاول مرة أخرى.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            closeTransactionModal();
+            loadTransactions();
+            loadFinancialKpis(globalTimeFilterFrom, globalTimeFilterTo);
+            loadFinancialChart(globalTimeFilterFrom, globalTimeFilterTo);
+            loadSubscriptionStatus();
+        });
+
+        async function initFinancialHub() {
+            await syncTeacherDuesExpenses();
+            loadTransactions();
+            loadSubscriptionStatus();
+            refreshGlobalFilterConsumers(globalTimeFilterFrom, globalTimeFilterTo, 'كل الفترات');
+        }
+        initFinancialHub();
+        loadPeopleForTransactionForm();
+
+        async function loadEnrolledStudents() {
+            const countEl = document.getElementById('enrolled-students-count');
+            const listEl = document.getElementById('enrolled-students-list');
+            const emptyEl = document.getElementById('enrolled-students-empty');
+
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_students_basic', {
+                    p_manager_id: currentManager.id
+                });
+                if (error) throw error;
+
+                const students = data || [];
+                countEl.textContent = students.length;
+
+                if (students.length === 0) {
+                    listEl.style.display = 'none';
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                listEl.style.display = 'flex';
+                emptyEl.style.display = 'none';
+                listEl.innerHTML = '';
+
+                students.forEach(function (s) {
+                    const li = document.createElement('li');
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = 'student-item-name';
+                    nameEl.textContent = s.full_name || '—';
+
+                    const metaEl = document.createElement('div');
+                    metaEl.className = 'student-item-meta';
+                    metaEl.textContent = [s.phone, s.stage].filter(Boolean).join(' — ') || '—';
+
+                    li.append(nameEl, metaEl);
+                    listEl.appendChild(li);
+                });
+            } catch (e) {
+                console.error('تعذّر جلب قائمة الطلاب المشتركين:', e);
+            }
+        }
+
+        const TODAY_ARABIC_DAY_NAMES = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+
+        function todayArabicDayName() {
+            const jsDay = saDubaiNow().day;
+            const jsToWeekIndex = [1, 2, 3, 4, 5, 6, 0];
+            return TODAY_ARABIC_DAY_NAMES[jsToWeekIndex[jsDay]];
+        }
+
+        function classTimeToMinutes(str) {
+            const match = (str || '').match(/^(\d{1,2}):(\d{2})\s*(صباحاً|مساءً)?$/);
+            if (!match) return Number.MAX_SAFE_INTEGER;
+
+            let hour = parseInt(match[1], 10);
+            const minute = parseInt(match[2], 10);
+            const period = match[3];
+
+            if (period === 'مساءً' && hour !== 12) hour += 12;
+            if (period === 'صباحاً' && hour === 12) hour = 0;
+
+            return hour * 60 + minute;
+        }
+
+        async function loadTodayClasses() {
+            const bodyEl = document.getElementById('today-classes-table-body');
+            const emptyEl = document.getElementById('today-classes-empty');
+            const wrapEl = document.querySelector('#today-classes-table').closest('.dash-table-wrap');
+
+            if (!window.saSupabase || !currentManager) return;
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_today_classes', {
+                    p_manager_id: currentManager.id,
+                    p_day: todayArabicDayName()
+                });
+                if (error) throw error;
+
+                const classes = (data || []).slice().sort(function (a, b) {
+                    return classTimeToMinutes(a.time) - classTimeToMinutes(b.time);
+                });
+
+                if (classes.length === 0) {
+                    wrapEl.style.display = 'none';
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                wrapEl.style.display = 'block';
+                emptyEl.style.display = 'none';
+                bodyEl.innerHTML = '';
+
+                classes.forEach(function (c) {
+                    const tr = document.createElement('tr');
+
+                    const timeTd = document.createElement('td');
+                    timeTd.textContent = c.time || '—';
+
+                    const studentTd = document.createElement('td');
+                    studentTd.textContent = c.student_name || '—';
+
+                    const teacherTd = document.createElement('td');
+                    teacherTd.textContent = c.teacher_name || '—';
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.textContent = c.subject || '—';
+
+                    const joinTd = document.createElement('td');
+                    const hasLink = c.link && String(c.link).trim() !== '';
+                    if (hasLink) {
+                        const joinLink = document.createElement('a');
+                        joinLink.className = 'today-class-join-btn';
+                        joinLink.href = c.link;
+                        joinLink.target = '_blank';
+                        joinLink.rel = 'noopener noreferrer';
+                        joinLink.title = 'دخول الحصة المباشرة';
+                        joinLink.innerHTML = '<i class="fa-solid fa-video"></i>';
+                        joinTd.appendChild(joinLink);
+                    } else {
+                        const disabledBtn = document.createElement('span');
+                        disabledBtn.className = 'today-class-join-btn is-disabled';
+                        disabledBtn.title = 'لا يوجد رابط بث متاح لهذه الحصة';
+                        disabledBtn.innerHTML = '<i class="fa-solid fa-video-slash"></i>';
+                        joinTd.appendChild(disabledBtn);
+                    }
+
+                    tr.append(timeTd, studentTd, teacherTd, subjectTd, joinTd);
+                    bodyEl.appendChild(tr);
+                });
+            } catch (e) {
+                console.error('تعذّر جلب جدول الحصص اليومية:', e);
+            }
+        }
+
+        const ATTENDANCE_STATUS_LABELS = { present: 'حضر', absent: 'غائب' };
+
+        function formatAttendanceUpdatedAt(iso) {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return '—';
+            return saFormatDubai(d, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function buildAttendanceStatusTag(status) {
+            const span = document.createElement('span');
+            span.className = 'attendance-status-tag' + (status ? ' is-' + status : '');
+            span.textContent = status ? ATTENDANCE_STATUS_LABELS[status] : 'لم يُسجَّل بعد';
+            return span;
+        }
+
+        let cachedAttendanceOverview = [];
+        let lastRenderedAttendanceRows = [];
+
+        function updateAttendanceFooterSummary(rows) {
+            const nonAbsentRows = rows.filter(function (r) { return r.status !== 'absent'; });
+
+            const totalMinutes = nonAbsentRows.reduce(function (sum, r) {
+                return sum + (r.actual_duration_minutes || r.duration_minutes || 0);
+            }, 0);
+
+            const totalAmount = rows
+                .filter(function (r) { return r.status === 'present' && r.amount != null; })
+                .reduce(function (sum, r) { return sum + Number(r.amount); }, 0);
+
+            document.getElementById('attendance-footer-count').textContent = nonAbsentRows.length;
+            document.getElementById('attendance-footer-hours').textContent = (totalMinutes / 60).toFixed(2);
+            document.getElementById('attendance-footer-amount').textContent = totalAmount.toFixed(2);
+
+            document.getElementById('attendance-summary-bar').style.display = rows.length > 0 ? 'flex' : 'none';
+        }
+
+        function updateAttendanceSummaryCounters(rows) {
+            const total = rows.length;
+            const present = rows.filter(function (r) { return r.status === 'present'; }).length;
+            const absent = rows.filter(function (r) { return r.status === 'absent'; }).length;
+
+            document.getElementById('attendance-count-total').textContent = total;
+            document.getElementById('attendance-count-present').textContent = present;
+            document.getElementById('attendance-count-absent').textContent = absent;
+        }
+
+        function renderAttendanceRows(rows) {
+            const emptyEl = document.getElementById('attendance-overview-empty');
+            const wrapEl = document.getElementById('attendance-overview-wrap');
+            const bodyEl = document.getElementById('attendance-overview-body');
+
+            bodyEl.innerHTML = '';
+            lastRenderedAttendanceRows = rows || [];
+
+            if (!rows || rows.length === 0) {
+                emptyEl.textContent = cachedAttendanceOverview.length === 0
+                    ? 'لا توجد بيانات متابعة حتى الآن.'
+                    : 'لا توجد نتائج مطابقة لبحثك أو الفلاتر المحددة.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+                updateAttendanceFooterSummary([]);
+                return;
+            }
+
+            rows.forEach(function (row, index) {
+                const tr = document.createElement('tr');
+
+                const serialTd = document.createElement('td');
+                serialTd.textContent = index + 1;
+
+                const dayTd = document.createElement('td');
+                dayTd.textContent = row.day || '—';
+
+                const timeTd = document.createElement('td');
+                timeTd.textContent = row.time || '—';
+
+                const durationTd = document.createElement('td');
+                const effectiveDuration = row.actual_duration_minutes || row.duration_minutes;
+                durationTd.textContent = effectiveDuration ? (effectiveDuration + ' د') : '—';
+
+                const subjectTd = document.createElement('td');
+                subjectTd.textContent = row.subject || '—';
+
+                const studentTd = document.createElement('td');
+                studentTd.textContent = row.student_name || '—';
+
+                const teacherTd = document.createElement('td');
+                teacherTd.textContent = row.teacher_name || '—';
+
+                const statusTd = document.createElement('td');
+                statusTd.appendChild(buildAttendanceStatusTag(row.status));
+
+                const updatedTd = document.createElement('td');
+                updatedTd.textContent = formatAttendanceUpdatedAt(row.updated_at);
+
+                const amountTd = document.createElement('td');
+                amountTd.textContent = row.amount != null ? (row.amount + ' د.إ') : '—';
+
+                tr.append(serialTd, dayTd, timeTd, durationTd, subjectTd, studentTd, teacherTd, statusTd, updatedTd, amountTd);
+                bodyEl.appendChild(tr);
+            });
+
+            emptyEl.style.display = 'none';
+            wrapEl.style.display = 'block';
+            updateAttendanceFooterSummary(rows);
+        }
+
+        function populateAttendanceSubjectFilterOptions(rows) {
+            const select = document.getElementById('attendance-filter-subject');
+            const currentValue = select.value;
+            const subjects = Array.from(new Set(rows.map(function (r) { return r.subject; }).filter(Boolean))).sort();
+
+            select.innerHTML = '<option value="">كل المواد</option>';
+            subjects.forEach(function (subject) {
+                const opt = document.createElement('option');
+                opt.value = subject;
+                opt.textContent = subject;
+                select.appendChild(opt);
+            });
+
+            if (subjects.includes(currentValue)) select.value = currentValue;
+        }
+
+        function dubaiDateStringFromISO(iso) {
+            if (!iso) return null;
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return null;
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Dubai',
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            }).formatToParts(d).reduce(function (acc, p) { acc[p.type] = p.value; return acc; }, {});
+            return parts.year + '-' + parts.month + '-' + parts.day;
+        }
+
+        function formatYMD(year, monthIndex, date) {
+            return year + '-' + String(monthIndex + 1).padStart(2, '0') + '-' + String(date).padStart(2, '0');
+        }
+
+        function computeDatePresetRange(preset) {
+            const now = saDubaiNow();
+
+            if (preset === 'today') {
+                const todayStr = formatYMD(now.year, now.month, now.date);
+                return { from: todayStr, to: todayStr };
+            }
+
+            if (preset === 'yesterday') {
+                const y = new Date(now.year, now.month, now.date - 1);
+                const yStr = formatYMD(y.getFullYear(), y.getMonth(), y.getDate());
+                return { from: yStr, to: yStr };
+            }
+
+            if (preset === 'last7') {
+                const start = new Date(now.year, now.month, now.date - 6);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(now.year, now.month, now.date)
+                };
+            }
+
+            if (preset === 'last30') {
+                const start = new Date(now.year, now.month, now.date - 29);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(now.year, now.month, now.date)
+                };
+            }
+
+            if (preset === 'thisWeek') {
+                const daysSinceSaturday = (now.day + 1) % 7;
+                const start = new Date(now.year, now.month, now.date - daysSinceSaturday);
+                const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+                return {
+                    from: formatYMD(start.getFullYear(), start.getMonth(), start.getDate()),
+                    to: formatYMD(end.getFullYear(), end.getMonth(), end.getDate())
+                };
+            }
+
+            if (preset === 'thisMonth') {
+                const lastDay = new Date(now.year, now.month + 1, 0).getDate();
+                return {
+                    from: formatYMD(now.year, now.month, 1),
+                    to: formatYMD(now.year, now.month, lastDay)
+                };
+            }
+
+            if (preset === 'lastMonth') {
+                const prevMonthDate = new Date(now.year, now.month - 1, 1);
+                const prevYear = prevMonthDate.getFullYear();
+                const prevMonth = prevMonthDate.getMonth();
+                const lastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
+                return {
+                    from: formatYMD(prevYear, prevMonth, 1),
+                    to: formatYMD(prevYear, prevMonth, lastDay)
+                };
+            }
+
+            return { from: '', to: '' };
+        }
+
+        const ATTENDANCE_DATE_PRESET_LABELS = {
+            today: 'اليوم',
+            yesterday: 'الأمس',
+            last7: 'آخر 7 أيام',
+            last30: 'آخر 30 يومًا',
+            thisWeek: 'هذا الأسبوع',
+            thisMonth: 'هذا الشهر',
+            lastMonth: 'الشهر الماضي',
+            all: 'كل الفترات'
+        };
+
+        function computeTimeFilterLabel() {
+            const activeBtn = document.querySelector('.attendance-date-preset-btn.is-active');
+            if (activeBtn) {
+                return ATTENDANCE_DATE_PRESET_LABELS[activeBtn.dataset.preset] || 'فترة محددة';
+            }
+
+            const dateFrom = document.getElementById('attendance-filter-date-from').value;
+            const dateTo = document.getElementById('attendance-filter-date-to').value;
+            if (dateFrom || dateTo) {
+                return 'من ' + (dateFrom || '…') + ' إلى ' + (dateTo || '…');
+            }
+            return 'كل الفترات';
+        }
+
+        function updateDuesScopeLabel() {
+            document.getElementById('dues-summary-scope').textContent = computeTimeFilterLabel();
+        }
+
+        function updateDuesKpi(rows) {
+            const bodyEl = document.getElementById('dues-summary-body');
+            const emptyEl = document.getElementById('dues-summary-empty');
+
+            const eligible = rows.filter(function (r) { return r.status === 'present' && r.amount != null; });
+            const hasPaymentStatusData = eligible.some(function (r) {
+                return r.payment_status === 'paid' || r.payment_status === 'overdue';
+            });
+
+            if (eligible.length > 0 && !hasPaymentStatusData) {
+                bodyEl.style.display = 'none';
+                emptyEl.style.display = 'block';
+                return;
+            }
+
+            bodyEl.style.display = 'block';
+            emptyEl.style.display = 'none';
+
+            const collected = eligible
+                .filter(function (r) { return r.payment_status === 'paid'; })
+                .reduce(function (sum, r) { return sum + Number(r.amount); }, 0);
+
+            const pending = eligible
+                .filter(function (r) { return r.payment_status === 'overdue'; })
+                .reduce(function (sum, r) { return sum + Number(r.amount); }, 0);
+
+            const total = collected + pending;
+            const percent = total > 0 ? Math.round((collected / total) * 100) : 0;
+
+            document.getElementById('dues-collected-amount').textContent = collected.toFixed(2) + ' د.إ';
+            document.getElementById('dues-pending-amount').textContent = pending.toFixed(2) + ' د.إ';
+            document.getElementById('dues-progress-fill').style.width = percent + '%';
+            document.getElementById('dues-progress-percent').textContent = percent + '%';
+        }
+
+        function applyAttendanceFilters() {
+            const searchTerm = document.getElementById('attendance-filter-search').value.trim().toLowerCase();
+            const subjectFilter = document.getElementById('attendance-filter-subject').value;
+            const dateFrom = document.getElementById('attendance-filter-date-from').value;
+            const dateTo = document.getElementById('attendance-filter-date-to').value;
+            const statusFilter = document.getElementById('attendance-filter-status').value;
+
+            document.getElementById('attendance-filter-date-clear').style.display = (dateFrom || dateTo) ? 'flex' : 'none';
+
+            const filtered = cachedAttendanceOverview.filter(function (row) {
+                if (subjectFilter && row.subject !== subjectFilter) return false;
+
+                if (dateFrom || dateTo) {
+                    const rowDate = dubaiDateStringFromISO(row.updated_at);
+                    if (!rowDate) return false;
+                    if (dateFrom && rowDate < dateFrom) return false;
+                    if (dateTo && rowDate > dateTo) return false;
+                }
+
+                const rowStatus = row.status || 'none';
+                if (statusFilter && rowStatus !== statusFilter) return false;
+
+                if (searchTerm) {
+                    const haystack = ((row.student_name || '') + ' ' + (row.subject || '')).toLowerCase();
+                    if (!haystack.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            updateAttendanceSummaryCounters(filtered);
+            renderAttendanceRows(filtered);
+            updateDuesScopeLabel();
+            updateDuesKpi(filtered);
+
+            if (dateFrom !== globalTimeFilterFrom || dateTo !== globalTimeFilterTo) {
+                refreshGlobalFilterConsumers(dateFrom, dateTo, computeTimeFilterLabel());
+            }
+        }
+
+        function clearActiveDatePreset() {
+            document.querySelectorAll('.attendance-date-preset-btn').forEach(function (btn) {
+                btn.classList.remove('is-active');
+            });
+        }
+
+        document.getElementById('attendance-filter-search').addEventListener('input', applyAttendanceFilters);
+        document.getElementById('attendance-filter-subject').addEventListener('change', applyAttendanceFilters);
+        document.getElementById('attendance-filter-date-from').addEventListener('change', function () {
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+        document.getElementById('attendance-filter-date-to').addEventListener('change', function () {
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+        document.getElementById('attendance-filter-status').addEventListener('change', applyAttendanceFilters);
+
+        document.querySelectorAll('.attendance-date-preset-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const preset = btn.dataset.preset;
+                const range = computeDatePresetRange(preset);
+
+                document.getElementById('attendance-filter-date-from').value = range.from;
+                document.getElementById('attendance-filter-date-to').value = range.to;
+
+                clearActiveDatePreset();
+                btn.classList.add('is-active');
+
+                applyAttendanceFilters();
+            });
+        });
+
+        document.getElementById('attendance-filter-date-clear').addEventListener('click', function () {
+            document.getElementById('attendance-filter-date-from').value = '';
+            document.getElementById('attendance-filter-date-to').value = '';
+            clearActiveDatePreset();
+            applyAttendanceFilters();
+        });
+
+        async function loadAttendanceOverview() {
+            const emptyEl = document.getElementById('attendance-overview-empty');
+            const wrapEl = document.getElementById('attendance-overview-wrap');
+
+            if (!window.saSupabase || !currentManager) {
+                emptyEl.textContent = 'تعذّر الاتصال بقاعدة البيانات الآن.';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('list_attendance_overview_for_manager', {
+                    p_manager_id: currentManager.id
+                });
+                if (error) throw error;
+
+                cachedAttendanceOverview = data || [];
+                populateAttendanceSubjectFilterOptions(cachedAttendanceOverview);
+
+                if (cachedAttendanceOverview.length === 0) {
+                    updateAttendanceSummaryCounters([]);
+                    updateAttendanceFooterSummary([]);
+                    updateDuesScopeLabel();
+                    updateDuesKpi([]);
+                    emptyEl.textContent = 'لا توجد بيانات متابعة حتى الآن.';
+                    emptyEl.style.display = 'block';
+                    wrapEl.style.display = 'none';
+                    return;
+                }
+
+                applyAttendanceFilters();
+            } catch (e) {
+                console.error('تعذّر جلب جدول المتابعة الشامل:', e);
+
+                const message = (e && e.message) || '';
+                const isMissingFunction = (e && e.code === 'PGRST202')
+                    || /could not find the function|does not exist|schema cache/i.test(message);
+
+                emptyEl.textContent = isMissingFunction
+                    ? 'جدول المتابعة الشامل يحتاج إلى إعداد أخير على قاعدة البيانات — يرجى تشغيل ملف add-list-attendance-overview-for-manager.sql على Supabase.'
+                    : 'تعذّر تحميل بيانات المتابعة الآن، سيُعاد المحاولة تلقائيًا خلال دقيقة.';
+                emptyEl.style.display = 'block';
+                wrapEl.style.display = 'none';
+                document.getElementById('attendance-summary-bar').style.display = 'none';
+            }
+        }
+
+        document.getElementById('attendance-export-excel-btn').addEventListener('click', function () {
+            if (typeof XLSX === 'undefined') {
+                alert('تعذّر تحميل مكتبة تصدير Excel، تأكد من اتصالك بالإنترنت وحاول مرة أخرى.');
+                return;
+            }
+
+            const rows = lastRenderedAttendanceRows;
+            if (!rows || rows.length === 0) {
+                alert('لا توجد بيانات ظاهرة حاليًا للتصدير — عدّل الفلاتر أو البحث أولًا.');
+                return;
+            }
+
+            const header = ['#', 'اليوم', 'الموعد', 'المدة', 'المادة', 'الطالب', 'المعلم', 'الحضور', 'آخر تحديث', 'المستحق (د.إ)'];
+
+            const data = rows.map(function (row, index) {
+                const effectiveDuration = row.actual_duration_minutes || row.duration_minutes;
+                return [
+                    index + 1,
+                    row.day || '—',
+                    row.time || '—',
+                    effectiveDuration ? effectiveDuration + ' د' : '—',
+                    row.subject || '—',
+                    row.student_name || '—',
+                    row.teacher_name || '—',
+                    row.status === 'present' ? 'حضر' : (row.status === 'absent' ? 'غائب' : 'لم يُسجَّل بعد'),
+                    formatAttendanceUpdatedAt(row.updated_at),
+                    row.amount != null ? row.amount : '—'
+                ];
+            });
+
+            const nonAbsentRows = rows.filter(function (r) { return r.status !== 'absent'; });
+            const totalMinutes = nonAbsentRows.reduce(function (sum, r) {
+                return sum + (r.actual_duration_minutes || r.duration_minutes || 0);
+            }, 0);
+            const totalAmount = rows
+                .filter(function (r) { return r.status === 'present' && r.amount != null; })
+                .reduce(function (sum, r) { return sum + Number(r.amount); }, 0);
+
+            const summaryRow = [
+                '', 'الإجمالي (الحصص المكتملة)', '',
+                (totalMinutes / 60).toFixed(2) + ' ساعة',
+                '', '', '',
+                nonAbsentRows.length + ' حصة', '',
+                totalAmount.toFixed(2) + ' د.إ'
+            ];
+
+            const sheetData = [header].concat(data, [[], summaryRow]);
+            const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+            worksheet['!cols'] = header.map(function () { return { wch: 18 }; });
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'جدول المتابعة الشامل');
+
+            const now = saDubaiNow();
+            const dateStr = now.year + '-' + String(now.month + 1).padStart(2, '0') + '-' + String(now.date).padStart(2, '0');
+            XLSX.writeFile(workbook, 'جدول-المتابعة-الشامل-' + dateStr + '.xlsx');
+        });
+
+        loadEnrolledStudents();
+        loadTodayClasses();
+        loadAttendanceOverview();
+        setInterval(loadAttendanceOverview, 60000);
 
         (function () {
             const sidebar = document.querySelector('.dash-sidebar');
