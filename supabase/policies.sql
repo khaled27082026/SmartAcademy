@@ -221,3 +221,10 @@ grant execute on function public.add_student_report(uuid, uuid, text) to anon;
 
 revoke all on function public.delete_student_report(uuid, uuid) from public;
 grant execute on function public.delete_student_report(uuid, uuid) to anon;
+
+-- -------------------- حذف حقيقي للطالب/المعلم --------------------
+revoke all on function public.delete_student(uuid, uuid) from public;
+grant execute on function public.delete_student(uuid, uuid) to anon;
+
+revoke all on function public.delete_teacher(uuid, uuid) from public;
+grant execute on function public.delete_teacher(uuid, uuid) to anon;

@@ -1356,7 +1356,31 @@
                 deleteBtn.className = 'dash-delete-btn';
                 deleteBtn.setAttribute('aria-label', 'حذف الطالب');
                 deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                deleteBtn.addEventListener('click', function () {
+                deleteBtn.addEventListener('click', async function () {
+                    const confirmed = confirm(
+                        'هل أنت متأكد من حذف الطالب "' + student.fullName + '" نهائيًا؟\n' +
+                        'سيتم حذف تقييماته وسجلات حضوره بشكل نهائي، وستبقى حصصه في جدول المعلم بدون طالب مرتبط.\n' +
+                        'لا يمكن التراجع عن هذا الإجراء.'
+                    );
+                    if (!confirmed) return;
+
+                    const sb = window.saSupabase;
+                    if (sb && currentAdmin && student.supabaseId) {
+                        deleteBtn.disabled = true;
+                        try {
+                            const { error } = await sb.rpc('delete_student', {
+                                p_supervisor_id: currentAdmin.id,
+                                p_student_id: student.supabaseId
+                            });
+                            if (error) throw error;
+                        } catch (e) {
+                            console.error('تعذّر حذف الطالب:', e);
+                            alert('تعذّر حذف الطالب، حاول مرة أخرى.');
+                            deleteBtn.disabled = false;
+                            return;
+                        }
+                    }
+
                     const updated = getAllStudents().filter(function (s) { return s.id !== student.id; });
                     saveAllStudents(updated);
                     renderStudents();

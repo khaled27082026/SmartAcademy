@@ -1254,7 +1254,31 @@
                 deleteBtn.className = 'dash-delete-btn';
                 deleteBtn.setAttribute('aria-label', 'حذف المعلم');
                 deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                deleteBtn.addEventListener('click', function () {
+                deleteBtn.addEventListener('click', async function () {
+                    const confirmed = confirm(
+                        'هل أنت متأكد من حذف المعلم "' + teacher.fullName + '" نهائيًا؟\n' +
+                        'سيتم حذف كل حصصه وجدوله الأسبوعي وتقييماته وسجلات حضوره وخصوماته بشكل نهائي.\n' +
+                        'لا يمكن التراجع عن هذا الإجراء.'
+                    );
+                    if (!confirmed) return;
+
+                    const sb = window.saSupabase;
+                    if (sb && currentAdmin && teacher.supabaseId) {
+                        deleteBtn.disabled = true;
+                        try {
+                            const { error } = await sb.rpc('delete_teacher', {
+                                p_supervisor_id: currentAdmin.id,
+                                p_teacher_id: teacher.supabaseId
+                            });
+                            if (error) throw error;
+                        } catch (e) {
+                            console.error('تعذّر حذف المعلم:', e);
+                            alert('تعذّر حذف المعلم، حاول مرة أخرى.');
+                            deleteBtn.disabled = false;
+                            return;
+                        }
+                    }
+
                     const updated = getAllTeachers().filter(function (t) { return t.id !== teacher.id; });
                     saveAllTeachers(updated);
                     renderTeachers();

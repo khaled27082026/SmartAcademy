@@ -1850,3 +1850,33 @@ begin
     return found;
 end;
 $$;
+
+-- حذف حقيقي لطالب/معلم (بدل الاعتماد على إخفاء محلي في localStorage).
+-- الحذف المتتالي (Cascade) لتقييمات/حضور/خصومات المعلم أو تقييمات/حضور
+-- الطالب متحكَّم فيه من قيود الجداول نفسها في main-schema.sql — راجع
+-- التعليق التفصيلي في supabase/add-delete-student-teacher.sql.
+create or replace function public.delete_student(p_supervisor_id uuid, p_student_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+    delete from public.students
+    where id = p_student_id and supervisor_id = p_supervisor_id;
+    return found;
+end;
+$$;
+
+create or replace function public.delete_teacher(p_supervisor_id uuid, p_teacher_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+    delete from public.teachers
+    where id = p_teacher_id and supervisor_id = p_supervisor_id;
+    return found;
+end;
+$$;
