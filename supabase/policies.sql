@@ -28,6 +28,7 @@ alter table public.teacher_penalties enable row level security;
 alter table public.transactions      enable row level security;
 alter table public.push_subscriptions enable row level security;
 alter table public.notifications      enable row level security;
+alter table public.student_reports    enable row level security;
 
 -- ============================================================
 -- 2) صلاحيات تنفيذ الدوال (Grants)
@@ -199,8 +200,6 @@ revoke all on function public.mark_notifications_read(text, uuid) from public;
 grant execute on function public.mark_notifications_read(text, uuid) to anon;
 
 -- -------------------- قوائم الطلاب/المعلمين، موادهم، وتقارير المتابعة --------------------
-alter table public.student_reports enable row level security;
-
 revoke all on function public.list_students(uuid) from public;
 grant execute on function public.list_students(uuid) to anon;
 

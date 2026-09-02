@@ -374,17 +374,10 @@ end;
 $$;
 
 -- ============================================================
--- 4.5) الجدول الأسبوعي (المواعيد) — ترحيل من localStorage إلى Supabase
+-- 4.5) الجدول الأسبوعي (المواعيد)
 -- ============================================================
--- تعديلات على classes حتى تستوعب حصصًا "مجدولة مستقبلًا"، وليس فقط
--- حصصًا حدثت فعلًا (كانت تُسجَّل بعد الحضور/التقييم فقط سابقًا). is_active
--- تفرّق بين حصة لا تزال في الجدول الحالي وحصة أُزيلت من الجدول (من غير
--- حذف الصف نفسه، حفاظًا على تاريخ الحضور/التقييمات المرتبطة به).
--- teacher_id أصبح يمكن أن يبقى فارغًا مؤقتًا إلى أن يحدد المشرف المعلم
--- من شاشة الطالب.
-alter table public.classes add column if not exists is_active boolean not null default true;
-alter table public.classes add column if not exists updated_at timestamptz not null default now();
-alter table public.classes alter column teacher_id drop not null;
+-- classes.is_active/updated_at وقابلية teacher_id لل NULL معرَّفين في
+-- main-schema.sql مباشرة (كانوا هنا كـALTER TABLE قبل ما يُدمَجوا هناك).
 
 -- تحفظ جدول طالب معيّن بالكامل (استبدال شامل) — بتستدعيها شاشة "تعديل
 -- جدول الطالب" في supervisor-students.html بدل ما تكتب في localStorage.
@@ -1563,43 +1556,7 @@ $$;
 -- ============================================================
 -- 10) نظام التذكير والإشعارات (Push قبل الحصة بـ 10 دقائق)
 -- ============================================================
--- push_subscriptions: كل اشتراك Push حقيقي من متصفح طالب/معلم (Web Push
--- API). endpoint فريد لكل جهاز/متصفح — لو نفس المستخدم فتح من جهازين
--- هيبقى عنده صفين، وكل الأجهزة تستقبل الإشعار.
-create table if not exists public.push_subscriptions (
-    id uuid primary key default gen_random_uuid(),
-    user_type text not null check (user_type in ('student', 'teacher')),
-    user_id uuid not null,
-    endpoint text not null unique,
-    p256dh text not null,
-    auth text not null,
-    created_at timestamptz not null default now()
-);
-
-create index if not exists push_subscriptions_user_idx on public.push_subscriptions(user_type, user_id);
-
--- notifications: سجل كل تذكير اتبعت (أو حصل محاولة إرسال ليه)، ومصدر
--- الحقيقة لواجهة الجرس (Realtime + عداد + قائمة). القيد الفريد تحت هو
--- آلية منع التكرار: لو الـ Edge Function حاول يبعت نفس تذكير نفس الحصة
--- نفس اليوم مرتين (تشغيلتين متزامنتين مثلًا)، الإدراج التاني هيترفض
--- بهدوء (on conflict do nothing) فمش هيتبعت إشعار مكرر.
-create table if not exists public.notifications (
-    id uuid primary key default gen_random_uuid(),
-    class_id uuid not null references public.classes(id) on delete cascade,
-    recipient_type text not null check (recipient_type in ('student', 'teacher')),
-    recipient_id uuid not null,
-    occurrence_date date not null,
-    type text not null default 'class_reminder_10m',
-    title text not null,
-    body text not null,
-    link text,
-    sent_status text not null default 'pending' check (sent_status in ('pending', 'sent', 'failed')),
-    read_at timestamptz,
-    created_at timestamptz not null default now(),
-    unique (class_id, recipient_type, recipient_id, occurrence_date, type)
-);
-
-create index if not exists notifications_recipient_idx on public.notifications(recipient_type, recipient_id, created_at desc);
+-- جداول push_subscriptions وnotifications معرَّفة في main-schema.sql.
 
 -- تحفظ (أو تحدّث) اشتراك Push لجهاز طالب/معلم — بتتنادى بعد ما المتصفح
 -- يوافق على إذن الإشعارات ويرجع endpoint/keys حقيقية من الـ PushManager.
@@ -1698,7 +1655,9 @@ $$;
 -- تُستخدم في supervisor-students.html و supervisor-teachers.html لجلب
 -- القائمة الحقيقية من Supabase عند تحميل الصفحة، بدل الاعتماد على نسخة
 -- localStorage القديمة (كانت القائمة تختفي بالكامل لو المشرف بدّل جهاز
--- أو مسح بيانات المتصفح رغم وجود البيانات فعليًا في القاعدة).
+-- أو مسح بيانات المتصفح رغم وجود البيانات فعليًا في القاعدة). عمود
+-- students.subjects/teachers.subjects وجدول student_reports معرَّفين في
+-- main-schema.sql.
 
 create or replace function public.list_students(p_supervisor_id uuid)
 returns table (

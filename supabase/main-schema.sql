@@ -21,6 +21,9 @@ create extension if not exists "pgcrypto";
 -- ============================================================
 -- 1) تنظيف: حذف أي جداول قديمة بنفس الأسماء
 -- ============================================================
+drop table if exists public.notifications        cascade;
+drop table if exists public.push_subscriptions   cascade;
+drop table if exists public.student_reports      cascade;
 drop table if exists public.transactions        cascade;
 drop table if exists public.teacher_penalties    cascade;
 drop table if exists public.attendance           cascade;
@@ -64,6 +67,7 @@ create table public.students (
     parent_phone text,
     password text,
     session_price numeric,
+    subjects text[] not null default '{}',
     supervisor_id uuid references public.supervisors(id) on delete set null,
     created_at timestamptz not null default now()
 );
@@ -75,6 +79,7 @@ create table public.teachers (
     full_name text,
     email text,
     subject text,
+    subjects text[] not null default '{}',
     password text,
     hourly_rate numeric,
     supervisor_id uuid references public.supervisors(id) on delete set null,
@@ -82,16 +87,21 @@ create table public.teachers (
 );
 
 -- -------------------- الحصص (الجدول الأسبوعي) --------------------
+-- teacher_id قابل يكون NULL مؤقتًا لحد ما المشرف يحدد المعلم من شاشة
+-- الطالب. is_active بيفرّق بين حصة لا تزال في الجدول الحالي وحصة أُزيلت
+-- منه (من غير حذف الصف نفسه، حفاظًا على تاريخ الحضور/التقييمات المرتبطة).
 create table public.classes (
     id uuid primary key default gen_random_uuid(),
-    teacher_id uuid not null references public.teachers(id) on delete cascade,
+    teacher_id uuid references public.teachers(id) on delete cascade,
     student_id uuid references public.students(id) on delete set null,
     subject text,
     day text not null,
     time text not null,
     link text,
     duration_minutes integer,
+    is_active boolean not null default true,
     created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
     unique (teacher_id, day, time, subject)
 );
 
@@ -141,6 +151,47 @@ create table public.transactions (
     created_at timestamptz not null default now()
 );
 
+-- -------------------- تقارير متابعة الطالب --------------------
+create table public.student_reports (
+    id uuid primary key default gen_random_uuid(),
+    student_id uuid not null references public.students(id) on delete cascade,
+    supervisor_id uuid references public.supervisors(id) on delete set null,
+    text text not null,
+    created_at timestamptz not null default now()
+);
+
+-- -------------------- اشتراكات Push (تذكير الحصص) --------------------
+-- كل اشتراك Push حقيقي من متصفح طالب/معلم (Web Push API)، بيتسجّل بعد ما
+-- المتصفح يوافق على إذن الإشعارات ويرجّع endpoint/keys حقيقية.
+create table public.push_subscriptions (
+    id uuid primary key default gen_random_uuid(),
+    user_type text not null check (user_type in ('student', 'teacher')),
+    user_id uuid not null,
+    endpoint text not null unique,
+    p256dh text not null,
+    auth text not null,
+    created_at timestamptz not null default now()
+);
+
+-- -------------------- الإشعارات --------------------
+-- القيد الفريد تحت هو آلية منع التكرار: لو الـEdge Function حاول يبعت
+-- نفس تذكير نفس الحصة نفس اليوم مرتين، الإدراج التاني هيترفض بهدوء.
+create table public.notifications (
+    id uuid primary key default gen_random_uuid(),
+    class_id uuid not null references public.classes(id) on delete cascade,
+    recipient_type text not null check (recipient_type in ('student', 'teacher')),
+    recipient_id uuid not null,
+    occurrence_date date not null,
+    type text not null default 'class_reminder_10m',
+    title text not null,
+    body text not null,
+    link text,
+    sent_status text not null default 'pending' check (sent_status in ('pending', 'sent', 'failed')),
+    read_at timestamptz,
+    created_at timestamptz not null default now(),
+    unique (class_id, recipient_type, recipient_id, occurrence_date, type)
+);
+
 -- ============================================================
 -- 3) الفهارس (Indexes)
 -- ============================================================
@@ -161,6 +212,9 @@ create index transactions_source_idx           on public.transactions(source);
 create index transactions_student_id_idx       on public.transactions(student_id);
 create index transactions_teacher_id_idx       on public.transactions(teacher_id);
 create index transactions_supervisor_id_idx    on public.transactions(supervisor_id);
+create index student_reports_student_idx       on public.student_reports(student_id, created_at desc);
+create index push_subscriptions_user_idx       on public.push_subscriptions(user_type, user_id);
+create index notifications_recipient_idx       on public.notifications(recipient_type, recipient_id, created_at desc);
 
 -- ============================================================
 -- 4) بيانات ابتدائية (حساب مدير افتراضي + مشرف افتراضي)
