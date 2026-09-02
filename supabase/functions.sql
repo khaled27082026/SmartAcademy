@@ -526,12 +526,12 @@ $$;
 
 -- نفس الفكرة للمعلم من لوحته (teacher-dashboard.html) — بترجع اسم الطالب.
 create or replace function public.get_teacher_sessions(p_teacher_phone text)
-returns table (id uuid, day text, "time" text, subject text, link text, duration_minutes integer, student_id uuid, student_name text)
+returns table (id uuid, day text, "time" text, subject text, link text, duration_minutes integer, student_id uuid, student_name text, student_phone text)
 language sql
 security definer
 set search_path = public
 as $$
-    select c.id, c.day, c.time, c.subject, c.link, c.duration_minutes, c.student_id, s.full_name
+    select c.id, c.day, c.time, c.subject, c.link, c.duration_minutes, c.student_id, s.full_name, s.phone
     from public.classes c
     join public.teachers t on t.id = c.teacher_id
     left join public.students s on s.id = c.student_id

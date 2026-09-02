@@ -831,7 +831,8 @@
                         link: row.link,
                         duration: row.duration_minutes,
                         studentId: row.student_id,
-                        studentName: row.student_name
+                        studentName: row.student_name,
+                        studentPhone: row.student_phone
                     };
                 });
             } catch (e) {
@@ -968,141 +969,44 @@
             return btn;
         }
 
-        function saveTeacherSessionRating(teacherPhone, day, time, subject, rating) {
-            let teachers = [];
-            try {
-                teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
-            } catch (e) {
-                teachers = [];
-            }
-
-            const teacher = teachers.find(function (t) { return t.phone === teacherPhone; });
-            if (!teacher || !teacher.sessions) return;
-
-            const session = teacher.sessions.find(function (s) {
-                return s.day === day && s.time === time && s.subject === subject;
-            });
-            if (!session) return;
-
-            const ratedAt = new Date().toISOString();
-            session.rating = rating;
-            session.ratingUpdatedAt = ratedAt;
-            localStorage.setItem('sa_teachers', JSON.stringify(teachers));
-
-            let students = [];
-            try {
-                students = JSON.parse(localStorage.getItem('sa_students')) || [];
-            } catch (e) {
-                students = [];
-            }
-
-            let changed = false;
-            let matchedStudent = null;
-            students.forEach(function (student) {
-                (student.sessions || []).forEach(function (s) {
-                    if (s.day === day && s.time === time && s.subject === subject) {
-                        s.rating = rating;
-                        s.ratingUpdatedAt = ratedAt;
-                        changed = true;
-                        matchedStudent = student;
-                    }
-                });
-            });
-
-            if (changed) {
-                localStorage.setItem('sa_students', JSON.stringify(students));
-            }
-
-            syncRatingToSupabase(teacher, matchedStudent, day, time, subject, rating, session.duration);
-        }
-
-        async function syncRatingToSupabase(teacher, student, day, time, subject, rating, duration) {
+        async function saveTeacherSessionRating(teacherPhone, session, rating) {
             const sb = window.saSupabase;
             if (!sb) return;
 
             try {
                 const { error } = await sb.rpc('sync_class_rating', {
-                    p_teacher_phone: teacher.phone,
-                    p_student_phone: student ? student.phone : null,
-                    p_day: day,
-                    p_time: time,
-                    p_subject: subject,
+                    p_teacher_phone: teacherPhone,
+                    p_student_phone: session.studentPhone || null,
+                    p_day: session.day,
+                    p_time: session.time,
+                    p_subject: session.subject,
                     p_rating: rating,
-                    p_duration_minutes: duration || null
+                    p_duration_minutes: session.duration || null
                 });
                 if (error) throw error;
             } catch (e) {
-                console.error('تعذّر مزامنة التقييم مع Supabase (التقييم محفوظ محليًا بنجاح على أي حال):', e);
+                console.error('تعذّر مزامنة التقييم مع Supabase:', e);
             }
         }
 
-        function saveTeacherSessionAttendance(teacherPhone, day, time, subject, status, actualDuration) {
-            let teachers = [];
-            try {
-                teachers = JSON.parse(localStorage.getItem('sa_teachers')) || [];
-            } catch (e) {
-                teachers = [];
-            }
-
-            const teacher = teachers.find(function (t) { return t.phone === teacherPhone; });
-            if (!teacher || !teacher.sessions) return;
-
-            const session = teacher.sessions.find(function (s) {
-                return s.day === day && s.time === time && s.subject === subject;
-            });
-            if (!session) return;
-
-            const markedAt = new Date().toISOString();
-            session.attendance = status;
-            session.attendanceUpdatedAt = markedAt;
-            if (actualDuration) session.actualDuration = actualDuration;
-            localStorage.setItem('sa_teachers', JSON.stringify(teachers));
-
-            let students = [];
-            try {
-                students = JSON.parse(localStorage.getItem('sa_students')) || [];
-            } catch (e) {
-                students = [];
-            }
-
-            let changed = false;
-            let matchedStudent = null;
-            students.forEach(function (student) {
-                (student.sessions || []).forEach(function (s) {
-                    if (s.day === day && s.time === time && s.subject === subject) {
-                        s.attendance = status;
-                        s.attendanceUpdatedAt = markedAt;
-                        changed = true;
-                        matchedStudent = student;
-                    }
-                });
-            });
-
-            if (changed) {
-                localStorage.setItem('sa_students', JSON.stringify(students));
-            }
-
-            syncAttendanceToSupabase(teacher, matchedStudent, day, time, subject, status, session.duration, actualDuration);
-        }
-
-        async function syncAttendanceToSupabase(teacher, student, day, time, subject, status, duration, actualDuration) {
+        async function saveTeacherSessionAttendance(teacherPhone, session, status, actualDuration) {
             const sb = window.saSupabase;
             if (!sb) return;
 
             try {
                 const { error } = await sb.rpc('sync_class_attendance', {
-                    p_teacher_phone: teacher.phone,
-                    p_student_phone: student ? student.phone : null,
-                    p_day: day,
-                    p_time: time,
-                    p_subject: subject,
+                    p_teacher_phone: teacherPhone,
+                    p_student_phone: session.studentPhone || null,
+                    p_day: session.day,
+                    p_time: session.time,
+                    p_subject: session.subject,
                     p_status: status,
-                    p_duration_minutes: duration || null,
+                    p_duration_minutes: session.duration || null,
                     p_actual_duration_minutes: actualDuration || null
                 });
                 if (error) throw error;
             } catch (e) {
-                console.error('تعذّر مزامنة الحضور مع Supabase (الحضور محفوظ محليًا بنجاح على أي حال):', e);
+                console.error('تعذّر مزامنة الحضور مع Supabase:', e);
             }
         }
 
@@ -1259,9 +1163,9 @@
             presentBtn.type = 'button';
             presentBtn.className = 'attendance-btn is-present' + (session.attendance === 'present' ? ' is-active' : '');
             presentBtn.innerHTML = '<i class="fa-solid fa-check"></i> حضر';
-            presentBtn.addEventListener('click', function () {
+            presentBtn.addEventListener('click', async function () {
                 const actualDuration = parseInt(durationInput.value, 10) || session.duration || 60;
-                saveTeacherSessionAttendance(teacherPhone, session.day, session.time, session.subject, 'present', actualDuration);
+                await saveTeacherSessionAttendance(teacherPhone, session, 'present', actualDuration);
                 refreshTodaySessionFromSupabase(teacherPhone);
                 setTimeout(function () { loadEarningsSummary(teacherPhone); }, 800);
             });
@@ -1270,8 +1174,8 @@
             absentBtn.type = 'button';
             absentBtn.className = 'attendance-btn is-absent' + (session.attendance === 'absent' ? ' is-active' : '');
             absentBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> غائب';
-            absentBtn.addEventListener('click', function () {
-                saveTeacherSessionAttendance(teacherPhone, session.day, session.time, session.subject, 'absent');
+            absentBtn.addEventListener('click', async function () {
+                await saveTeacherSessionAttendance(teacherPhone, session, 'absent');
                 refreshTodaySessionFromSupabase(teacherPhone);
                 setTimeout(function () { loadEarningsSummary(teacherPhone); }, 800);
             });
@@ -1304,8 +1208,8 @@
                 starBtn.setAttribute('aria-label', 'تقييم ' + i + ' من 5');
                 starBtn.disabled = isAbsent;
                 if (!isAbsent) {
-                    starBtn.addEventListener('click', function () {
-                        saveTeacherSessionRating(teacherPhone, session.day, session.time, session.subject, i);
+                    starBtn.addEventListener('click', async function () {
+                        await saveTeacherSessionRating(teacherPhone, session, i);
                         refreshTodaySessionFromSupabase(teacherPhone);
                     });
                 }
