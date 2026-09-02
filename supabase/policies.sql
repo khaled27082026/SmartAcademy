@@ -197,3 +197,27 @@ grant execute on function public.get_unread_notification_count(text, uuid) to an
 
 revoke all on function public.mark_notifications_read(text, uuid) from public;
 grant execute on function public.mark_notifications_read(text, uuid) to anon;
+
+-- -------------------- قوائم الطلاب/المعلمين، موادهم، وتقارير المتابعة --------------------
+alter table public.student_reports enable row level security;
+
+revoke all on function public.list_students(uuid) from public;
+grant execute on function public.list_students(uuid) to anon;
+
+revoke all on function public.list_teachers_full(uuid) from public;
+grant execute on function public.list_teachers_full(uuid) to anon;
+
+revoke all on function public.set_student_subjects(uuid, uuid, text[]) from public;
+grant execute on function public.set_student_subjects(uuid, uuid, text[]) to anon;
+
+revoke all on function public.set_teacher_subjects(uuid, uuid, text[]) from public;
+grant execute on function public.set_teacher_subjects(uuid, uuid, text[]) to anon;
+
+revoke all on function public.list_student_reports(uuid, uuid) from public;
+grant execute on function public.list_student_reports(uuid, uuid) to anon;
+
+revoke all on function public.add_student_report(uuid, uuid, text) from public;
+grant execute on function public.add_student_report(uuid, uuid, text) to anon;
+
+revoke all on function public.delete_student_report(uuid, uuid) from public;
+grant execute on function public.delete_student_report(uuid, uuid) to anon;

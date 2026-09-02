@@ -1311,6 +1311,49 @@
             applyTeacherFilters();
         }
 
+        // تجيب قائمة معلمي المشرف الحقيقية من Supabase وتستبدل بيها النسخة
+        // المحلية — بدونها كانت القائمة تختفي بالكامل لو المشرف بدّل جهاز
+        // أو مسح بيانات المتصفح، رغم وجود المعلمين فعليًا في القاعدة.
+        async function syncTeachersFromSupabase() {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin) return;
+
+            try {
+                const { data, error } = await sb.rpc('list_teachers_full', { p_supervisor_id: currentAdmin.id });
+                if (error) throw error;
+
+                const all = getAllTeachers();
+                const others = all.filter(function (t) { return t.addedByPhone !== currentAdmin.phone; });
+                const localMine = all.filter(function (t) { return t.addedByPhone === currentAdmin.phone; });
+
+                const merged = (data || []).map(function (row) {
+                    const existing = localMine.find(function (t) {
+                        return t.supabaseId === row.id || t.phone === row.phone;
+                    });
+
+                    return {
+                        id: row.id,
+                        supabaseId: row.id,
+                        fullName: row.full_name,
+                        phone: row.phone,
+                        email: row.email,
+                        password: existing ? existing.password : '',
+                        hourlyRate: row.hourly_rate,
+                        subjects: row.subjects || [],
+                        sessions: [],
+                        addedByPhone: currentAdmin.phone,
+                        addedByName: currentAdmin.fullName,
+                        createdAt: row.created_at
+                    };
+                });
+
+                saveAllTeachers(others.concat(merged));
+                renderTeachers();
+            } catch (e) {
+                console.error('تعذّر جلب قائمة المعلمين من Supabase:', e);
+            }
+        }
+
         document.getElementById('add-teacher-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -1619,6 +1662,7 @@
         }
 
         renderTeachers();
+        syncTeachersFromSupabase();
         loadPenaltiesLog();
 
         document.getElementById('teachers-logout').addEventListener('click', function () {
@@ -1996,8 +2040,27 @@
             });
             renderTeachers();
             const fresh = getTeacherById(manageTeacherId);
-            if (fresh) loadManageWeekTableFromSupabase(fresh);
+            if (fresh) {
+                loadManageWeekTableFromSupabase(fresh);
+                syncTeacherSubjectsToSupabase(fresh);
+            }
         });
+
+        async function syncTeacherSubjectsToSupabase(teacher) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin || !teacher.supabaseId) return;
+
+            try {
+                const { error } = await sb.rpc('set_teacher_subjects', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_teacher_id: teacher.supabaseId,
+                    p_subjects: teacher.subjects || []
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر مزامنة مواد المعلم مع Supabase:', e);
+            }
+        }
 
         (function () {
             const sidebar = document.querySelector('.dash-sidebar');

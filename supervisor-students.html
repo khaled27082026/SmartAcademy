@@ -1410,6 +1410,54 @@
             applyStudentFilters();
         }
 
+        // تجيب قائمة طلاب المشرف الحقيقية من Supabase وتستبدل بيها النسخة
+        // المحلية — بدونها كانت القائمة تختفي بالكامل لو المشرف بدّل جهاز
+        // أو مسح بيانات المتصفح، رغم وجود الطلاب فعليًا في القاعدة. بتحافظ
+        // على الحقول المحلية البحتة (كلمة المرور، التقارير، حالة الاشتراك)
+        // لأي طالب موجود بالفعل محليًا، وبتضيف قيم افتراضية للطلاب الجداد.
+        async function syncStudentsFromSupabase() {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin) return;
+
+            try {
+                const { data, error } = await sb.rpc('list_students', { p_supervisor_id: currentAdmin.id });
+                if (error) throw error;
+
+                const all = getAllStudents();
+                const others = all.filter(function (s) { return s.addedByPhone !== currentAdmin.phone; });
+                const localMine = all.filter(function (s) { return s.addedByPhone === currentAdmin.phone; });
+
+                const merged = (data || []).map(function (row) {
+                    const existing = localMine.find(function (s) {
+                        return s.supabaseId === row.id || s.phone === row.phone;
+                    });
+
+                    return {
+                        id: row.id,
+                        supabaseId: row.id,
+                        fullName: row.full_name,
+                        phone: row.phone,
+                        password: existing ? existing.password : '',
+                        stage: row.stage,
+                        parentPhone: row.parent_phone,
+                        sessionPrice: row.session_price,
+                        subjects: row.subjects || [],
+                        reports: existing ? (existing.reports || []) : [],
+                        sessions: [],
+                        subscriptionStatus: existing ? (existing.subscriptionStatus || 'active') : 'active',
+                        addedByPhone: currentAdmin.phone,
+                        addedByName: currentAdmin.fullName,
+                        createdAt: row.created_at
+                    };
+                });
+
+                saveAllStudents(others.concat(merged));
+                renderStudents();
+            } catch (e) {
+                console.error('تعذّر جلب قائمة الطلاب من Supabase:', e);
+            }
+        }
+
         document.getElementById('add-student-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -1610,6 +1658,7 @@
         loadTeacherOptions();
 
         renderStudents();
+        syncStudentsFromSupabase();
 
         document.getElementById('students-logout').addEventListener('click', function () {
             saClearSession('sa_current_admin');
@@ -1650,6 +1699,33 @@
             document.getElementById('manage-modal-overlay').classList.add('is-open');
 
             loadManageWeekTableFromSupabase(student);
+            loadManageReportsFromSupabase(student);
+        }
+
+        // تجيب تقارير متابعة الطالب الحقيقية من Supabase — بدونها كانت
+        // التقارير محلية بحتة وبتضيع لو المشرف بدّل جهاز أو مسح بيانات
+        // المتصفح.
+        async function loadManageReportsFromSupabase(student) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin || !student.supabaseId) return;
+
+            try {
+                const { data, error } = await sb.rpc('list_student_reports', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_student_id: student.supabaseId
+                });
+                if (error) throw error;
+                if (manageStudentId !== student.id) return;
+
+                const reports = (data || []).map(function (row) {
+                    return { id: row.id, text: row.text, date: row.created_at };
+                });
+
+                updateStudent(student.id, function (s) { s.reports = reports; });
+                renderManageReports(getStudentById(student.id));
+            } catch (e) {
+                console.error('تعذّر جلب تقارير المتابعة من Supabase:', e);
+            }
         }
 
         // تجيب جدول الطالب الحقيقي من Supabase (بدل localStorage) عشان
@@ -2064,11 +2140,24 @@
                 removeBtn.className = 'manage-list-remove';
                 removeBtn.setAttribute('aria-label', 'حذف التقرير');
                 removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                removeBtn.addEventListener('click', function () {
-                    updateStudent(manageStudentId, function (s) {
-                        s.reports = (s.reports || []).filter(function (r) { return r.id !== report.id; });
-                    });
-                    renderManageReports(getStudentById(manageStudentId));
+                removeBtn.addEventListener('click', async function () {
+                    const sb = window.saSupabase;
+                    try {
+                        if (sb && currentAdmin) {
+                            const { error } = await sb.rpc('delete_student_report', {
+                                p_supervisor_id: currentAdmin.id,
+                                p_report_id: report.id
+                            });
+                            if (error) throw error;
+                        }
+                        updateStudent(manageStudentId, function (s) {
+                            s.reports = (s.reports || []).filter(function (r) { return r.id !== report.id; });
+                        });
+                        renderManageReports(getStudentById(manageStudentId));
+                    } catch (e) {
+                        console.error('تعذّر حذف التقرير:', e);
+                        alert('تعذّر حذف التقرير، حاول مرة أخرى.');
+                    }
                 });
 
                 li.append(body, removeBtn);
@@ -2087,10 +2176,29 @@
             });
             renderStudents();
             const fresh = getStudentById(manageStudentId);
-            if (fresh) loadManageWeekTableFromSupabase(fresh);
+            if (fresh) {
+                loadManageWeekTableFromSupabase(fresh);
+                syncStudentSubjectsToSupabase(fresh);
+            }
         });
 
-        document.getElementById('manage-report-add').addEventListener('click', function () {
+        async function syncStudentSubjectsToSupabase(student) {
+            const sb = window.saSupabase;
+            if (!sb || !currentAdmin || !student.supabaseId) return;
+
+            try {
+                const { error } = await sb.rpc('set_student_subjects', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_student_id: student.supabaseId,
+                    p_subjects: student.subjects || []
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('تعذّر مزامنة مواد الطالب مع Supabase:', e);
+            }
+        }
+
+        document.getElementById('manage-report-add').addEventListener('click', async function () {
             const btn = this;
             if (btn.disabled) return;
 
@@ -2099,19 +2207,35 @@
 
             btn.disabled = true;
 
-            updateStudent(manageStudentId, function (s) {
-                s.reports = s.reports || [];
-                s.reports.push({
-                    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-                    text: text,
-                    date: new Date().toISOString()
+            const student = getStudentById(manageStudentId);
+            const sb = window.saSupabase;
+
+            try {
+                if (!sb || !currentAdmin || !student || !student.supabaseId) {
+                    throw new Error('لا يمكن حفظ التقرير — الطالب غير مرتبط بحساب حقيقي بعد.');
+                }
+
+                const { data, error } = await sb.rpc('add_student_report', {
+                    p_supervisor_id: currentAdmin.id,
+                    p_student_id: student.supabaseId,
+                    p_text: text
                 });
-            });
+                if (error) throw error;
 
-            document.getElementById('manage-report-text').value = '';
-            renderManageReports(getStudentById(manageStudentId));
+                const saved = data && data[0];
+                updateStudent(manageStudentId, function (s) {
+                    s.reports = s.reports || [];
+                    s.reports.push({ id: saved.id, text: saved.text, date: saved.created_at });
+                });
 
-            btn.disabled = false;
+                document.getElementById('manage-report-text').value = '';
+                renderManageReports(getStudentById(manageStudentId));
+            } catch (e) {
+                console.error('تعذّر حفظ التقرير:', e);
+                alert('تعذّر حفظ التقرير، حاول مرة أخرى.');
+            } finally {
+                btn.disabled = false;
+            }
         });
 
         (function () {
