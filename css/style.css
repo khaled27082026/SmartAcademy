@@ -1917,11 +1917,17 @@ input[type="url"] {
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
     mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .marquee-track {
     display: flex;
     width: max-content;
+    will-change: transform;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: marquee-scroll 46s linear infinite;
     animation: marquee-scroll 46s linear infinite;
 }
 
