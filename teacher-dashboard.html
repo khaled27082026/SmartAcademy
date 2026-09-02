@@ -1231,7 +1231,30 @@
             });
         }
 
-        function renderTodaySession(teacher) {
+        // تجيب حالة الحضور والتقييم الحقيقية لكل حصة من Supabase قبل الرسم —
+        // بدونها كانت أزرار "حضر/غائب" والنجوم بترجع لحالتها الافتراضية
+        // (غير مُسجَّلة) بعد أي إعادة تحميل للصفحة، حتى لو كانت محفوظة فعليًا.
+        async function loadAttendanceAndRating(sessions) {
+            const sb = window.saSupabase;
+            if (!sb) return;
+
+            await Promise.all(sessions.map(async function (session) {
+                if (!session.studentPhone) return;
+
+                try {
+                    const [ratingRes, attendanceRes] = await Promise.all([
+                        sb.rpc('get_class_rating', { p_student_phone: session.studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject }),
+                        sb.rpc('get_class_attendance', { p_student_phone: session.studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject })
+                    ]);
+                    if (!ratingRes.error) session.rating = ratingRes.data;
+                    if (!attendanceRes.error) session.attendance = attendanceRes.data;
+                } catch (e) {
+                    console.error('تعذّر جلب حالة الحضور والتقييم من Supabase:', e);
+                }
+            }));
+        }
+
+        async function renderTodaySession(teacher) {
             const wrap = document.getElementById('teacher-today-session');
             const today = todayArabicDay();
             const todaySessions = sortSessionsByProximity(sessionsForDay(teacher, today));
@@ -1245,6 +1268,8 @@
                 wrap.appendChild(empty);
                 return;
             }
+
+            await loadAttendanceAndRating(todaySessions);
 
             todaySessions.forEach(function (session) {
                 const row = document.createElement('div');
