@@ -808,14 +808,10 @@ language plpgsql
 security definer
 set search_path = public
 as $$
-declare
-    v_month_start timestamptz;
 begin
     if not exists (select 1 from public.managers m where m.id = p_manager_id and m.auth_user_id = auth.uid()) then
         raise exception 'unauthorized';
     end if;
-
-    v_month_start := date_trunc('month', now() at time zone 'Asia/Dubai') at time zone 'Asia/Dubai';
 
     return query
     select
@@ -832,12 +828,18 @@ begin
             when a.status = 'present' and s.session_price is not null then s.session_price
             else null
         end,
+        -- حالة السداد محسوبة بالنسبة لشهر وقوع الحصة نفسها (شهر a.updated_at)،
+        -- مش الشهر الحالي الفعلي — عشان بطاقة "نسبة تحصيل المستحقات" لما
+        -- المدير يفلتر بالنطاق الزمني على شهر سابق (مثلاً "الشهر الماضي")
+        -- تعرض تحصيل ذلك الشهر فعليًا مش تحصيل الشهر الحالي بالخطأ.
         case
             when a.status = 'present' and s.session_price is not null then
                 case
                     when exists (
                         select 1 from public.transactions t2
-                        where t2.student_id = s.id and t2.type = 'subscription' and t2.created_at >= v_month_start
+                        where t2.student_id = s.id and t2.type = 'subscription'
+                          and t2.created_at >= date_trunc('month', a.updated_at at time zone 'Asia/Dubai') at time zone 'Asia/Dubai'
+                          and t2.created_at < (date_trunc('month', a.updated_at at time zone 'Asia/Dubai') + interval '1 month') at time zone 'Asia/Dubai'
                     ) then 'paid'
                     else 'overdue'
                 end
@@ -1576,6 +1578,15 @@ begin
     if p_user_type not in ('student', 'teacher') then
         raise exception 'invalid_user_type';
     end if;
+
+    -- كل إعادة تسجيل لـService Worker (بعد كل نشر جديد للموقع مثلًا) بتولّد
+    -- endpoint مختلف تمامًا من نفس الجهاز. من غير هذا الحذف، الاشتراك القديم
+    -- كان بيفضل معلّق في الجدول ويستقبل تذكيرات مكررة لحد ما يفشل الإرسال
+    -- ليه فعليًا — نفترض جهاز واحد فعّال لكل مستخدم حاليًا.
+    delete from public.push_subscriptions
+    where user_type = p_user_type
+      and user_id = p_user_id
+      and endpoint <> p_endpoint;
 
     insert into public.push_subscriptions (user_type, user_id, endpoint, p256dh, auth)
     values (p_user_type, p_user_id, p_endpoint, p_p256dh, p_auth)

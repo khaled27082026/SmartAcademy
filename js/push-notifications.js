@@ -181,6 +181,20 @@ async function saInitNotificationBell(userType, userId) {
     async function updateEnableBtnState() {
         if (!enableBtn) return;
         const subscribed = await saIsPushSubscribed();
+
+        // اشتراك الـPush مُخزَّن على مستوى المتصفح/الجهاز نفسه، مش لكل
+        // حساب. لو المتصفح عنده إذن واشتراك جاهزين بالفعل (من حساب تاني
+        // جُرِّب على نفس الجهاز قبل كده)، لازم نربطه بمعرّف المستخدم
+        // الحالي في القاعدة فورًا — وإلا الزر هيظهر "مفعّل" بينما الحساب
+        // الحالي مش مسجَّل له أي اشتراك فعلي يستقبل عليه إشعارات.
+        if (subscribed) {
+            try {
+                await saSubscribeToPush(userType, userId);
+            } catch (e) {
+                console.error('تعذّر ربط اشتراك الإشعارات الحالي بهذا الحساب:', e);
+            }
+        }
+
         enableBtn.classList.toggle('is-active', subscribed);
         enableBtn.innerHTML = subscribed
             ? '<i class="fa-solid fa-bell"></i> التنبيهات مفعّلة'
