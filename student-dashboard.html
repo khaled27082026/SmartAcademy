@@ -1194,11 +1194,11 @@
             return new Date(saDubaiTimestamp(satUtc.getUTCFullYear(), satUtc.getUTCMonth(), satUtc.getUTCDate(), 0, 0));
         }
 
-        function isRatingFromCurrentWeek(ratingUpdatedAt) {
-            if (!ratingUpdatedAt) return false;
-            const ratedDate = new Date(ratingUpdatedAt);
-            if (isNaN(ratedDate.getTime())) return false;
-            return ratedDate.getTime() >= getCurrentWeekStart().getTime();
+        function isFromCurrentWeek(updatedAt) {
+            if (!updatedAt) return false;
+            const updatedDate = new Date(updatedAt);
+            if (isNaN(updatedDate.getTime())) return false;
+            return updatedDate.getTime() >= getCurrentWeekStart().getTime();
         }
 
         function buildWeekRatingStars(rating) {
@@ -1216,14 +1216,15 @@
         function renderWeekRatingCellContent(td, session) {
             td.innerHTML = '';
 
-            if (session && session.attendance === 'absent') {
+            const isAbsentThisWeek = session && session.attendance === 'absent' && isFromCurrentWeek(session.attendanceUpdatedAt);
+            if (isAbsentThisWeek) {
                 td.appendChild(buildAbsentBadge(true));
                 return;
             }
 
             const rating = session && session.rating;
             const ratingUpdatedAt = session && session.ratingUpdatedAt;
-            const hasCurrentRating = rating && isRatingFromCurrentWeek(ratingUpdatedAt);
+            const hasCurrentRating = rating && isFromCurrentWeek(ratingUpdatedAt);
             if (!hasCurrentRating) {
                 td.textContent = '-';
                 return;
@@ -1245,16 +1246,17 @@
             try {
                 const [ratingRes, attendanceRes] = await Promise.all([
                     sb.rpc('get_class_rating_with_date', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject }),
-                    sb.rpc('get_class_attendance', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject })
+                    sb.rpc('get_class_attendance_with_date', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject })
                 ]);
                 if (ratingRes.error) throw ratingRes.error;
                 if (attendanceRes.error) throw attendanceRes.error;
 
                 const row = ratingRes.data && ratingRes.data[0];
-                const attendance = attendanceRes.data;
+                const attendanceRow = attendanceRes.data && attendanceRes.data[0];
+                const attendance = attendanceRow && attendanceRow.status;
 
                 const ratingUnchanged = (!row || !row.rating_score) || (session.rating === row.rating_score && session.ratingUpdatedAt === row.updated_at);
-                const attendanceUnchanged = attendance === session.attendance;
+                const attendanceUnchanged = attendance === session.attendance && (!attendanceRow || session.attendanceUpdatedAt === attendanceRow.updated_at);
                 if (ratingUnchanged && attendanceUnchanged) return;
 
                 if (row && row.rating_score) {
@@ -1262,6 +1264,7 @@
                     session.ratingUpdatedAt = row.updated_at;
                 }
                 session.attendance = attendance;
+                session.attendanceUpdatedAt = attendanceRow && attendanceRow.updated_at;
 
                 renderWeekRatingCellContent(td, session);
 

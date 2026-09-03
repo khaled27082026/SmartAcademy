@@ -125,6 +125,9 @@ grant execute on function public.sync_class_attendance(text, text, text, text, t
 revoke all on function public.get_class_attendance(text, text, text, text) from public;
 grant execute on function public.get_class_attendance(text, text, text, text) to anon;
 
+revoke all on function public.get_class_attendance_with_date(text, text, text, text) from public;
+grant execute on function public.get_class_attendance_with_date(text, text, text, text) to anon;
+
 revoke all on function public.list_attendance_overview(uuid) from public;
 grant execute on function public.list_attendance_overview(uuid) to anon;
 

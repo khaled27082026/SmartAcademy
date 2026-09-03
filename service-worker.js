@@ -2,7 +2,7 @@
 // Smart Academy — Service Worker
 // ============================================================
 
-const CACHE_NAME = 'smart-academy-cache-v196';
+const CACHE_NAME = 'smart-academy-cache-v197';
 
 const STATIC_ASSETS = [
     '/',
