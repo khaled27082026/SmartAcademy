@@ -2655,7 +2655,7 @@ input[type="url"] {
     .dash-topbar-actions {
         padding-inline-start: 0;
         border-inline-start: none;
-        align-self: flex-end;
+        align-self: flex-start;
     }
 
     .dash-topbar-text h1 {
