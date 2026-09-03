@@ -2240,6 +2240,54 @@ input[type="url"] {
     padding: 40px 32px;
 }
 
+@media (max-width: 480px) {
+    .auth-main {
+        min-height: auto;
+        padding-block: 16px;
+    }
+
+    .auth-card {
+        padding: 22px 18px;
+    }
+
+    .auth-logo-img {
+        height: 44px;
+        margin-bottom: 10px;
+    }
+
+    .auth-head {
+        margin-bottom: 16px;
+    }
+
+    .auth-head h1 {
+        font-size: 1.2rem;
+    }
+
+    .auth-head p {
+        font-size: 0.8rem;
+    }
+
+    .form-field {
+        margin-bottom: 12px;
+    }
+
+    .form-field label {
+        margin-bottom: 5px;
+        font-size: 0.85rem;
+    }
+
+    .input-wrap input,
+    .input-wrap select {
+        padding-block: 9px;
+        font-size: 0.92rem;
+    }
+
+    .auth-back {
+        margin-top: 14px;
+        font-size: 0.82rem;
+    }
+}
+
 .auth-head {
     text-align: center;
     margin-bottom: 32px;
