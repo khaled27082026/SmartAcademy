@@ -2642,12 +2642,24 @@ input[type="url"] {
 }
 
 @media (max-width: 560px) {
+    .dash-topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
     .dash-topbar-avatar {
         display: none;
     }
 
     .dash-topbar-actions {
-        padding-inline-start: 12px;
+        padding-inline-start: 0;
+        border-inline-start: none;
+        align-self: flex-end;
+    }
+
+    .dash-topbar-text h1 {
+        white-space: normal;
     }
 }
 
