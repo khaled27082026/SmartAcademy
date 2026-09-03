@@ -2655,10 +2655,19 @@ input[type="url"] {
         padding-inline-start: 10px;
     }
 
+    .dash-topbar-text h1 {
+        font-size: 1.05rem;
+    }
+
     .dash-topbar-text p {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        font-size: 0.76rem;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 360px) {
+    .dash-topbar-text p {
+        font-size: 0.7rem;
     }
 }
 
