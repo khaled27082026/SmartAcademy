@@ -109,7 +109,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 16px;
             margin-bottom: 28px;
+            padding: 16px 22px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
         }
 
         .dash-topbar h1 {
@@ -733,25 +738,30 @@
 
         <main class="dash-main">
             <div class="dash-topbar">
-                <div>
-                    <h1 id="welcome-heading">أهلاً بك</h1>
-                    <p>هذه لوحتك الخاصة لمتابعة حصصك وتقاريرك في سمارت أكاديمي</p>
+                <div class="dash-topbar-welcome">
+                    <span class="dash-topbar-avatar" id="topbar-avatar">ط</span>
+                    <div class="dash-topbar-text">
+                        <h1 id="welcome-heading">أهلاً بك</h1>
+                        <p>هذه لوحتك الخاصة لمتابعة حصصك وتقاريرك في سمارت أكاديمي</p>
+                    </div>
                 </div>
 
-                <div class="notif-bell-wrap">
-                    <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="الإشعارات">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="notif-bell-badge" id="notif-bell-badge">0</span>
-                    </button>
-                    <div class="notif-bell-panel" id="notif-bell-panel">
-                        <div class="notif-bell-panel-head">
-                            <span>الإشعارات</span>
-                            <button type="button" class="notif-enable-btn" id="notif-enable-btn">
-                                <i class="fa-solid fa-bell-slash"></i> تفعيل تنبيهات الحصص
-                            </button>
-                        </div>
-                        <div class="notif-bell-list" id="notif-bell-list">
-                            <p class="notif-bell-empty">لا توجد إشعارات بعد.</p>
+                <div class="dash-topbar-actions">
+                    <div class="notif-bell-wrap">
+                        <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="الإشعارات">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notif-bell-badge" id="notif-bell-badge">0</span>
+                        </button>
+                        <div class="notif-bell-panel" id="notif-bell-panel">
+                            <div class="notif-bell-panel-head">
+                                <span>الإشعارات</span>
+                                <button type="button" class="notif-enable-btn" id="notif-enable-btn">
+                                    <i class="fa-solid fa-bell-slash"></i> تفعيل تنبيهات الحصص
+                                </button>
+                            </div>
+                            <div class="notif-bell-list" id="notif-bell-list">
+                                <p class="notif-bell-empty">لا توجد إشعارات بعد.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1430,6 +1440,7 @@
             if (fresh.fullName) {
                 document.getElementById('welcome-heading').textContent = 'أهلاً بك، ' + fresh.fullName;
                 document.getElementById('info-name').textContent = fresh.fullName;
+                document.getElementById('topbar-avatar').textContent = fresh.fullName.trim().charAt(0);
             }
             if (fresh.phone) {
                 document.getElementById('info-phone').textContent = fresh.phone;

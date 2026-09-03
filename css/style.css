@@ -2600,6 +2600,58 @@ input[type="url"] {
 }
 
 /* ============================================================
+   هيدر اللوحة: منطقة ترحيب + منطقة إشعارات مستقلتين (student/teacher)
+   ============================================================ */
+.dash-topbar-welcome {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.dash-topbar-avatar {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary), var(--cyan));
+}
+
+.dash-topbar-text {
+    min-width: 0;
+}
+
+.dash-topbar-text h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-topbar-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding-inline-start: 18px;
+    border-inline-start: 1px solid var(--border-glass);
+}
+
+@media (max-width: 560px) {
+    .dash-topbar-avatar {
+        display: none;
+    }
+
+    .dash-topbar-actions {
+        padding-inline-start: 12px;
+    }
+}
+
+/* ============================================================
    جرس الإشعارات + Toast التذكير (student-dashboard / teacher-dashboard)
    ============================================================ */
 .notif-bell-wrap {
