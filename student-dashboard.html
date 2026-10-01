@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الطالب | Smart Academy</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <script>
+        window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_student', loginUrl: 'student-login/' };
+    </script>
+    <script src="js/route-guard.js"></script>
+
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.1.0 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.rtl.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .dash-layout {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .dash-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 28px 20px;
+            background: var(--bg-card);
+            border-inline-end: 1px solid var(--border-glass);
+        }
+
+        .dash-brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 36px;
+            padding-inline: 6px;
+        }
+
+        .dash-brand img {
+            height: 64px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: filter var(--transition-fast), height var(--transition-fast);
+        }
+
+        [data-theme="light"] .dash-brand img {
+            filter: none;
+        }
+
+        .dash-sidebar > .theme-toggle,
+        .dash-sidebar > .dash-logout {
+            align-self: center;
+        }
+
+        .dash-logout {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--logout-red);
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .dash-logout:hover {
+            border-color: var(--logout-red);
+            color: var(--logout-red-hover);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.35);
+        }
+
+        .dash-main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px clamp(20px, 4vw, 48px);
+        }
+
+        .dash-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding: 16px 22px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+        }
+
+        .dash-topbar h1 {
+            font-size: 1.275rem;
+            font-weight: 900;
+        }
+
+        .dash-topbar p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .dash-card {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .dash-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .dash-empty {
+            text-align: center;
+            color: var(--text-sec);
+            padding: 12px 0 4px;
+        }
+
+        .earnings-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .earnings-stat {
+            flex: 1;
+            min-width: 130px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .earnings-stat-label {
+            display: block;
+            color: var(--text-sec);
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+
+        .earnings-stat-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .earnings-stat.is-total .earnings-stat-value {
+            color: var(--cyan);
+        }
+
+        .dash-card--profile {
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .dash-card--profile h2 {
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .profile-info-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(155deg, var(--glass), transparent);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+        }
+
+        .profile-info-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(79, 179, 217, 0.12);
+            color: var(--cyan);
+            font-size: 0.85rem;
+        }
+
+        .profile-info-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .profile-info-label {
+            color: var(--text-sec);
+            font-size: 0.66rem;
+            font-weight: 600;
+        }
+
+        .profile-info-value {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .profile-subscription-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            width: fit-content;
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            font-size: 0.68rem;
+            font-weight: 700;
+            line-height: 1.6;
+            border: none;
+        }
+
+        .profile-subscription-badge i {
+            font-size: 0.62rem;
+        }
+
+        .profile-subscription-badge.is-active {
+            background: rgba(34, 197, 94, 0.14);
+            color: #22c55e;
+        }
+
+        .profile-subscription-badge.is-inactive {
+            background: rgba(148, 163, 184, 0.14);
+            color: var(--text-sec);
+        }
+
+        .profile-subjects-box {
+            background: linear-gradient(155deg, var(--glass), transparent);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .profile-subjects-box .profile-info-label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .dash-tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .dash-task-card {
+            display: block;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: transform var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .dash-task-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .dash-task-card i {
+            font-size: 1.6rem;
+            color: var(--cyan);
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .dash-task-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dash-task-card p {
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .dash-task-badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 4px 12px;
+            border-radius: var(--radius-tag);
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .student-subject-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .student-subject-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: var(--radius-tag);
+            background: rgba(79, 179, 217, 0.1);
+            border: none;
+            color: var(--cyan);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+.student-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-list-item {
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .student-list-item-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+
+        .student-list-item-meta {
+            color: var(--text-sec);
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        .student-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 150px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-pill);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(10, 66, 91, 0.4);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .student-link-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(10, 66, 91, 0.6);
+        }
+
+        .student-link-btn.is-waiting {
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .student-link-btn.is-waiting:hover {
+            color: var(--text-sec);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .student-empty-note {
+            color: var(--text-sec);
+            font-size: 0.85rem;
+        }
+
+
+        #student-today-session {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .student-today-session {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--bg-core);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+        }
+
+        .student-today-session-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .student-today-session-info span {
+            display: block;
+            color: var(--text-sec);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .student-today-session-info strong {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .student-today-session-status {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .student-today-session-bottom {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .student-today-session-teacher {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: var(--text-sec);
+            min-width: 0;
+        }
+
+        .student-today-session-teacher i {
+            color: var(--cyan);
+            font-size: 0.81rem;
+            flex-shrink: 0;
+        }
+
+        .student-today-session-teacher-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .student-today-session-teacher strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .rating-widget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .rating-widget .rating-label {
+            font-size: 0.64rem;
+            color: var(--text-sec);
+            white-space: nowrap;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .rating-star {
+            font-size: 0.85rem;
+            color: var(--text-sec);
+            opacity: 0.45;
+        }
+
+        .rating-star.is-filled {
+            color: var(--sun-gold);
+            opacity: 1;
+        }
+
+        .attendance-absent-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: var(--radius-tag);
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid var(--logout-red);
+            color: var(--logout-red-hover);
+            white-space: nowrap;
+        }
+
+        .attendance-absent-badge.is-compact {
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 0.68rem;
+        }
+
+        .dash-table-wrap {
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+        }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .dash-table th,
+        .dash-table td {
+            padding: 12px 14px;
+            text-align: start;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        #student-week-table th,
+        #student-week-table td {
+            text-align: center;
+        }
+
+        #student-week-table th:not(:last-child),
+        #student-week-table td:not(:last-child) {
+            border-inline-end: 1px solid var(--border-glass);
+        }
+
+        #student-week-table .rating-stars {
+            justify-content: center;
+        }
+
+        .dash-table th {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .dash-table td {
+            color: var(--text-sec);
+        }
+
+        .dash-table-day-cell {
+            color: var(--text-main);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .dash-table tbody + tbody > tr:first-child > td {
+            border-top: 2px solid var(--border-glass);
+        }
+
+        .dash-table tbody:nth-of-type(even) {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .dash-table tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .dash-table tbody.is-today td {
+            background: var(--glass);
+        }
+
+        .dash-table tbody.is-today .dash-table-day-cell {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 640px) {
+            .dash-table th,
+            .dash-table td {
+                padding: 8px 4px;
+                font-size: 0.75rem;
+                word-break: break-word;
+            }
+
+            .dash-table-day-cell {
+                font-size: 0.8rem;
+            }
+
+            .profile-info-box {
+                padding: 8px 10px;
+                gap: 9px;
+            }
+
+            .profile-info-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.72rem;
+            }
+
+            .profile-info-label {
+                font-size: 0.62rem;
+            }
+
+            .profile-info-value {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 374px) {
+            .dash-table th,
+            .dash-table td {
+                padding: 7px 3px;
+                font-size: 0.68rem;
+            }
+
+            .dash-table-day-cell {
+                font-size: 0.72rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dash-layout {
+                flex-direction: column;
+            }
+
+            .dash-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                gap: 14px;
+                border-inline-end: none;
+                border-bottom: 1px solid var(--border-glass);
+                padding: 14px;
+                overflow-x: auto;
+            }
+
+            .dash-sidebar > .dash-brand,
+            .dash-sidebar > .theme-toggle,
+            .dash-sidebar > .dash-logout {
+                align-self: center;
+                flex-shrink: 0;
+            }
+
+            .dash-logout {
+                order: 1;
+                margin-top: 0;
+            }
+
+            .theme-toggle {
+                order: 2;
+            }
+
+            .dash-brand {
+                order: 3;
+                margin-bottom: 0;
+                margin-inline-start: auto;
+            }
+
+            .dash-brand img {
+                height: 40px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.88rem;
+            }
+
+            .dash-logout {
+                gap: 6px;
+                padding: 8px 14px;
+                font-size: 0.76rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dash-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <img src="assets/images/SMART%20ACADEMY.png" alt="سمارت أكاديمي">
+            </div>
+
+            <button class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري" style="margin-inline: 6px;">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </button>
+
+            <a href="student-login/index.html" class="dash-logout" id="student-logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                تسجيل الخروج
+            </a>
+        </aside>
+
+        <main class="dash-main">
+            <div class="dash-topbar">
+                <div class="dash-topbar-welcome">
+                    <span class="dash-topbar-avatar" id="topbar-avatar">ط</span>
+                    <div class="dash-topbar-text">
+                        <h1 id="welcome-heading">أهلاً بك</h1>
+                        <p>هذه لوحتك الخاصة لمتابعة حصصك وتقاريرك</p>
+                    </div>
+                </div>
+
+                <div class="dash-topbar-actions">
+                    <div class="notif-bell-wrap">
+                        <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="الإشعارات">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notif-bell-badge" id="notif-bell-badge">0</span>
+                        </button>
+                        <div class="notif-bell-panel" id="notif-bell-panel">
+                            <div class="notif-bell-panel-head">
+                                <span>الإشعارات</span>
+                                <button type="button" class="notif-enable-btn" id="notif-enable-btn">
+                                    <i class="fa-solid fa-bell-slash"></i> تفعيل تنبيهات الحصص
+                                </button>
+                            </div>
+                            <div class="notif-bell-list" id="notif-bell-list">
+                                <p class="notif-bell-empty">لا توجد إشعارات بعد.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section id="student-home">
+                <div class="dash-card dash-card--profile">
+                    <h2>بياناتك</h2>
+                    <div class="profile-info-grid">
+                        <div class="profile-info-box">
+                            <span class="profile-info-icon"><i class="fa-solid fa-user"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">الاسم</span>
+                                <strong class="profile-info-value" id="info-name">—</strong>
+                            </span>
+                        </div>
+                        <div class="profile-info-box">
+                            <span class="profile-info-icon"><i class="fa-solid fa-phone"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">رقم الهاتف</span>
+                                <strong class="profile-info-value" id="info-phone">—</strong>
+                            </span>
+                        </div>
+                        <div class="profile-info-box">
+                            <span class="profile-info-icon"><i class="fa-solid fa-layer-group"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">المرحلة الدراسية</span>
+                                <strong class="profile-info-value" id="info-stage">—</strong>
+                            </span>
+                        </div>
+                        <div class="profile-info-box">
+                            <span class="profile-info-icon"><i class="fa-solid fa-toggle-on"></i></span>
+                            <span class="profile-info-text">
+                                <span class="profile-info-label">حالة الاشتراك</span>
+                                <span class="profile-subscription-badge" id="info-subscription">—</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="profile-subjects-box">
+                        <span class="profile-info-label"><i class="fa-solid fa-book"></i> المواد الدراسية</span>
+                        <div class="student-subject-tags" id="student-subjects"></div>
+                        <p class="student-empty-note" id="student-subjects-empty" style="display: none;">لم يقم المشرف بتحديد مواد دراسية لك حتى الآن.</p>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-tower-broadcast" style="color: var(--cyan); margin-inline-end: 8px;"></i>حصة اليوم المباشرة</h2>
+                    <div id="student-today-session"></div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-calendar-week" style="color: var(--cyan); margin-inline-end: 8px;"></i>جدول الحصص الأسبوعي</h2>
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" id="student-week-table">
+                            <colgroup>
+                                <col style="width: 18%;">
+                                <col style="width: 28%;">
+                                <col style="width: 24%;">
+                                <col style="width: 30%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>اليوم</th>
+                                    <th>المادة</th>
+                                    <th>الموعد</th>
+                                    <th>التقييم</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-sack-dollar" style="color: var(--cyan); margin-inline-end: 8px;"></i>تفاصيل التكلفة هذا الشهر</h2>
+                    <div id="student-cost-summary" class="earnings-summary">
+                        <p class="dash-empty">جارٍ تحميل بيانات التكلفة...</p>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h2><i class="fa-solid fa-clipboard-list" style="color: var(--cyan); margin-inline-end: 8px;"></i>التقارير والمتابعة</h2>
+                    <ul class="student-list" id="student-reports"></ul>
+                    <p class="student-empty-note" id="student-reports-empty" style="display: none;">لا توجد تقارير متابعة مضافة من المشرف حتى الآن.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/push-notifications.js"></script>
+
+    <script>
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return saFormatDubai(d, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function getFreshStudent(phone) {
+            try {
+                const all = JSON.parse(localStorage.getItem('sa_students')) || [];
+                return all.find(function (s) { return s.phone === phone; }) || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // تجيب جدول الطالب الحقيقي (المواعيد) من Supabase بدل localStorage
+        // — عشان يبان صح من أي جهاز يسجّل دخول منه.
+        async function loadStudentSessionsFromSupabase(phone) {
+            const sb = window.saSupabase;
+            if (!sb) return [];
+
+            try {
+                const { data, error } = await sb.rpc('get_student_sessions', { p_student_phone: phone });
+                if (error) throw error;
+
+                return (data || []).map(function (row) {
+                    return {
+                        day: row.day,
+                        time: row.time,
+                        subject: row.subject,
+                        link: row.link,
+                        duration: row.duration_minutes,
+                        teacherId: row.teacher_id,
+                        teacherName: row.teacher_name
+                    };
+                });
+            } catch (e) {
+                console.error('تعذّر جلب جدول الطالب من Supabase:', e);
+                return [];
+            }
+        }
+
+        function renderSubscriptionStatus(status) {
+            const badge = document.getElementById('info-subscription');
+            const isActive = status === 'active';
+
+            badge.className = 'profile-subscription-badge ' + (isActive ? 'is-active' : 'is-inactive');
+            badge.innerHTML = isActive
+                ? '<i class="fa-solid fa-circle-check"></i> مفعّل'
+                : '<i class="fa-solid fa-circle-xmark"></i> غير مفعّل';
+        }
+
+        function renderSubjects(student) {
+            const wrap = document.getElementById('student-subjects');
+            const emptyMsg = document.getElementById('student-subjects-empty');
+            const subjects = (student && student.subjects) || [];
+
+            wrap.innerHTML = '';
+
+            if (subjects.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            subjects.forEach(function (subject) {
+                const tag = document.createElement('span');
+                tag.className = 'student-subject-tag';
+                tag.textContent = subject;
+                wrap.appendChild(tag);
+            });
+        }
+
+        function renderReports(student) {
+            const list = document.getElementById('student-reports');
+            const emptyMsg = document.getElementById('student-reports-empty');
+            const reports = (student && student.reports) || [];
+
+            list.innerHTML = '';
+
+            if (reports.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            reports.slice().reverse().forEach(function (report) {
+                const li = document.createElement('li');
+                li.className = 'student-list-item';
+
+                const title = document.createElement('div');
+                title.className = 'student-list-item-title';
+                title.textContent = report.text;
+
+                const meta = document.createElement('div');
+                meta.className = 'student-list-item-meta';
+                meta.textContent = formatDate(report.date);
+
+                li.append(title, meta);
+                list.appendChild(li);
+            });
+        }
+
+        const WEEK_DAYS = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+
+        function todayArabicDay() {
+            const jsDay = saDubaiNow().day;
+            const jsToWeekIndex = [1, 2, 3, 4, 5, 6, 0];
+            return WEEK_DAYS[jsToWeekIndex[jsDay]];
+        }
+
+        function sessionsForDay(student, day) {
+            const sessions = (student && student.sessions) || [];
+            return sessions.filter(function (s) { return s.day === day; });
+        }
+
+        function parseSessionTime(str) {
+            const match = (str || '').match(/^(\d{1,2}):(\d{2})\s*(صباحاً|مساءً)?$/);
+            if (!match) return null;
+
+            let hour = parseInt(match[1], 10);
+            const minute = parseInt(match[2], 10);
+            const period = match[3];
+
+            if (period === 'مساءً' && hour !== 12) hour += 12;
+            if (period === 'صباحاً' && hour === 12) hour = 0;
+
+            const dubaiNow = saDubaiNow();
+            return new Date(saDubaiTimestamp(dubaiNow.year, dubaiNow.month, dubaiNow.date, hour, minute));
+        }
+
+        function formatMinutesRemaining(diff) {
+            if (diff === 1) return 'دقيقة واحدة';
+            if (diff === 2) return 'دقيقتين';
+            if (diff >= 3 && diff <= 10) return diff + ' دقائق';
+            return diff + ' دقيقة';
+        }
+
+        function buildSessionActionButton(session, activeLabel) {
+            if (!session.link) return null;
+
+            const sessionDate = parseSessionTime(session.time);
+            const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
+
+            if (diffMinutes !== null && diffMinutes < -(session.duration || 60)) {
+                const endedBtn = document.createElement('button');
+                endedBtn.type = 'button';
+                endedBtn.className = 'student-link-btn is-waiting';
+                endedBtn.disabled = true;
+                endedBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> انتهت الحصة';
+                return endedBtn;
+            }
+
+            const isActive = diffMinutes === null || diffMinutes <= 5;
+
+            if (isActive) {
+                const a = document.createElement('a');
+                a.className = 'student-link-btn';
+                a.href = session.link;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i> ' + activeLabel;
+                return a;
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'student-link-btn is-waiting';
+            btn.disabled = true;
+
+            if (diffMinutes > 120) {
+                btn.innerHTML = '<i class="fa-solid fa-clock"></i> يبدأ قريبًا';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-clock"></i> باقي ' + formatMinutesRemaining(diffMinutes);
+            }
+
+            return btn;
+        }
+
+        function buildAbsentBadge(isCompact) {
+            const badge = document.createElement('span');
+            badge.className = 'attendance-absent-badge' + (isCompact ? ' is-compact' : '');
+            badge.innerHTML = '<i class="fa-solid fa-user-xmark"></i> ' + (isCompact ? 'غائب' : 'غائب عن هذه الحصة');
+            return badge;
+        }
+
+        function updateSessionFeedbackDisplay(wrap, session) {
+            wrap.innerHTML = '';
+
+            if (session.attendance === 'absent') {
+                wrap.appendChild(buildAbsentBadge());
+                return;
+            }
+
+            const rating = session.rating;
+
+            if (!rating) {
+                const note = document.createElement('span');
+                note.className = 'rating-label';
+                note.textContent = 'لم يقيّم المعلم هذه الحصة بعد';
+                wrap.appendChild(note);
+                return;
+            }
+
+            const label = document.createElement('span');
+            label.className = 'rating-label';
+            label.textContent = 'تقييم المعلم';
+            wrap.appendChild(label);
+
+            const stars = document.createElement('div');
+            stars.className = 'rating-stars';
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.className = 'rating-star' + (rating >= i ? ' is-filled' : '');
+                star.innerHTML = '<i class="fa-solid fa-star"></i>';
+                stars.appendChild(star);
+            }
+            wrap.appendChild(stars);
+        }
+
+        function buildSessionFeedbackDisplay(session) {
+            const wrap = document.createElement('div');
+            wrap.className = 'rating-widget';
+            updateSessionFeedbackDisplay(wrap, session);
+            return wrap;
+        }
+
+        async function loadCostSummary(studentPhone) {
+            const wrap = document.getElementById('student-cost-summary');
+            if (!wrap) return;
+
+            if (!window.saSupabase) {
+                wrap.innerHTML = '<p class="dash-empty">تعذّر الاتصال بقاعدة البيانات الآن.</p>';
+                return;
+            }
+
+            try {
+                const { data, error } = await window.saSupabase.rpc('get_student_monthly_cost', {
+                    p_student_phone: studentPhone
+                });
+                if (error) throw error;
+
+                const row = data && data[0];
+                if (!row) {
+                    wrap.innerHTML = '<p class="dash-empty">لا توجد بيانات تكلفة لهذا الشهر بعد.</p>';
+                    return;
+                }
+
+                const sessionPrice = row.session_price;
+
+                wrap.innerHTML =
+                    '<div class="earnings-stat"><span class="earnings-stat-label">عدد الحصص المحضورة</span><span class="earnings-stat-value">' + (row.session_count || 0) + '</span></div>' +
+                    '<div class="earnings-stat"><span class="earnings-stat-label">سعر الحصة</span><span class="earnings-stat-value">' + (sessionPrice != null ? sessionPrice + ' د.إ' : 'غير محدد') + '</span></div>' +
+                    '<div class="earnings-stat is-total"><span class="earnings-stat-label">إجمالي هذا الشهر</span><span class="earnings-stat-value">' + (row.total_amount != null ? row.total_amount + ' د.إ' : '—') + '</span></div>';
+            } catch (e) {
+                console.error('تعذّر جلب بيانات التكلفة الشهرية:', e);
+                wrap.innerHTML = '<p class="dash-empty">تعذّر تحميل بيانات التكلفة، حاول مرة أخرى لاحقًا.</p>';
+            }
+        }
+
+        async function refreshRatingFromSupabase(studentPhone, day, time, subject, wrap, session) {
+            const sb = window.saSupabase;
+            if (!sb) return;
+
+            try {
+                const [ratingRes, attendanceRes] = await Promise.all([
+                    sb.rpc('get_class_rating', { p_student_phone: studentPhone, p_day: day, p_time: time, p_subject: subject }),
+                    sb.rpc('get_class_attendance', { p_student_phone: studentPhone, p_day: day, p_time: time, p_subject: subject })
+                ]);
+                if (ratingRes.error) throw ratingRes.error;
+                if (attendanceRes.error) throw attendanceRes.error;
+
+                const rating = ratingRes.data;
+                const attendance = attendanceRes.data;
+                if (rating === session.rating && attendance === session.attendance) return;
+
+                session.rating = rating;
+                session.attendance = attendance;
+                updateSessionFeedbackDisplay(wrap, session);
+
+                let students = [];
+                try {
+                    students = JSON.parse(localStorage.getItem('sa_students')) || [];
+                } catch (e) {
+                    students = [];
+                }
+                const student = students.find(function (s) { return s.phone === studentPhone; });
+                const cachedSession = student && (student.sessions || []).find(function (s) {
+                    return s.day === day && s.time === time && s.subject === subject;
+                });
+                if (cachedSession) {
+                    cachedSession.rating = rating;
+                    cachedSession.attendance = attendance;
+                    localStorage.setItem('sa_students', JSON.stringify(students));
+                }
+            } catch (e) {
+                console.error('تعذّر جلب حالة الحضور والتقييم من Supabase (العرض المحلي يفضل صحيح):', e);
+            }
+        }
+
+        function buildTeacherSection(session) {
+            const wrap = document.createElement('div');
+            wrap.className = 'student-today-session-teacher';
+            updateTeacherSection(wrap, session.teacherName);
+            return wrap;
+        }
+
+        function updateTeacherSection(wrap, teacherName) {
+            wrap.innerHTML = teacherName
+                ? '<i class="fa-solid fa-chalkboard-user"></i><span class="student-today-session-teacher-text">المعلم: <strong>' + teacherName + '</strong></span>'
+                : '<i class="fa-solid fa-chalkboard-user"></i><span class="student-today-session-teacher-text">لم يُحدَّد معلم لهذه الحصة بعد.</span>';
+        }
+
+        async function refreshTeacherFromSupabase(session, wrap) {
+            const sb = window.saSupabase;
+            if (!sb || !session.teacherId) return;
+
+            try {
+                const { data: teacherName, error } = await sb.rpc('get_teacher_name', { p_teacher_id: session.teacherId });
+                if (error) throw error;
+                if (!teacherName || teacherName === session.teacherName) return;
+
+                updateTeacherSection(wrap, teacherName);
+            } catch (e) {
+                console.error('تعذّر جلب اسم المعلم المسؤول من Supabase (العرض المحلي يفضل صحيح):', e);
+            }
+        }
+
+        function getCurrentWeekStart() {
+            const dubaiNow = saDubaiNow();
+            const daysSinceSaturday = (dubaiNow.day + 1) % 7;
+            const satUtc = new Date(Date.UTC(dubaiNow.year, dubaiNow.month, dubaiNow.date - daysSinceSaturday));
+            return new Date(saDubaiTimestamp(satUtc.getUTCFullYear(), satUtc.getUTCMonth(), satUtc.getUTCDate(), 0, 0));
+        }
+
+        function isFromCurrentWeek(updatedAt) {
+            if (!updatedAt) return false;
+            const updatedDate = new Date(updatedAt);
+            if (isNaN(updatedDate.getTime())) return false;
+            return updatedDate.getTime() >= getCurrentWeekStart().getTime();
+        }
+
+        function buildWeekRatingStars(rating) {
+            const stars = document.createElement('div');
+            stars.className = 'rating-stars';
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.className = 'rating-star' + (rating >= i ? ' is-filled' : '');
+                star.innerHTML = '<i class="fa-solid fa-star"></i>';
+                stars.appendChild(star);
+            }
+            return stars;
+        }
+
+        function renderWeekRatingCellContent(td, session) {
+            td.innerHTML = '';
+
+            const isAbsentThisWeek = session && session.attendance === 'absent' && isFromCurrentWeek(session.attendanceUpdatedAt);
+            if (isAbsentThisWeek) {
+                td.appendChild(buildAbsentBadge(true));
+                return;
+            }
+
+            const rating = session && session.rating;
+            const ratingUpdatedAt = session && session.ratingUpdatedAt;
+            const hasCurrentRating = rating && isFromCurrentWeek(ratingUpdatedAt);
+            if (!hasCurrentRating) {
+                td.textContent = '-';
+                return;
+            }
+            td.appendChild(buildWeekRatingStars(rating));
+        }
+
+        function buildWeekRatingCell(session) {
+            const td = document.createElement('td');
+            td.dataset.label = 'التقييم';
+            renderWeekRatingCellContent(td, session);
+            return td;
+        }
+
+        async function refreshWeekRatingFromSupabase(studentPhone, session, td) {
+            const sb = window.saSupabase;
+            if (!sb || !session.subject) return;
+
+            try {
+                const [ratingRes, attendanceRes] = await Promise.all([
+                    sb.rpc('get_class_rating_with_date', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject }),
+                    sb.rpc('get_class_attendance_with_date', { p_student_phone: studentPhone, p_day: session.day, p_time: session.time, p_subject: session.subject })
+                ]);
+                if (ratingRes.error) throw ratingRes.error;
+                if (attendanceRes.error) throw attendanceRes.error;
+
+                const row = ratingRes.data && ratingRes.data[0];
+                const attendanceRow = attendanceRes.data && attendanceRes.data[0];
+                const attendance = attendanceRow && attendanceRow.status;
+
+                const ratingUnchanged = (!row || !row.rating_score) || (session.rating === row.rating_score && session.ratingUpdatedAt === row.updated_at);
+                const attendanceUnchanged = attendance === session.attendance && (!attendanceRow || session.attendanceUpdatedAt === attendanceRow.updated_at);
+                if (ratingUnchanged && attendanceUnchanged) return;
+
+                if (row && row.rating_score) {
+                    session.rating = row.rating_score;
+                    session.ratingUpdatedAt = row.updated_at;
+                }
+                session.attendance = attendance;
+                session.attendanceUpdatedAt = attendanceRow && attendanceRow.updated_at;
+
+                renderWeekRatingCellContent(td, session);
+
+                let students = [];
+                try {
+                    students = JSON.parse(localStorage.getItem('sa_students')) || [];
+                } catch (e) {
+                    students = [];
+                }
+                const student = students.find(function (s) { return s.phone === studentPhone; });
+                const cachedSession = student && (student.sessions || []).find(function (s) {
+                    return s.day === session.day && s.time === session.time && s.subject === session.subject;
+                });
+                if (cachedSession) {
+                    if (row && row.rating_score) {
+                        cachedSession.rating = row.rating_score;
+                        cachedSession.ratingUpdatedAt = row.updated_at;
+                    }
+                    cachedSession.attendance = attendance;
+                    localStorage.setItem('sa_students', JSON.stringify(students));
+                }
+            } catch (e) {
+                console.error('تعذّر جلب حالة الحضور والتقييم الأسبوعي من Supabase (العرض المحلي يفضل صحيح):', e);
+            }
+        }
+
+        function sortSessionsByProximity(sessions) {
+            return sessions.slice().sort(function (a, b) {
+                const dateA = parseSessionTime(a.time);
+                const dateB = parseSessionTime(b.time);
+                const distA = dateA ? Math.abs(dateA.getTime() - Date.now()) : Infinity;
+                const distB = dateB ? Math.abs(dateB.getTime() - Date.now()) : Infinity;
+                return distA - distB;
+            });
+        }
+
+        function renderTodaySession(student) {
+            const wrap = document.getElementById('student-today-session');
+            const today = todayArabicDay();
+            const todaySessions = sortSessionsByProximity(sessionsForDay(student, today));
+
+            wrap.innerHTML = '';
+
+            if (todaySessions.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'student-empty-note';
+                empty.textContent = 'لا توجد حصة مباشرة مجدولة اليوم (' + today + ').';
+                wrap.appendChild(empty);
+                return;
+            }
+
+            todaySessions.forEach(function (session) {
+                const row = document.createElement('div');
+                row.className = 'student-today-session';
+
+                const top = document.createElement('div');
+                top.className = 'student-today-session-top';
+
+                const info = document.createElement('div');
+                info.className = 'student-today-session-info';
+                info.innerHTML = '<span>' + (session.subject || 'حصة') + '</span><strong>' + (session.time || '—') + '</strong>';
+                top.appendChild(info);
+
+                const status = document.createElement('div');
+                status.className = 'student-today-session-status';
+                const btn = buildSessionActionButton(session, 'انضم الآن');
+                if (btn) status.appendChild(btn);
+                top.appendChild(status);
+
+                row.appendChild(top);
+
+                const bottom = document.createElement('div');
+                bottom.className = 'student-today-session-bottom';
+
+                const teacherSection = buildTeacherSection(session);
+                bottom.appendChild(teacherSection);
+                refreshTeacherFromSupabase(session, teacherSection);
+
+                const sessionDate = parseSessionTime(session.time);
+                const diffMinutes = sessionDate ? Math.round((sessionDate.getTime() - Date.now()) / 60000) : null;
+                if (diffMinutes !== null && diffMinutes < -(session.duration || 60)) {
+                    const ratingEl = buildSessionFeedbackDisplay(session);
+                    bottom.appendChild(ratingEl);
+                    refreshRatingFromSupabase(student.phone, session.day, session.time, session.subject, ratingEl, session);
+                }
+
+                row.appendChild(bottom);
+
+                wrap.appendChild(row);
+            });
+        }
+
+        function renderWeekTable(student) {
+            const table = document.getElementById('student-week-table');
+            const today = todayArabicDay();
+
+            table.querySelectorAll('tbody').forEach(function (tb) { tb.remove(); });
+
+            WEEK_DAYS.forEach(function (day) {
+                const daySessions = sessionsForDay(student, day);
+                const isToday = day === today;
+                const tbody = document.createElement('tbody');
+                if (isToday) tbody.className = 'is-today';
+
+                if (daySessions.length === 0) {
+                    const tr = document.createElement('tr');
+
+                    const dayTd = document.createElement('td');
+                    dayTd.className = 'dash-table-day-cell';
+                    dayTd.textContent = day;
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.dataset.label = 'المادة';
+                    subjectTd.textContent = '—';
+
+                    const timeTd = document.createElement('td');
+                    timeTd.dataset.label = 'الموعد';
+                    timeTd.textContent = '—';
+
+                    const ratingTd = document.createElement('td');
+                    ratingTd.dataset.label = 'التقييم';
+                    ratingTd.textContent = '-';
+
+                    tr.append(dayTd, subjectTd, timeTd, ratingTd);
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
+                    return;
+                }
+
+                daySessions.forEach(function (session, index) {
+                    const tr = document.createElement('tr');
+
+                    if (index === 0) {
+                        const dayTd = document.createElement('td');
+                        dayTd.className = 'dash-table-day-cell';
+                        dayTd.rowSpan = daySessions.length;
+                        dayTd.textContent = day;
+                        tr.appendChild(dayTd);
+                    }
+
+                    const subjectTd = document.createElement('td');
+                    subjectTd.dataset.label = 'المادة';
+                    subjectTd.textContent = session.subject || '—';
+
+                    const timeTd = document.createElement('td');
+                    timeTd.dataset.label = 'الموعد';
+                    timeTd.textContent = session.time || '—';
+
+                    const ratingTd = buildWeekRatingCell(session);
+                    tr.append(subjectTd, timeTd, ratingTd);
+                    tbody.appendChild(tr);
+
+                    if (student && student.phone) {
+                        refreshWeekRatingFromSupabase(student.phone, session, ratingTd);
+                    }
+                });
+
+                table.appendChild(tbody);
+            });
+        }
+
+        (async function () {
+            const current = saGetSession('sa_current_student');
+
+            if (!current) {
+                renderSubjects(null);
+                renderReports(null);
+                renderTodaySession(null);
+                renderWeekTable(null);
+                return;
+            }
+
+            const fresh = getFreshStudent(current.phone) || current;
+            fresh.sessions = await loadStudentSessionsFromSupabase(current.phone);
+
+            if (fresh.fullName) {
+                document.getElementById('welcome-heading').textContent = 'أهلاً بك، ' + fresh.fullName;
+                document.getElementById('info-name').textContent = fresh.fullName;
+                document.getElementById('topbar-avatar').textContent = fresh.fullName.trim().charAt(0);
+            }
+            if (fresh.phone) {
+                document.getElementById('info-phone').textContent = fresh.phone;
+            }
+            if (fresh.stage) {
+                document.getElementById('info-stage').textContent = fresh.stage;
+            }
+            renderSubscriptionStatus(fresh.subscriptionStatus);
+
+            renderSubjects(fresh);
+            renderReports(fresh);
+            renderTodaySession(fresh);
+            renderWeekTable(fresh);
+            loadCostSummary(fresh.phone);
+
+            setInterval(function () {
+                renderTodaySession(fresh);
+            }, 30000);
+
+            if (current.id) saInitNotificationBell('student', current.id);
+        })();
+
+        document.getElementById('student-logout').addEventListener('click', function () {
+            saClearSession('sa_current_student');
+        });
+
+        (function () {
+            const sidebar = document.querySelector('.dash-sidebar');
+            if (sidebar) {
+                sidebar.scrollLeft = -(sidebar.scrollWidth - sidebar.clientWidth);
+            }
+        })();
+    </script>
+</body>
+</html>
