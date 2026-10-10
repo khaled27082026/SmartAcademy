@@ -37,6 +37,17 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* إخفاء مؤقت — شريط العداد التنازلي + قسم الباقات/الأسعار (الكود باقٍ لإعادته لاحقًا) */
+        #pricing,
+        #pricing-countdown,
+        .pricing-offer-card,
+        .nav-link-custom[href="#pricing"],
+        .mobile-nav-link[href="#pricing"] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -102,7 +113,7 @@
             <button class="pwa-install-btn mobile-nav-link" aria-label="تثبيت التطبيق">
                 <i class="fa-solid fa-download"></i> تثبيت التطبيق
             </button>
-            <a href="student-login/index.html" class="btn-glow text-center mt-2">دخول الطالب</a>
+            <a href="student-login/" class="btn-glow text-center mt-2">دخول الطالب</a>
         </nav>
     </div>
     <div class="mobile-menu-overlay"></div>
@@ -243,7 +254,7 @@
                         مستواه أسبوعيًا.. كل شي واضح قدام عينك.
                     </p>
                     <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
-                        <a href="student-login/index.html" class="btn-glow">دخول الطالب</a>
+                        <a href="student-login/" class="btn-glow">دخول الطالب</a>
                         <a href="#subjects" class="btn-outline-glow">تعرّف على المواد الدراسية</a>
                     </div>
                 </div>
@@ -876,8 +887,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© 2026 Smart Academy. جميع الحقوق محفوظة. <a href="admin-login.html" class="footer-admin-access"
-                        aria-hidden="true" tabindex="-1"></a></p>
+                <p>© 2026 Smart Academy. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>

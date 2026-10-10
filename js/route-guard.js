@@ -3,6 +3,7 @@
 //
 //   <script>
 //       window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_student', loginUrl: 'student-login/' };
+//       window.SA_REQUIRED_ROLE = { sessionKey: 'sa_current_admin', loginUrl: 'staff-login/' };
 //   </script>
 //   <script src="js/route-guard.js"></script>
 //

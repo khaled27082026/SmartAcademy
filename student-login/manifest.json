@@ -1,0 +1,26 @@
+{
+  "id": "/student-login/",
+  "name": "تطبيق الطالب — Smart Academy",
+  "short_name": "سمارت — الطالب",
+  "description": "بوابة دخول الطالب ومتابعة الحصص في سمارت أكاديمي",
+  "start_url": "/student-login/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#071a26",
+  "theme_color": "#0a425b",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

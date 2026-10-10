@@ -38,9 +38,10 @@
     </script>
 
     <!-- PWA -->
-    <link rel="manifest" href="../manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a425b">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="سمارت — الطالب">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="../assets/images/smart123.jpg">
 
@@ -79,6 +80,82 @@
         #student-id {
             direction: rtl;
             text-align: right;
+        }
+
+        .student-install-btn.pwa-install-btn,
+        .student-install-btn.pwa-install-btn.is-visible {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-block-start: 14px;
+            padding: 10px 25px;
+            border-radius: 50px;
+        }
+
+        html.sa-standalone .student-install-btn {
+            display: none !important;
+        }
+
+        .student-install-hint {
+            display: none;
+            margin-block-start: 14px;
+            padding: 14px 16px;
+            border-radius: 15px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sec);
+            text-align: start;
+        }
+
+        .student-install-hint.is-visible {
+            display: block;
+        }
+
+        html.sa-standalone .student-install-hint {
+            display: none !important;
+        }
+
+        .student-install-hint__title {
+            margin: 0 0 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .student-install-hint__steps {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: ios-step;
+        }
+
+        .student-install-hint__steps li {
+            position: relative;
+            margin: 0;
+            padding-block: 6px;
+            padding-inline-start: 32px;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            counter-increment: ios-step;
+        }
+
+        .student-install-hint__steps li::before {
+            content: counter(ios-step);
+            position: absolute;
+            inset-inline-start: 0;
+            top: 7px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 22px;
+            text-align: center;
         }
     </style>
 </head>
@@ -126,7 +203,19 @@
                     </button>
                 </form>
 
-                <a href="../index.html" class="auth-back"><i class="fa-solid fa-house"></i> عودة للصفحة الرئيسية</a>
+                <button type="button" class="btn-outline-glow student-install-btn pwa-install-btn" id="student-install-btn">
+                    <i class="fa-solid fa-download"></i>
+                    تحميل التطبيق
+                </button>
+                <div class="student-install-hint" id="student-install-hint">
+                    <p class="student-install-hint__title">للتثبيت على الآيفون</p>
+                    <ol class="student-install-hint__steps">
+                        <li>افتح هذه الصفحة من سفاري.</li>
+                        <li>اضغط زر المشاركة في الأسفل.</li>
+                        <li>اختر «إضافة إلى الشاشة الرئيسية».</li>
+                        <li>اضغط «إضافة».</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </main>
@@ -140,6 +229,28 @@
     <script src="../js/supabaseClient.js"></script>
 
     <script>
+        (function () {
+            var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (isStandalone) document.documentElement.classList.add('sa-standalone');
+
+            var hint = document.getElementById('student-install-hint');
+            var installBtn = document.getElementById('student-install-btn');
+            var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+            if (hint && isIos && !isStandalone) {
+                hint.classList.add('is-visible');
+            }
+
+            if (!installBtn) return;
+
+            installBtn.addEventListener('click', function () {
+                if (isStandalone || !hint) return;
+                hint.classList.add('is-visible');
+                hint.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        })();
+
         document.getElementById('student-login-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
